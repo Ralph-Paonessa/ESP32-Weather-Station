@@ -73,62 +73,62 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 	unsigned int countValidCycles = 0;
 	String msg;
 
-	while (!_isGpsSynced) {						// Loop while GPS not sync.
-		while (_serialGPS.available() > 0) {	// Loop while data is in the serial buffer.
-			// Log this message the first time in the loop.
-			if (!isFirstTime) {
-				isFirstTime = true;
-				_sdCard.logStatus("Receiving GPS data.", millis());
-			}
-			// Need GPS_CYCLES_FOR_SYNC cyles of valid gps data.
-			// While GPS is not synced and GPS is encoding data.
-			while (!_isGpsSynced || _tinyGPS.encode(_serialGPS.read()))
-			{
-				// A new GPS sentence was encoded.
-				_countGpsCycles++;
-				logCurrentCycle();
+	// Loop while data is in the serial buffer and until GPS syncs.
+	while (_serialGPS.available() > 0 || !_isGpsSynced) {
+		// Log this message the first time in the loop.
+		if (!isFirstTime) {
+			isFirstTime = true;
+			_sdCard.logStatus("Receiving GPS data.", millis());
+		}
 
-				// Does the data pass our validity tests?
-				if (isGpsDataValid())
-				{
-					// VALID DATA.
-					// Must have valid data for GPS_CYCLES_FOR_SYNC
-					// *consecutive* cycles.
-					countValidCycles++;
-					logData_Valid(countValidCycles);
-					// Error check.
-					if (countValidCycles > GPS_CYCLES_FOR_SYNC) {
-						logCountError(countValidCycles);
-					}
-					// Data is valid, but ...
-					// Do we have enough consecutive cycles of valid data?
-					if (countValidCycles == GPS_CYCLES_FOR_SYNC) {
-						/***************   SUCCESS!!   **************/
-						// Sync system time and location with the GPS. 
-						syncSystemWithCurrentGpsData(timeStart, _countGpsCycles);
-						_isGpsSynced = true;	// flag that GPS is synced and we're finished.
-					}
-					else
-					{
-						// Not enough valid cycles yet.
-						logData_Valid_NotEnoughCycles(countValidCycles);
-					}
-				}	// (isGpsDataValid())
+		// Need GPS_CYCLES_FOR_SYNC cyles of valid gps data.
+		// While GPS is not synced and GPS is encoding data.
+		while (!_isGpsSynced || _tinyGPS.encode(_serialGPS.read()))
+		{
+			// A new GPS sentence was encoded.
+			_countGpsCycles++;
+			logCurrentCycle();
+
+			// Does the data pass our validity tests?
+			if (isGpsDataValid())
+			{
+				// VALID DATA.
+				// Must have valid data for GPS_CYCLES_FOR_SYNC
+				// *consecutive* cycles.
+				countValidCycles++;
+				logData_Valid(countValidCycles);
+				// Error check.
+				if (countValidCycles > GPS_CYCLES_FOR_SYNC) {
+					logCountError(countValidCycles);
+				}
+				// Data is valid, but ...
+				// Do we have enough consecutive cycles of valid data?
+				if (countValidCycles == GPS_CYCLES_FOR_SYNC) {
+					/***************   SUCCESS!!   **************/
+					// Sync system time and location with the GPS. 
+					syncSystemWithCurrentGpsData(timeStart, _countGpsCycles);
+					_isGpsSynced = true;	// flag GPS synced and we're finished.
+				}
 				else
 				{
-					// INVALID DATA.
-					logData_NotValid();
-					countValidCycles = 0;	// Reset valid cycles.
-				}	// (isGpsDataValid())
-
-				// If not synced, wait between cycles.
-				if (!_isGpsSynced) {
-					// Wait but keep receiving GPS data.
-					gpsSmartDelay(GPS_DELAY_BETWEEN_CYCLES);
+					// Not enough valid cycles yet.
+					logData_Valid_NotEnoughCycles(countValidCycles);
 				}
-			}	// while (!_isGpsSynced || _tinyGPS.encode(_serialGPS.read()))
-		}		// while (_serialGPS.available() > 0)
-	}			// while (!_isGpsSynced)
+			}	// (isGpsDataValid())
+			else
+			{
+				// INVALID DATA.
+				logData_NotValid();
+				countValidCycles = 0;	// Reset valid cycles.
+			}	// (isGpsDataValid())
+
+			// If not synced, wait between cycles.
+			if (!_isGpsSynced) {
+				// Wait but keep receiving GPS data.
+				gpsSmartDelay(GPS_DELAY_BETWEEN_CYCLES);
+			}
+		}	// while (!_isGpsSynced || _tinyGPS.encode(_serialGPS.read()))
+	}		// while (_serialGPS.available() > 0)
 	// GPS sync successful, so wrap up and return.
 	logSyncIsComplete();
 }
