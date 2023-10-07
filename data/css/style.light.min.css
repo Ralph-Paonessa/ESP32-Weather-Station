@@ -1,0 +1,83 @@
+/* Light style for daylight viewing*/
+
+/*body {
+    background-color: #ffffff;
+}
+
+h1, h2, h3, h4, h5 {
+    color: #808080
+}*/
+
+body {
+    background-color: #fff;
+}
+
+h1, h2, h3 {
+    color: #000;
+}
+
+.card {
+    border: 1px solid #000;
+    border-radius: 8px;
+    box-shadow: 0 10px 16px 0 rgba(0,0,0,.2),0 6px 20px 0 rgba(0,0,0,.19) !important
+}
+
+    .card h2 {
+        background-color: rgba(0,0,0,.19);
+    }
+
+    .card .data {
+        color: #000;
+    }
+
+/***  Highcharts  ***/
+
+.chart-container {
+    border: 1px solid rgba(0,0,0,.2);
+}
+
+.highcharts-background {
+    fill: #f8fffa;
+}
+
+.highcharts-color-0 {
+    fill: #b30e0e;
+    stroke: #b30e0e;
+}
+
+/* Data points */
+.highcharts-color-1 {
+    fill: #ff0000;
+    stroke: #ff0000;
+}
+
+/* Line */
+.highcharts-series-1 {
+    stroke: none;
+}
+
+.highcharts-data-label text, text.highcharts-data-label {
+    fill: #b30e0e;
+    stroke: #b30e0e;
+}
+
+.highcharts-title {
+    fill: #b30e0e;
+    font-size: 3em;
+}
+
+.cardinalDir {
+    background-color: #f8fffa;
+}
+
+#cardinal {
+    color: #eef8fe;
+}
+
+    #cardinal > div {
+        border: 1px solid #000;
+    }
+
+.navigation .time {
+    color: #000;
+}

@@ -1,0 +1,74 @@
+/*  Charts  */
+
+body {
+    background-color: #000;
+}
+
+h1, h2, h3 {
+    color: #b30e0e;
+}
+
+.chart-container {
+    border: 1px solid rgba(0,0,0,.2);
+    margin-bottom: 1em;
+    /*padding: .1em;*/
+}
+
+.highcharts-background {
+    fill: #2f2f2f;
+}
+
+
+
+/* Data points */
+
+.highcharts-color-0 {
+    fill: #b30e0e;
+    stroke: #b30e0e
+}
+
+.highcharts-color-1 {
+    fill: #ff0000;
+    stroke: #ff0000;
+}
+
+/* Line */
+
+.highcharts-series-1 {
+    stroke: none;
+}
+
+.highcharts-graph-1 {
+    width: 0;
+}
+
+.highcharts-data-label text, text.highcharts-data-label {
+    fill: #b30e0e;
+    stroke: #b30e0e;
+    font-size: 2.25em;
+}
+
+.highcharts-title {
+    fill: #b30e0e;
+    font-size: 3em;
+}
+
+.highcharts-axis-labels {
+    font-size: 1.5em;
+}
+
+.cardinalDir {
+    background-color: #2f2f2f;
+}
+
+#cardinal {
+    color: #b30e0e;
+    justify-content: space-evenly;
+}
+
+    #cardinal > div {
+        color: #b30e0e;
+        padding: .1em .5em;
+        border: 1px solid #000;
+        font-size: 2em;
+    }

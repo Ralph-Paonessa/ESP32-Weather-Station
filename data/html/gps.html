@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>WMA Weather-Star GPS Data</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link href="style.min.css" rel="stylesheet" media="all" type="text/css" />
+    <link rel="icon" type="image/png" sizes="32x32" target="_blank" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="180x180" target="_blank" href="/favicon-180.png">
+    %CSS_LIGHT_STYLE%
+</head>
+<body>
+
+    <div id="loading" class="loading loading--full-height"></div>
+
+    <div class="content">
+        <h2>WMA Weather-Star</h2>
+        <h1>GPS Location Data at Sync</h1>
+        <div class="nav home">
+            <a href="/"><img src="home-icon.png" class="icon" /></a>
+        </div>
+
+        <div class="flex-container">
+
+            <div class="card">
+                <h2>Latitude</h2>
+                <div class="data">
+                    <div>%GPS_LATITUDE%&deg;</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Longitude</h2>
+                <div class="data">
+                    <div>%GPS_LONGITUDE%&deg;</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Elevation</h2>
+                <div class="data">
+                    <div>%GPS_ALTITUDE% m</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Pressure (true)</h2>
+                <div class="data">
+                    <div>%PRESSURE_MB_ABS% mb</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Sync date?</h2>
+                <div class="data">
+                    <div>%GPS_DATE%</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Sync time?</h2>
+                <div class="data">
+                    <div>%GPS_TIME% UTC</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Time zone</h2>
+                <div class="data">
+                    <div>UTC %GPS_TIME_ZONE%</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Daylight time</h2>
+                <div class="data">
+                    <div>%GPS_DAYLIGHT_TIME_USED%</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>GPS sync status</h2>
+                <div class="data">
+                    <div>%GPS_IS_SYNCED%</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>GPS cycles used</h2>
+                <div class="data">
+                    <div>%GPS_LOCATIONS_UPDATE_COUNTER%</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>HDOP</h2>
+                <div class="data">
+                    <div>%GPS_HDOP%</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Satellites used</h2>
+                <div class="data">
+                    <div>%GPS_SATELLITES%</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Sync time</h2>
+                <div class="data">
+                    <div>%ELAPSED_TIME_STRING%s</div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Water boils at</h2>
+                <div class="data">
+                    <div>%WATER_BOILING_POINT% &deg;F</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function () {
+            document.getElementById("loading").style.display = "none";
+        }
+    </script>
+</body>
+</html>

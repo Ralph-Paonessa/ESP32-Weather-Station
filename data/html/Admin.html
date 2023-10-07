@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>WMA Weather-Star</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link href="style.min.css" rel="stylesheet" media="all" type="text/css" />
+    <link rel="icon" type="image/png" sizes="32x32" target="_blank" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="180x180" target="_blank" href="/favicon-180.png">
+    %CSS_LIGHT_STYLE%
+</head>
+<body>
+
+    <div id="loading" class="loading loading--full-height"></div>
+
+    <div class="content">
+
+        <div class="navigation">
+            <div class="nav home">
+                <a href="/"><img src="home-icon.png" class="icon" /></a>
+            </div>
+        </div>
+        <h2>Wx Admin</h2>
+        <h1>Administrative tools</h1>
+        <div class="navigation">
+            <div class="time">
+                %CURRENT_TIME%
+            </div>
+            <div class="nav">
+                <a href="/">Refresh</a>
+            </div>
+        </div>
+
+        <div class="flex-container">
+            <div class="card">
+                <h2>Status</h2>
+                <div class="data">
+                    <div></div>
+                    <a href="/log">Status Log</a>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Data</h2>
+                <div class="data">
+                    <div></div>
+                    <a href="/data">Data file</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function () {
+            document.getElementById("loading").style.display = "none";
+        }
+    </script>
+</body>
+</html>
