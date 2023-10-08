@@ -2,7 +2,7 @@
 
 # ESP32-Weather-Station
 
-Contains code and libraries to get, process, and display weather sensor readings from an ESP32 development board.
+Contains code and libraries to receive, process, and display weather sensor readings from an ESP32 development board.
 
 ## Implemented sensors
 - Ambient temperature
@@ -36,9 +36,9 @@ Currently, the 10- and 60-minutes readings are stored only in volatlie memory an
 Future plans include storing this data in flash memory (LittleFS) so that it persists upon restart.
 
 ## Weather Station
-The weather station is a DIY custom design incorporating various commerically-available sensors and a custom DIY rdiation shield for the temperature sensor.
+The weather station is a DIY custom design incorporating various commerically-available sensors and a custom DIY radiation shield for the temperature sensor. For my needs, the station must be portable (set up somewhere and run for a week or more) and run on batteries that are recharged by solar power. The power management is not handled in this code.
 
 ## Development
 It is through this project that I have started to learn to write C++ code and interface with the ESP-32 through the ESP32-Arduino IDE.
 
-In that regard, I have benefitted from numerous online tutorials on the ESP32 and using it with numerous sensors. I have attempted to go beyond simple implementations and design a system that can collect and store various weather data for my (idiosyncratic) needs.
+In that regard, I have benefitted from numerous online tutorials on the ESP32 and hos to use it with various sensors. I have attempted to go beyond simple implementations and design a system that can collect and store various weather data for my (idiosyncratic) needs.
