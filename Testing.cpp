@@ -134,7 +134,7 @@ void Testing::windDirection(float angleStart, float angleIncrement, int cycles, 
 //		{
 //			// Every iteration adds 2 minutes.
 //			// Dummy rotation counts (from a list).
-//			elapsed += addDummyRotations(rotsList_all_zeros, windSpeed, BASE_PERIOD);
+//			elapsed += addDummyRotations(rotsList_all_zeros, windSpeed, BASE_PERIOD_SEC);
 //			//elapsed += addDummyRotations(rotsList_one_large, wind, RAW_PERIOD);
 //			//elapsed += addDummyRotations(rotsList_all_20, wind, RAW_PERIOD);
 //			if (true) {
@@ -158,9 +158,9 @@ void Testing::windDirection(float angleStart, float angleIncrement, int cycles, 
 //		{
 //			// Every iteration adds 2 minutes.
 //			// Dummy rotation counts (from a list).
-//			//elapsed += addDummyRotations(rotsList_all_10, wind, BASE_PERIOD);
-//			elapsed += addDummyRotations(rotsList_one_large, windSpeed, BASE_PERIOD);
-//			//elapsed += addDummyRotations(rotsList_all_20, wind, BASE_PERIOD);
+//			//elapsed += addDummyRotations(rotsList_all_10, wind, BASE_PERIOD_SEC);
+//			elapsed += addDummyRotations(rotsList_one_large, windSpeed, BASE_PERIOD_SEC);
+//			//elapsed += addDummyRotations(rotsList_all_20, wind, BASE_PERIOD_SEC);
 //			if (true) {
 //				Serial.print("LOOP 2: "); Serial.print("Elapsed time = "); Serial.print(elapsed / 60.); Serial.println(" min");
 //

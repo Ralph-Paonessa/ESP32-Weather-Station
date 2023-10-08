@@ -97,7 +97,7 @@ String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList)
 /// </summary>
 /// <param name="targetList">List of dataPoint.</param>
 /// <param name="isConvertZeroToEmpty">Set true to convert zero value to empty string.</param>
-/// <param name="decimalPlaces">Decimal places to round to.</param>
+/// <param name="decimalPlaces">Decimal places to display.</param>
 /// <returns></returns>
 String ListFunctions::listToString_dataPoints(list<dataPoint> targetList,
 	bool isConvertZeroToEmpty,

@@ -19,6 +19,8 @@
       <Filter>Misc Files</Filter>
     </None>
     <None Include="README.md" />
+    <None Include="ReadMe_wind.md" />
+    <None Include="ReadMe_Weather_Measurements.md" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Weather Station.ino" />

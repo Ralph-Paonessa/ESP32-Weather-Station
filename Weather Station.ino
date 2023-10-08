@@ -4,7 +4,7 @@ Custom weather station control software.
 
 Ralph Paonessa
 August 10, 2022
-Rev. October 26, 2023
+Rev. October 7, 2023
 ******************************************/
 
 // ========  ESP32 Libraries  ================  
@@ -506,7 +506,7 @@ void PrintHeader() {
 	Serial.println(LINE_SEPARATOR);
 	Serial.println(F("ESP32 WEATHER STATION"));
 	Serial.print(F("  Speed sampling interval = "));
-	Serial.print(BASE_PERIOD, 2); Serial.println(F(" sec."));
+	Serial.print(BASE_PERIOD_SEC, 2); Serial.println(F(" sec."));
 	Serial.println(LINE_SEPARATOR);
 #endif
 }
@@ -664,7 +664,7 @@ void listDirectory(fs::FS& fs, const char* dirname, uint8_t levels) {
 void logApp_Settings() {
 	String msg = "APP SETTINGS:";
 	sd.logStatus(msg);
-	msg = "BASE_PERIOD: " + String(BASE_PERIOD);
+	msg = "BASE_PERIOD_SEC: " + String(BASE_PERIOD_SEC);
 	msg += " sec";
 	sd.logStatus_indent(msg);
 	msg = "GPS_CYCLES_FOR_SYNC: " + String(GPS_CYCLES_FOR_SYNC);
@@ -1660,7 +1660,7 @@ XXX
 void catchUnhandledBaseTimerInterrupts() {
 	// If base timer interrupt count exceeds 1, 
 	// the interrupt was unhandled. Can occur when
-	// loop processing time exceeds BASE_PERIOD.
+	// loop processing time exceeds BASE_PERIOD_SEC.
 	if (_countInterrupts_base > 1) {	// Should be only 0 or 1.
 		String msg = "WARNING: Base timer interrupt count was ";
 		msg += String(_countInterrupts_base);
@@ -1688,18 +1688,18 @@ void readWind() {
 	// Read wind speed.
 	/*
 		XXX NOTE: Can _anem_Rotations still increase after
-		timer interrupt signals BASE_PERIOD, while other
+		timer interrupt signals BASE_PERIOD_SEC, while other
 		processing delays the time until
 
 			windSpeed.addReading(now(), _anem_Rotations)
 
 		Should _anem_Rotations be held in another variable
-		immediately when BASE_PERIOD is reached???
+		immediately when BASE_PERIOD_SEC is reached???
 	*/
 	int rots = _anem_Rotations;
 
 	windSpeed.addReading(now(), _anem_Rotations);
-	float speed = windSpeed.speedInstant(_anem_Rotations, BASE_PERIOD);
+	float speed = windSpeed.speedInstant(_anem_Rotations, BASE_PERIOD_SEC);
 
 	// Read wind direction (average over 0-360 deg).
 	/*
@@ -1730,7 +1730,7 @@ void readWind() {
 /// </summary>
 void readFan() {
 	// Get fan speed.
-	d_fanRPM.addReading(now(), fanRPM(_fanHalfRots, BASE_PERIOD));
+	d_fanRPM.addReading(now(), fanRPM(_fanHalfRots, BASE_PERIOD_SEC));
 	// Reset hardware interrupt count.
 	portENTER_CRITICAL(&hardwareMux_fan);
 	_fanHalfRots = 0;		// Reset fan rotations.		
@@ -1991,7 +1991,7 @@ void setup() {
 
 	// ==========  INITIALIZE TIMER INTERRUPT  ========== //
 	/*
-	 Timer interrupt fires every BASE_PERIOD to
+	 Timer interrupt fires every BASE_PERIOD_SEC to
 	 trigger counts of anemometer and fan rotations.
 	 This is ALSO when we record all the other sensor readings.
 	 ONLY WIND SPEED NEEDS TO BE RECORDED THIS FREQUENTLY.
@@ -1999,8 +1999,8 @@ void setup() {
 	*/
 	timer_base = timerBegin(0, 80, true);
 	timerAttachInterrupt(timer_base, &ISR_onTimer_count, true);
-	int duration_count = BASE_PERIOD * MICROSEC_PER_SECOND;	// Timer duration (microsec).
-	timerAlarmWrite(timer_base, duration_count, true);		// Trigger every BASE_PERIOD.
+	int duration_count = BASE_PERIOD_SEC * MICROSEC_PER_SECOND;	// Timer duration (microsec).
+	timerAlarmWrite(timer_base, duration_count, true);		// Trigger every BASE_PERIOD_SEC.
 	timerAlarmEnable(timer_base);
 
 	msg = "CURRENT LOCAL TIME is " + gps.dateTime();
@@ -2033,7 +2033,7 @@ void loop() {
 	*/
 
 	//  ====================================================
-	//   BASE_PERIOD. Every timer interrupt.
+	//   BASE_PERIOD_SEC. Every timer interrupt.
 	if (_countInterrupts_base == 1) {
 		// Read sensors and process data.
 		readWind();
