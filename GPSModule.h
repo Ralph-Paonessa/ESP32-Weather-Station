@@ -26,6 +26,7 @@ logged to the SD card.
 
 #include <TinyGPS++.h>
 #include <TimeLib.h>		// Paul Stoffregen - Time
+
 #include "App_Settings.h"
 #include "SDCard.h"			// for data logging.
 using namespace App_Settings;

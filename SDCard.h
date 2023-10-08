@@ -10,8 +10,15 @@
 #endif
 
 #include <FS.h>
+#include <FSImpl.h>
+#include <vfs_api.h>
+
 #include <SD.h>
+#include <sd_defines.h>
+#include <sd_diskio.h>
+
 #include <SPI.h>
+
 #include "App_Settings.h"
 using namespace App_Settings;
 

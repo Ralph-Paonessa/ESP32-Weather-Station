@@ -20,18 +20,13 @@ using std::list;
 using namespace ListFunctions;
 using namespace App_Settings;
 
-//#include "TimeMonitor.h"
-
 class Testing {
 
 private:
 
-	//TimeMonitor _timeMonLocal;
-
 	float _dummyVal;
 	int _countPeriods;
-	////////int _countSpike;
-	
+
 public:
 
 	void haltWithInfiniteLoop();
@@ -52,7 +47,7 @@ public:
 	float addDummyRotations(list<float> srcList, WindSpeed& speedObj, float rawPeriod);
 
 	//void test();
-		
+
 	String readData();
 };
 

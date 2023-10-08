@@ -7,10 +7,50 @@ August 10, 2022
 Rev. October 26, 2023
 ******************************************/
 
-// ======  Included Libraries  ======
+// ========  ESP32 Libraries  ================  
 
-// Custom libraries for weather station.
-//#include "WindSpeed.h"
+// ESP Async Web Server
+#include <AsyncEventSource.h>
+#include <AsyncJson.h>
+#include <AsyncWebSocket.h>
+#include <AsyncWebSynchronization.h>
+#include <ESPAsyncWebServer.h>
+#include <SPIFFSEditor.h>
+#include <StringArray.h>
+#include <WebAuthentication.h>
+#include <WebHandlerImpl.h>
+#include <WebResponseImpl.h>
+#include <AsyncTCP.h>
+
+// Sensors
+#include <SparkFun_VEML6075_Arduino_Library.h>
+
+// MLX90614 IR sensor
+#include <Adafruit_MLX90614.h>
+
+// DS18B20 digital temperature sensor
+#include <DallasTemperature.h>
+#include <OneWire.h>
+
+#include <Adafruit_BME280.h>
+
+// File system
+#include <LittleFS.h>
+
+// WiFi
+#include <WiFi.h>
+#include <WiFiAP.h>
+#include <WiFiClient.h>
+#include <WiFiGeneric.h>
+#include <WiFiMulti.h>
+#include <WiFiScan.h>
+#include <WiFiServer.h>
+#include <WiFiSTA.h>
+#include <WiFiType.h>
+#include <WiFiUdp.h>
+
+// ========  Custom Libraries  ================  
+
 #include "App_settings.h"
 #include "Utilities.h"
 #include "GPSModule.h"
@@ -19,28 +59,10 @@ Rev. October 26, 2023
 #include "SensorData.h"
 #include "WindSpeed.h"
 #include "WindDirection.h"
-#include "ListFunctions.h"		// Manipulating lists.
+
 #if defined(VM_DEBUG)
 #include "Testing.h"			// DEBUG AND TESTING
 #endif
-
-// ESP32 libraries needed
-
-#include <WiFi.h>				// WiFi operations.
-#include <WiFiMulti.h>			// Implements multiple access points.
-#include <LittleFS.h>			// Espressif included version?
-#include <AsyncTCP.h>			// required for ESPAsyncWebServer
-#include <ESPAsyncWebServer.h>
-// BME280 P/RH sensor
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BME280.h>
-// DS18B20 digital temperature sensor
-#include <OneWire.h>
-#include <DallasTemperature.h>
-// MLX90614 IR
-#include <Adafruit_MLX90614.h>
-// UV A/B
-#include <SparkFun_VEML6075_Arduino_Library.h>
 
 using namespace App_Settings;
 using namespace Utilities;
