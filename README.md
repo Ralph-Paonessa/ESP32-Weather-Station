@@ -1,4 +1,4 @@
-# v12.0.1 active
+# v1.0.1 active
 
 # ESP32-Weather-Station
 
