@@ -1288,6 +1288,11 @@ void serverRouteHandler() {
 			request->send(LittleFS, "/html/sensors.html", "text/html", false, processor);
 			});
 
+		// Summary data.
+		server.on("/summary", HTTP_GET, [](AsyncWebServerRequest* request) {
+			request->send(LittleFS, "/html/summary.html", "text/html", false, processor);
+			});
+
 		// GPS info.
 		server.on("/gps", HTTP_GET, [](AsyncWebServerRequest* request) {
 			request->send(LittleFS, "/html/gps.html", "text/html", false, processor);
