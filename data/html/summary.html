@@ -15,7 +15,7 @@
 
     <div class="content">
         <h2>Ground-based Geosynchronous Weather Satellite</h2>
-        <h1>Today</h1>
+        <h1>%WEEKDAY%</h1>
         <div class="navigation">
             <div class="nav">
                 <a href="/">Home</a>
@@ -26,16 +26,16 @@
             <div class="card">
                 <h2>Temperature</h2>
                 <div class="data hi-lo">
-                    <div>%TEMPERATURE_F_HI% &deg;F</div>
-                    <div>%TEMPERATURE_F_LO% &deg;F</div>
+                    <div>Hi %TEMPERATURE_F_HI% &deg;F</div>
+                    <div>Lo %TEMPERATURE_F_LO% &deg;F</div>
                     <a href="/chart_T"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
             <div class="card">
                 <h2>IR sky</h2>
                 <div class="data hi-lo">
-                    <div>%IR_T_SKY_HI% &deg;C</div>
-                    <div>%IR_T_SKY_LO% &deg;C</div>
+                    <div>Hi %IR_T_SKY_HI% &deg;C</div>
+                    <div>Lo %IR_T_SKY_LO% &deg;C</div>
                     <a href="/chart_IR"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
@@ -43,16 +43,16 @@
             <div class="card">
                 <h2>Wind</h2>
                 <div class="data hi-lo">
-                    <div>%WIND_SPEED_HI% mph</div>
-                    <div>%WIND_SPEED_LO% mph</div>
+                    <div>Hi %WIND_SPEED_HI% mph</div>
+                    <div>Lo %WIND_SPEED_LO% mph</div>
                     <a href="/chart_W"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
             <div class="card">
                 <h2>Wind Gusts</h2>
                 <div class="data hi-lo">
-                    <div>%WIND_GUST_HI% mph</div>
-                    <div>%WIND_GUST_LO% mph</div>
+                    <div>Hi %WIND_GUST_HI% mph</div>
+                    <div>Lo %WIND_GUST_LO% mph</div>
                     <a href="/chart_Wgst"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
@@ -60,15 +60,15 @@
             <div class="card">
                 <h2>Wind Angle?</h2>
                 <div class="data hi-lo">
-                    <div>%WIND_ANGLE_HI% &deg;</div>
+                    <div>Avg ?? &deg;</div>
                     <a href="/chart_Wdir"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
             <div class="card">
                 <h2>Humidity</h2>
                 <div class="data hi-lo">
-                    <div>%REL_HUMIDITY_HI% &percnt;</div>
-                    <div>%REL_HUMIDITY_LO% &percnt;</div>
+                    <div>Hi %REL_HUMIDITY_HI% &percnt;</div>
+                    <div>Lo %REL_HUMIDITY_LO% &percnt;</div>
                     <a href="/chart_RH"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
@@ -76,15 +76,15 @@
             <div class="card">
                 <h2>Pressure</h2>
                 <div class="data hi-lo">
-                    <div>%PRESSURE_MB_SL_HI% mb</div>
-                    <div>%PRESSURE_MB_SL_LO% mb</div>
+                    <div>Hi %PRESSURE_MB_SL_HI% mb</div>
+                    <div>Lo %PRESSURE_MB_SL_LO% mb</div>
                     <a href="/chart_P"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
             <div class="card">
                 <h2>Insolation</h2>
                 <div class="data hi-lo">
-                    <div>%INSOLATION_PERCENT_HI% &percnt;</div>
+                    <div>Hi %INSOLATION_PERCENT_HI% &percnt;</div>
                     <a href="/chart_Insol"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
@@ -92,7 +92,7 @@
             <div class="card">
                 <h2>UV Index</h2>
                 <div class="data hi-lo">
-                    <div>%UV_INDEX_HI%</div>
+                    <div>Hi %UV_INDEX_HI%</div>
                     <a href="/chart_UVIndex"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>

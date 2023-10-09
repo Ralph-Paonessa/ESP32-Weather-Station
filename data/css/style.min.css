@@ -74,9 +74,15 @@ h4 {
             flex-direction: column;
         }
 
+            .card .data.hi-lo > div {
+                padding-top: .4em;
+            }
+
         .card .data a {
             color: #f00;
         }
+
+
 
 .navigation {
     display: flex;

@@ -448,10 +448,9 @@ String GPSModule::dateTime() {
 }
 
 /// <summary>
-/// Returns string "hh:mm" from current time 
-/// (using TimeLib).
+/// Returns current system time as "hh:mm".
 /// </summary>
-/// <returns></returns>
+/// <returns>Current time "hh:mm"</returns>
 String GPSModule::time() {
 	if (!_isGpsSynced) {
 		return String(now()) + "s";
@@ -475,12 +474,21 @@ String GPSModule::time() {
 }
 
 /// <summary>
+/// Returns current day of the week as string.
+/// </summary>
+/// <returns></returns>
+String GPSModule::dayString() {
+	return dayStr(day());
+}
+
+/// <summary>
 /// Latitude when GPS was synced to application.
 /// </summary>
 /// <returns></returns>
 float GPSData::latitude() {
 	return _latitude;
 }
+
 /// <summary>
 /// Longitude when GPS was synced to application.
 /// </summary>

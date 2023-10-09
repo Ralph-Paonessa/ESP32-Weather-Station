@@ -940,6 +940,9 @@ String processor(const String& var) {
 	if (var == "CURRENT_TIME") {
 		return gps.time();
 	}
+	if (var == "WEEKDAY") {
+		return gps.dayString();
+	}
 	if (var == "TEMPERATURE_F")
 		return String(d_Temp_F.valueLastAdded(), 0);
 	if (var == "WIND_SPEED") {

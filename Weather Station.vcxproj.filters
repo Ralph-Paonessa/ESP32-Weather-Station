@@ -21,6 +21,17 @@
     <None Include="README.md" />
     <None Include="ReadMe_wind.md" />
     <None Include="ReadMe_Weather_Measurements.md" />
+    <None Include="data\css\highcharts-custom.css" />
+    <None Include="data\css\highcharts.css" />
+    <None Include="data\css\style.light.min.css" />
+    <None Include="data\css\style.min.css" />
+    <None Include="data\html\Admin.html" />
+    <None Include="data\html\chart.html" />
+    <None Include="data\html\gps.html" />
+    <None Include="data\html\sensors.html" />
+    <None Include="data\html\summary.html" />
+    <None Include="data\js\chart.js" />
+    <None Include="data\js\highcharts.js" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Weather Station.ino" />
@@ -94,5 +105,28 @@
     <Text Include="board.txt">
       <Filter>Misc Files</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="data\img\chart-icon-black-150px.png">
+      <Filter>Misc Files</Filter>
+    </Image>
+    <Image Include="data\img\chart-icon-red-150px.png">
+      <Filter>Misc Files</Filter>
+    </Image>
+    <Image Include="data\img\favicon-180.png">
+      <Filter>Misc Files</Filter>
+    </Image>
+    <Image Include="data\img\favicon-32.png">
+      <Filter>Misc Files</Filter>
+    </Image>
+    <Image Include="data\img\home-icon-black-150px.png">
+      <Filter>Misc Files</Filter>
+    </Image>
+    <Image Include="data\img\home-icon-red-150px.png">
+      <Filter>Misc Files</Filter>
+    </Image>
+    <Image Include="data\img\loading.gif">
+      <Filter>Misc Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
