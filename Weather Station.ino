@@ -78,7 +78,7 @@ bool _isDEBUG_ListLittleFS = false;		// List contents of LittleFS.
 bool _isDEBUG_BypassWebServer = false;	// Bypass Web Server.
 bool _isDEBUG_Test_setup = false;		// Run only test code inserted in Setup.
 bool _isDEBUG_Test_loop = false;		// Run test code inserted in Loop.
-bool _isDEBUG_addDummyData = false;		// Add dummy data.
+bool _isDEBUG_addDummyData = true;		// Add dummy data.
 bool _isDEBUG_AddDelayInLoop = false;	// Add delay in loop.
 const int _LOOP_DELAY_DEBUG_ms = 100;	// Debug delay in loop, msec.
 /************************************************************/
@@ -1599,6 +1599,145 @@ void serverRouteHandler() {
 					break;
 				}
 			});
+
+
+		// 60-min charts
+		server.on("/data_60", HTTP_GET,
+			[](AsyncWebServerRequest* request) {
+				// Which chart?
+				switch (chart_request)
+				{
+				case CHART_NONE:
+					request->send_P(200, "text/plain", "");
+					break;
+				case CHART_INSOLATION:
+					request->send_P(200, "text/plain", d_Insol.data_60_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_IR_SKY:
+					request->send_P(200, "text/plain", d_IRSky_C.data_60_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_TEMPERATURE_F:
+					request->send_P(200, "text/plain", d_Temp_F.data_60_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_PRESSURE_SEA_LEVEL:
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_60_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_RELATIVE_HUMIDITY:
+					request->send_P(200, "text/plain", d_RH.data_60_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_UV_INDEX:
+					request->send_P(200, "text/plain", d_UVIndex.data_60_min_string_delim(false, 1).c_str());
+					break;
+				case CHART_WIND_DIRECTION:
+					request->send_P(200, "text/plain", windDir.data_60_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_WIND_SPEED:
+					request->send_P(200, "text/plain", windSpeed.data_60_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_WIND_GUST:
+					request->send_P(200, "text/plain", windSpeed.gusts_60_min_string_delim(true, 0).c_str());
+					break;
+				default:
+					request->send_P(200, "text/plain", "");
+					break;
+				}
+			});
+
+
+
+
+
+		// Daily maxima charts.
+		server.on("/data_max", HTTP_GET,
+			[](AsyncWebServerRequest* request) {
+				// Which chart?
+				switch (chart_request)
+				{
+				case CHART_NONE:
+					request->send_P(200, "text/plain", "");
+					break;
+				case CHART_INSOLATION:
+					request->send_P(200, "text/plain", d_Insol.maxima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_IR_SKY:
+					request->send_P(200, "text/plain", d_IRSky_C.maxima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_TEMPERATURE_F:
+					//request->send_P(200, "text/plain", d_Temp_F.maxima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_Temp_F.maxima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_PRESSURE_SEA_LEVEL:
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.maxima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_RELATIVE_HUMIDITY:
+					request->send_P(200, "text/plain", d_RH.maxima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_UV_INDEX:
+					request->send_P(200, "text/plain", d_UVIndex.maxima_daily_string_delim(false, 1).c_str());
+					break;
+				case CHART_WIND_DIRECTION:
+					request->send_P(200, "text/plain", windDir.maxima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_WIND_SPEED:
+					request->send_P(200, "text/plain", windSpeed.maxima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_WIND_GUST:
+					request->send_P(200, "text/plain", windSpeed.maxima_daily_string_delim(true, 0).c_str());
+					break;
+				default:
+					request->send_P(200, "text/plain", "");
+					break;
+				}
+			});
+
+
+		// Daily minima charts.
+		server.on("/data_min", HTTP_GET,
+			[](AsyncWebServerRequest* request) {
+				// Which chart?
+				switch (chart_request)
+				{
+				case CHART_NONE:
+					request->send_P(200, "text/plain", "");
+					break;
+				case CHART_INSOLATION:
+					request->send_P(200, "text/plain", d_Insol.minima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_IR_SKY:
+					request->send_P(200, "text/plain", d_IRSky_C.minima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_TEMPERATURE_F:
+					//request->send_P(200, "text/plain", d_Temp_F.minima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_Temp_F.minima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_PRESSURE_SEA_LEVEL:
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.minima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_RELATIVE_HUMIDITY:
+					request->send_P(200, "text/plain", d_RH.minima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_UV_INDEX:
+					request->send_P(200, "text/plain", d_UVIndex.minima_daily_string_delim(false, 1).c_str());
+					break;
+				case CHART_WIND_DIRECTION:
+					request->send_P(200, "text/plain", windDir.minima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_WIND_SPEED:
+					request->send_P(200, "text/plain", windSpeed.minima_daily_string_delim(false, 0).c_str());
+					break;
+				case CHART_WIND_GUST:
+					request->send_P(200, "text/plain", windSpeed.minima_daily_string_delim(true, 0).c_str());
+					break;
+				default:
+					request->send_P(200, "text/plain", "");
+					break;
+				}
+			});
+
+
+
+
+
 #if defined(VM_DEBUG)
 	}
 	else {
@@ -1949,6 +2088,8 @@ void addDummyData() {
 	//	windDir.addDummyData_60_min(270, 5, 12, 1765412100);
 	d_Insol.addDummyData_60_min(2700, 25, 12, 1765412100);
 	d_UVIndex.addDummyData_60_min(0, 0.5, 12, 1765412100);
+	
+	d_Temp_F.addDummyData_maxima(65, 0.1, 12, 1765412100);
 	//#endif
 }
 

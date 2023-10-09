@@ -42,7 +42,7 @@ protected:		// Protected items are accessible by inherited classes.
 	/// Clears running average, but leaves data average lists intact.
 	/// </summary>
 	void clearAverage();
-		
+
 	/// <summary>
 	/// Clears saved minimum and maximum data points.
 	/// </summary>
@@ -126,7 +126,7 @@ public:
 	/// </summary>
 	/// <returns>List of (time, value) dataPoints.</returns>
 	list<dataPoint> minima_daily();
-	
+
 	/// <summary>
 	/// List of (time, value) dataPoints of daily maxima.
 	/// </summary>
@@ -136,6 +136,13 @@ public:
 
 	void addDummyData_10_min(float valueStart, float increment, int numElements, unsigned long timeStart);
 	void addDummyData_60_min(float valueStart, float increment, int numElements, unsigned long timeStart);
+
+
+	void addDummyData_maxima(
+		float valueStart,
+		float increment,
+		int numElements,
+		unsigned long timeStart);
 
 
 	void addLabels(String label, String labelShort, String units);
@@ -169,8 +176,24 @@ public:
 	/// <param name="decimalPlaces">Decimal places in numbers.</param>
 	/// <returns>List of 60-min dataPoints as delimited string.</returns>
 	String data_60_min_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
+
+
+	/// <summary>
+	/// Returns list of maxima dataPoints as delimited string.
+	/// </summary>
+	/// <param name="isConvertZeroToEmpty">Set to true to convert zero to empty string.</param>
+	/// <param name="decimalPlaces">Decimal places in numbers.</param>
+	/// <returns>List of maxima dataPoints as delimited string.</returns>
+	String maxima_daily_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
+
+	/// <summary>
+	/// Returns list of minima dataPoints as delimited string.
+	/// </summary>
+	/// <param name="isConvertZeroToEmpty">Set to true to convert zero to empty string.</param>
+	/// <param name="decimalPlaces">Decimal places in numbers.</param>
+	/// <returns>List of minima dataPoints as delimited string.</returns>
+	String minima_daily_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
+
 };
 
-
 #endif
-

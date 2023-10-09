@@ -94,9 +94,6 @@
     <ClInclude Include="__vm\.Weather Station.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="__vm\.ESP32-Weather-Station.vsarduino.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt">

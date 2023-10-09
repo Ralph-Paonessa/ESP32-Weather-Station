@@ -29,7 +29,8 @@
             </div>
             <div class="nav"><a onclick="getChartData('/data_10', 10, %TIME_OFFSET_HOURS%)">Recent</a></div>
             <div class="nav"><a onclick="getChartData('/data_60', 60, %TIME_OFFSET_HOURS%)">Hourly</a></div>
-            <div class="nav"><a onclick="getChartData('/data_12_hr', 720, %TIME_OFFSET_HOURS%)">Days</a></div>
+            <div class="nav"><a onclick="getChartData('/data_max', 720, %TIME_OFFSET_HOURS%)">Highs</a></div>
+            <div class="nav"><a onclick="getChartData('/data_min', 720, %TIME_OFFSET_HOURS%)">Lows</a></div>
         </div>
         <div class="chart-container">
             <div id="chart_1" class="container"></div>
