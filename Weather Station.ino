@@ -60,9 +60,10 @@ Rev. October 7, 2023
 #include "WindSpeed.h"
 #include "WindDirection.h"
 
-#if defined(VM_DEBUG)
+//#if defined(VM_DEBUG)
 #include "Testing.h"			// DEBUG AND TESTING
-#endif
+#include "SensorDummy.h"
+//#endif
 
 using namespace App_Settings;
 using namespace Utilities;
@@ -79,6 +80,7 @@ bool _isDEBUG_BypassWebServer = false;	// Bypass Web Server.
 bool _isDEBUG_Test_setup = false;		// Run only test code inserted in Setup.
 bool _isDEBUG_Test_loop = false;		// Run test code inserted in Loop.
 bool _isDEBUG_addDummyData = true;		// Add dummy data.
+bool _isDEBUG_addDummyReadings = true;	// Add dummy sensor reading values.
 bool _isDEBUG_AddDelayInLoop = false;	// Add delay in loop.
 const int _LOOP_DELAY_DEBUG_ms = 100;	// Debug delay in loop, msec.
 /************************************************************/
@@ -100,6 +102,12 @@ SensorData d_UVIndex;			// UV Index readings.
 SensorData d_Insol;				// Insolaton readings.
 SensorData d_IRSky_C;			// IR sky temperature readings.
 SensorData d_fanRPM;			// Fan RPM readings.
+
+
+SensorDummy dummy_T;
+SensorDummy dummy_IR;
+SensorDummy dummy_Wind;
+
 
 // Keep track of timer interrupts that trigger readings.
 volatile int _countInterrupts_base = 0;		// Base timer interrupt count to trigger base sensor read.
@@ -592,6 +600,9 @@ void logDebugStatus() {
 	}
 	if (_isDEBUG_addDummyData) {
 		sd.logStatus_indent("ADD DUMMY DATA");
+	}
+	if (_isDEBUG_addDummyReadings) {
+		sd.logStatus_indent("ADD DUMMY READINGS");
 	}
 	if (_isDEBUG_AddDelayInLoop) {
 		String msg = String(_LOOP_DELAY_DEBUG_ms);
@@ -1992,6 +2003,44 @@ void readSensors() {
 }
 
 /// <summary>
+/// Reads and saves data from sensors.
+/// </summary>
+void readSensors(bool isAddDummyReadings) {
+
+	if (!isAddDummyReadings)
+	{
+		readSensors();
+	}
+	else {
+
+
+	}
+
+	unsigned long timeStart = millis();
+	// Temperature.
+	d_Temp_F.addReading(now(), reading_Temp_F_DS18B20());	// temperature
+	// UV readings.
+	d_UVA.addReading(now(), sensor_UV.uva());
+	d_UVB.addReading(now(), sensor_UV.uvb());
+	d_UVIndex.addReading(now(), sensor_UV.index());
+	// P, RH
+	d_RH.addReading(now(), sensor_PRH.readHumidity());				// RH.
+	d_Pres_mb.addReading(now(), sensor_PRH.readPressure() / 100);	// Raw pressure in mb (hectopascals)
+	d_Temp_for_RH_C.addReading(now(), sensor_PRH.readTemperature());// Temp (C) of P, RH sensor.
+	float psl = pressureAtSeaLevel(
+		d_Pres_mb.valueLastAdded(),
+		gps.data.altitude(),
+		d_Temp_for_RH_C.valueLastAdded());
+	d_Pres_seaLvl_mb.addReading(now(), psl);
+	// IR sky
+	d_IRSky_C.addReading(now(), sensor_IR.readObjectTempC());
+	// Insolation/
+	float insol_norm = insol_norm_pct(readInsol_mV(), INSOL_REFERENCE_MAX);
+	d_Insol.addReading(now(), insol_norm);							// % Insolation
+	unsigned int timeEnd = millis() - timeStart;
+}
+
+/// <summary>
 /// Saves 10-min averages of all sensor data 
 /// to lists.
 /// </summary>
@@ -2088,7 +2137,7 @@ void addDummyData() {
 	//	windDir.addDummyData_60_min(270, 5, 12, 1765412100);
 	d_Insol.addDummyData_60_min(2700, 25, 12, 1765412100);
 	d_UVIndex.addDummyData_60_min(0, 0.5, 12, 1765412100);
-	
+
 	d_Temp_F.addDummyData_maxima(65, 0.1, 12, 1765412100);
 	//#endif
 }
@@ -2180,17 +2229,29 @@ void setup() {
 	_oldMonth = month();
 	_oldYear = year();
 
-#if defined(VM_DEBUG)
-	////////  TESTING   ////////
+	//#if defined(VM_DEBUG)
+		////////  TESTING   ////////
 	if (_isDEBUG_addDummyData) {
 		addDummyData();
 	}
+
+	if (_isDEBUG_addDummyReadings) {
+		float dumVal = 0;
+		unsigned int seconds = BASE_PERIOD_SEC * SECONDS_PER_HOUR * 5;
+		dumVal = dummy_T.risingVal(5, 90 / seconds);
+		d_Temp_F.addReading(now(), dumVal);
+
+		d_IRSky_C.addReading(now(), dummy_IR.risingVal(-25, ));
+
+	}
+
+
 	if (_isDEBUG_Test_setup) {
 		addTestCodeHere();
 	}
-#endif
+	//#endif
 
-	// ==========  INITIALIZE SENSORS  ========== //
+		// ==========  INITIALIZE SENSORS  ========== //
 	initializeSensors();
 
 	sd.logData(columnNames());	// Write column names to data log.
@@ -2235,7 +2296,7 @@ void setup() {
 	(IS_DAYLIGHT_TIME) ? msg = " Daylight time." : msg = " Standard time.";
 	sd.logStatus(msg);
 	sd.logStatus("SETUP END", millis());
-	}
+}
 /****************************************************************************/
 /************************        END SETUP       ****************************/
 /****************************************************************************/
@@ -2370,7 +2431,7 @@ void loop() {
 		String msg = "WARNING: Loop " + String(_timeEnd_Loop) + "ms";
 		sd.logStatus(msg, gps.dateTime());
 	}
-	}
+}
 /******************************        END LOOP        **********************************/
 /****************************************************************************************/
 /****************************************************************************************/

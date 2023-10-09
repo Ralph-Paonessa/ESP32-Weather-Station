@@ -73,7 +73,7 @@ public:
 	/// </summary>
 	/// <param name="time">Reading time.</param>
 	/// <param name="value">Reading value.</param>
-	void min_Find(const unsigned long& time, const float& value);
+	void min_Update(const unsigned long& time, const float& value);
 
 	/// <summary>
 	/// Saves this data point (time, value) as the 
@@ -85,7 +85,7 @@ public:
 	/// </summary>
 	/// <param name="time"></param>
 	/// <param name="value"></param>
-	void max_Find(const unsigned long& time, const float& value);
+	void max_Update(const unsigned long& time, const float& value);
 
 	void process_data_10_min();
 	void process_data_60_min();
@@ -134,16 +134,7 @@ public:
 	list<dataPoint> maxima_daily();
 
 
-	void addDummyData_10_min(float valueStart, float increment, int numElements, unsigned long timeStart);
-	void addDummyData_60_min(float valueStart, float increment, int numElements, unsigned long timeStart);
-
-
-	void addDummyData_maxima(
-		float valueStart,
-		float increment,
-		int numElements,
-		unsigned long timeStart);
-
+	
 
 	void addLabels(String label, String labelShort, String units);
 	void addLabels(String label, String labelShort, String units, String units_html);
@@ -193,6 +184,18 @@ public:
 	/// <param name="decimalPlaces">Decimal places in numbers.</param>
 	/// <returns>List of minima dataPoints as delimited string.</returns>
 	String minima_daily_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
+
+
+	void addDummyData_10_min(float valueStart, float increment, int numElements, unsigned long timeStart);
+	void addDummyData_60_min(float valueStart, float increment, int numElements, unsigned long timeStart);
+
+
+	void addDummyData_maxima(
+		float valueStart,
+		float increment,
+		int numElements,
+		unsigned long timeStart);
+
 
 };
 

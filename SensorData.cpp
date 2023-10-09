@@ -20,8 +20,8 @@ void SensorData::addReading(unsigned long time, float value) {
 	_dataLastRead = dataPoint(time, value);	// save most recent
 	_countReadings++;
 	_sumReadings += value;
-	min_Find(time, value);
-	max_Find(time, value);
+	min_Update(time, value);
+	max_Update(time, value);
 	_isMinMaxRestart = false;
 }
 
@@ -33,7 +33,7 @@ void SensorData::addReading(unsigned long time, float value) {
 /// </summary>
 /// <param name="time">Reading time.</param>
 /// <param name="value">Reading value.</param>
-void SensorData::min_Find(const unsigned long& time, const float& value) {
+void SensorData::min_Update(const unsigned long& time, const float& value) {
 	if (!_isMinMaxRestart) {
 		// Continue comparisons.
 		if (value < _min.value) {
@@ -53,7 +53,7 @@ void SensorData::min_Find(const unsigned long& time, const float& value) {
 /// </summary>
 /// <param name="time">Reading time.</param>
 /// <param name="value">Reading value.</param>
-void SensorData::max_Find(const unsigned long& time, const float& value) {
+void SensorData::max_Update(const unsigned long& time, const float& value) {
 	if (!_isMinMaxRestart) {
 		// Continue comparisons.
 		if (value > _max.value) {
@@ -249,9 +249,7 @@ void SensorData::addDummyData_60_min(float valueStart,
 		valueStart += increment;	// increment value each time.
 		timeStart += SECONDS_PER_HOUR;
 	}
-
-	dataPoint dpMax{ timeStart, valueStart };
-	_max = dpMax;
+	_avg_60_min = valueStart;
 }
 
 
@@ -275,7 +273,8 @@ void SensorData::addDummyData_maxima(float valueStart,
 		valueStart += increment;	// increment value each time.
 		timeStart += SECONDS_PER_HOUR;
 	}
-	_dai = valueStart;
+	dataPoint dpMax{ timeStart, valueStart };
+	_max = dpMax;
 }
 
 
