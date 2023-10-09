@@ -1000,6 +1000,85 @@ String processor(const String& var) {
 		return String(d_IRSky_C.valueLastAdded(), 0);
 	}
 
+
+	///  Weather data daily maxima.  ///////////////////
+
+	if (var == "TEMPERATURE_F_HI") {
+		return String(d_Temp_F.max().value, 0);
+	}
+	if (var == "WIND_SPEED_HI") {
+		return String(windSpeed.max().value, 0);
+	}
+	if (var == "WIND_GUST_HI") {
+		return String(windSpeed.max().value, 0);
+	}
+	if (var == "WIND_ANGLE_HI") {
+		return "??";		// avg since last cleared (<= 10 min)
+	}
+	if (var == "PRESSURE_MB_SL_HI") {
+		return String(d_Pres_seaLvl_mb.max().value, 0);
+	}
+	if (var == "INSOLATION_PERCENT_HI") {
+		return String(d_Insol.max().value, 0);
+	}
+	if (var == "REL_HUMIDITY_HI") {
+		return String(d_RH.max().value, 0);
+	}
+	if (var == "UV_A_HI") {
+		if (isGood_UV) {
+			return String(d_UVA.max().value, 0);
+		}
+		else {
+			return String("na");
+		}
+	}
+	if (var == "UV_B_HI") {
+		if (isGood_UV) {
+			return String(d_UVB.max().value, 0);
+		}
+		else {
+			return String("na");
+		}
+	}
+	if (var == "UV_INDEX_HI") {
+		if (isGood_UV) {
+			return String(d_UVIndex.max().value, 1);
+		}
+		else {
+			return String("na");
+		}
+	}
+	if (var == "IR_T_SKY_HI") {
+		return String(d_IRSky_C.max().value, 0);
+	}
+
+
+	///  Weather data daily minima.  ///////////////////
+
+	if (var == "TEMPERATURE_F_LO") {
+		return String(d_Temp_F.max().value, 0);
+	}
+	if (var == "WIND_SPEED_LO") {
+		return String(windSpeed.max().value, 0);	// 10-min avg
+	}
+	if (var == "WIND_GUST_LO") {
+		return String(windSpeed.max().value, 0);
+	}
+	if (var == "WIND_ANGLE_LO") {
+		return "??";		// avg since last cleared (<= 10 min)
+	}
+	if (var == "PRESSURE_MB_SL_LO") {
+		return String(d_Pres_seaLvl_mb.max().value, 0);
+	}
+	if (var == "REL_HUMIDITY_LO") {
+		return String(d_RH.max().value, 0);
+	}
+	if (var == "IR_T_SKY_LO") {
+		return String(d_IRSky_C.max().value, 0);
+	}
+
+
+
 	///  GPS info.   ////////////////////////
 
 	if (var == "GPS_IS_SYNCED") {
@@ -1193,7 +1272,7 @@ String processor(const String& var) {
 	if (var == "FAN_RPM") {
 		return String(d_fanRPM.valueLastAdded());
 	}
-	return var + String("not found");
+	return var + String(" not found");
 }
 
 /// <summary>
@@ -1430,7 +1509,7 @@ void serverRouteHandler() {
 
 		/*****  DATA SOURCES FOR GRAPHS  *****/
 		/*
-		 Send string with data asynchronously to html 
+		 Send string with data asynchronously to html
 		 page where Javascript parses and plots the data.
 		*/
 
@@ -1570,8 +1649,8 @@ void initializeSensors() {
 	if (sensor_IR.readAmbientTempC() > 1000) {
 		/*
 		Missing sensor gives T > 1000.
-		Implies IR sensor was not found.		
-		*/ 
+		Implies IR sensor was not found.
+		*/
 		isGood_IR = false;
 		String msg = "WARNING: MLX90614 IR sensor not found.";
 		sd.logStatus(msg, millis());
@@ -1939,7 +2018,7 @@ void setup() {
 
 	// ==========   INITIALIZE GPS AND SYNC TO GET TIME   ========== //
 	// XXX  Need code to alter power of GPS!!!  XXX
-	
+
 	/* 	Format for setting s serial port:
 		SerialObject.begin(baud-rate, protocol, RX pin, TX pin);
 		(Wrong baud rate gives serial garbage.)
@@ -2012,7 +2091,7 @@ void setup() {
 	(IS_DAYLIGHT_TIME) ? msg = " Daylight time." : msg = " Standard time.";
 	sd.logStatus(msg);
 	sd.logStatus("SETUP END", millis());
-}
+	}
 /****************************************************************************/
 /************************        END SETUP       ****************************/
 /****************************************************************************/
@@ -2086,10 +2165,10 @@ void loop() {
 		portEXIT_CRITICAL_ISR(&timerMux_base);
 	}
 
-	//   ====================================================
-	//    NEW DAY.
+	// ====================================================
+	// HAS DAY CHANGED?
 	if (day() > _oldDay || month() > _oldMonth || year() > _oldYear) {
-		// This is a new day. 
+		// NEW DAY. 
 		// Save minima and maxima for previous day.
 		processReadings_Day();
 		_oldDay = day();
@@ -2098,11 +2177,20 @@ void loop() {
 		sd.logStatus("New day rollover.", gps.dateTime());
 
 
-		
-		
+
+
 		//// LOG EXTREMA -- NEED STRING LISTS!
-		//d_Temp_F.maxima_daily()
-		//d_Temp_F.minima_daily()
+		d_Temp_F.maxima_daily(); // XXX Not STRING!
+		d_Temp_F.minima_daily();
+
+
+
+	}
+	else {
+		// SAME DAY.
+		// Update summary of today's data.
+
+
 
 
 
@@ -2112,7 +2200,7 @@ void loop() {
 	/*
 	If WiFi is lost, we're screwed because the time
 	to reconnect may throw of the sensor read timings.
-	Just bite the bullet and take the time to reconnect, 
+	Just bite the bullet and take the time to reconnect,
 	then recover.
 
 	If WiFi was lost, the time to reconnect will cause
@@ -2138,7 +2226,7 @@ void loop() {
 		String msg = "WARNING: Loop " + String(_timeEnd_Loop) + "ms";
 		sd.logStatus(msg, gps.dateTime());
 	}
-}
+	}
 /******************************        END LOOP        **********************************/
 /****************************************************************************************/
 /****************************************************************************************/

@@ -154,12 +154,15 @@ float SensorData::avg_60_min()
 /// <summary>
 /// Current daily minimum.
 /// </summary>
-/// <returns></returns>
+/// <returns>Today's minimum.</returns>
 dataPoint SensorData::min() {
 	return _min;
 }
 
-
+/// <summary>
+/// Current daily maximum.
+/// </summary>
+/// <returns>Today's maximum.</returns>
 dataPoint SensorData::max() {
 	return _max;
 }

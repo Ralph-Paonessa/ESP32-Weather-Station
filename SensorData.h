@@ -35,8 +35,8 @@ protected:		// Protected items are accessible by inherited classes.
 	float _avg_10_min = 0;			// Average over 10 min.
 	float _avg_60_min = 0;			// Average over 60 min.
 
-	dataPoint _min;					// Data point with time and minimum value. 
-	dataPoint _max;					// Data point with time and maximum value.
+	dataPoint _min;					// Data point with today's time and minimum value. 
+	dataPoint _max;					// Data point with today's time and maximum value.
 
 	/// <summary>
 	/// Clears running average, but leaves data average lists intact.
@@ -98,13 +98,13 @@ public:
 
 
 	/// <summary>
-	/// Returns dataPoint with minimum value so far.
+	/// Returns dataPoint with today's minimum value so far.
 	/// </summary>
 	/// <returns>dataPoint (time, min_value)</returns>
 	dataPoint min();
 
 	/// <summary>
-	/// Returns dataPoint with maximum value so far.
+	/// Returns dataPoint with today's maximum value so far.
 	/// </summary>
 	/// <returns>dataPoint (time, max_value)</returns>
 	dataPoint max();
