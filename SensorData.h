@@ -109,10 +109,28 @@ public:
 	/// <returns>dataPoint (time, max_value)</returns>
 	dataPoint max();
 
+	/// <summary>
+	/// List of (time, value) dataPoints at 10-min intervals.
+	/// </summary>
+	/// <returns>List of (time, value) dataPoints.</returns>
 	list<dataPoint> data_10_min();
+
+	/// <summary>
+	/// List of (time, value) dataPoints at 60-min intervals.
+	/// </summary>
+	/// <returns>List of (time, value) dataPoints.</returns>
 	list<dataPoint> data_60_min();
 
+	/// <summary>
+	/// List of (time, value) dataPoints of daily minima.
+	/// </summary>
+	/// <returns>List of (time, value) dataPoints.</returns>
 	list<dataPoint> minima_daily();
+	
+	/// <summary>
+	/// List of (time, value) dataPoints of daily maxima.
+	/// </summary>
+	/// <returns>List of (time, value) dataPoints.</returns>
 	list<dataPoint> maxima_daily();
 
 
@@ -128,10 +146,29 @@ public:
 	String units();
 	String units_html();
 
+
 	String data_10_min_string_delim();
-	String data_10_min_string_delim(bool isConvertZeroToEmpty, int decimalPlaces);
+
+	/// <summary>
+	/// Returns list of 10-min dataPoints as delimited string.
+	/// </summary>
+	/// <param name="isConvertZeroToEmpty">
+	/// Set to true to convert zero to empty string.</param>
+	/// <param name="decimalPlaces">Decimal places in numbers.</param>
+	/// <returns>List of 10-min dataPoints as delimited string.</returns>
+	String data_10_min_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
+
+
 	String data_60_min_string_delim();
-	String data_60_min_string_delim(bool isConvertZeroToEmpty, int decimalPlaces);
+
+	/// <summary>
+	/// Returns list of 60-min dataPoints as delimited string.
+	/// </summary>
+	/// <param name="isConvertZeroToEmpty">
+	/// Set to true to convert zero to empty string.</param>
+	/// <param name="decimalPlaces">Decimal places in numbers.</param>
+	/// <returns>List of 60-min dataPoints as delimited string.</returns>
+	String data_60_min_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
 };
 
 

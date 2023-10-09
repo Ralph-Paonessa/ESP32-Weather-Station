@@ -169,9 +169,9 @@ dataPoint SensorData::max() {
 
 
 /// <summary>
-/// List of dataPoint at 10-min intervals.
+/// List of (time, value) dataPoints at 10-min intervals.
 /// </summary>
-/// <returns></returns>
+/// <returns>List of (time, value) dataPoints.</returns>
 list<dataPoint> SensorData::data_10_min()
 {
 	return _data_10_min;
@@ -187,17 +187,17 @@ list<dataPoint> SensorData::data_60_min()
 }
 
 /// <summary>
-/// List of dataPoints of daily minima.
+/// List of (time, value) dataPoints of daily minima.
 /// </summary>
-/// <returns></returns>
+/// <returns>List of (time, value) dataPoints.</returns>
 list<dataPoint> SensorData::minima_daily() {
 	return _minima_daily;
 }
 
 /// <summary>
-/// List of dataPoints of daily maxima.
+/// List of (time, value) dataPoints of daily maxima.
 /// </summary>
-/// <returns></returns>
+/// <returns>List of (time, value) dataPoints.</returns>
 list<dataPoint> SensorData::maxima_daily() {
 	return _maxima_daily;
 }
@@ -315,23 +315,24 @@ String SensorData::units_html()
 }
 
 /// <summary>
-/// Returns list of 10-min dataPoint as delimited string.
+/// Returns list of 10-min dataPoints as delimited string.
 /// </summary>
-/// <returns>String</returns>
+/// <returns>List of 10-min dataPoints as delimited string.</returns>
 String SensorData::data_10_min_string_delim()
 {
 	return listToString_dataPoints(_data_10_min);
 }
 
 /// <summary>
-/// Returns list of 10-min dataPoint as delimited string.
+/// Returns list of 10-min dataPoints as delimited string.
 /// </summary>
-/// <param name="isConvertZeroToEmpty">Set to true to convert zero to empty string.</param>
+/// <param name="isConvertZeroToEmpty">
+/// Set to true to convert zero to empty string.</param>
 /// <param name="decimalPlaces">Decimal places in numbers.</param>
-/// <returns></returns>
+/// <returns>List of 10-min dataPoints as delimited string.</returns>
 String SensorData::data_10_min_string_delim(
 	bool isConvertZeroToEmpty,
-	int decimalPlaces)
+	unsigned int decimalPlaces)
 {
 	return listToString_dataPoints(_data_10_min,
 		isConvertZeroToEmpty,
@@ -341,20 +342,21 @@ String SensorData::data_10_min_string_delim(
 /// <summary>
 /// Returns list of 60-min dataPoint as delimited string.
 /// </summary>
-/// <returns>String</returns>
+/// <returns>List of 60-min dataPoints as delimited string.</returns>
 String SensorData::data_60_min_string_delim()
 {
 	return listToString_dataPoints(_data_60_min);
 }
+
 /// <summary>
 /// Returns list of 60-min dataPoint as delimited string.
 /// </summary>
 /// <param name="isConvertZeroToEmpty">Set to true to convert zero to empty string.</param>
 /// <param name="decimalPlaces">Decimal places in numbers.</param>
-/// <returns></returns>
+/// <returns>List of 60-min dataPoints as delimited string.</returns>
 String SensorData::data_60_min_string_delim(
 	bool isConvertZeroToEmpty,
-	int decimalPlaces)
+	unsigned int decimalPlaces)
 {
 	return 	listToString_dataPoints(_data_60_min,
 		isConvertZeroToEmpty,

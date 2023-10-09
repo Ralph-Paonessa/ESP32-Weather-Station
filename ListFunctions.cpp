@@ -23,10 +23,14 @@ void ListFunctions::addToList(list<dataPoint>& targetList, dataPoint dp, int num
 }
 
 /// <summary>
-/// Returns the average of the last values of members of a dataPoint list.
+/// Returns the average of the end values of members 
+/// of a dataPoint list.
 /// </summary>
-/// <param name="targetList">The list of dataPoint to average.</param>
-/// <param name="numToAverage">The number of elements at the end of the list to average.</param>
+/// <param name="targetList">
+/// The list of dataPoint to average.</param>
+/// <param name="numToAverage">
+/// The number of elements at the end of the list to average.
+/// </param>
 /// <returns>Average.</returns>
 float ListFunctions::listAverage(list<dataPoint>& targetList, int numToAverage) {
 	// Ensure we don't iterate past the first element.
@@ -93,15 +97,19 @@ String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList)
 }
 
 /// <summary>
-/// Converts a list of dataPoint to a string of "time, value" pairs delimited by "~".
+/// Converts a list of dataPoints to a string of 
+/// comma-separated "time,value" pairs delimited by "~".
 /// </summary>
-/// <param name="targetList">List of dataPoint.</param>
-/// <param name="isConvertZeroToEmpty">Set true to convert zero value to empty string.</param>
+/// <param name="targetList">List of dataPoints.</param>
+/// <param name="isConvertZeroToEmpty">
+/// Set true to convert zero value to empty string.</param>
 /// <param name="decimalPlaces">Decimal places to display.</param>
-/// <returns></returns>
-String ListFunctions::listToString_dataPoints(list<dataPoint> targetList,
+/// <returns>
+/// Comma-separated "time,value" pairs delimited by "~"</returns>
+String ListFunctions::listToString_dataPoints(
+	list<dataPoint> targetList,
 	bool isConvertZeroToEmpty,
-	int decimalPlaces)
+	unsigned int decimalPlaces)
 {
 	String s = "";
 	if (targetList.size() == 0) {
