@@ -17,10 +17,10 @@ namespace App_Settings {
 	const float BASE_PERIOD_SEC = 4;	// Period to sample anemometer rotations (sec).
 
 	/* GPS sync parameters */
-	const int	GPS_SATELLITES_REQUIRED = 3;
-	const int	GPS_CYCLES_FOR_SYNC = 4;		// Minimum GPS cycles before saving data.
-	const int	GPS_DELAY_BETWEEN_CYCLES = 10;	// Delay before getting another GPS fix, sec.
-	const float GPS_MAX_ALLOWED_HDOP = 2.5;		// Minimum HDOP precision required before syncing.
+	const int	GPS_SATELLITES_REQUIRED = 6;
+	const int	GPS_CYCLES_FOR_SYNC = 5;		// Minimum GPS cycles before saving data.
+	const int	GPS_DELAY_BETWEEN_CYCLES = 15;	// Delay before getting another GPS fix, sec.
+	const float GPS_MAX_ALLOWED_HDOP = 1.5;		// Minimum HDOP precision required before syncing.
 
 	const int	UTC_OFFSET_HOURS = -8;
 	const bool	IS_DAYLIGHT_TIME = true;
