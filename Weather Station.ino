@@ -79,7 +79,7 @@ bool _isDEBUG_ListLittleFS = false;		// List contents of LittleFS.
 bool _isDEBUG_BypassWebServer = false;	// Bypass Web Server.
 bool _isDEBUG_Test_setup = false;		// Run only test code inserted in Setup.
 bool _isDEBUG_Test_loop = false;		// Run test code inserted in Loop.
-bool _isDEBUG_addDummyData = true;		// Add dummy data.
+bool _isDEBUG_addDummyData = false;		// Add dummy data.
 bool _isDEBUG_addDummyReadings = true;	// Add dummy sensor reading values.
 bool _isDEBUG_AddDelayInLoop = false;	// Add delay in loop.
 const int _LOOP_DELAY_DEBUG_ms = 100;	// Debug delay in loop, msec.
@@ -2012,32 +2012,15 @@ void readSensors(bool isAddDummyReadings) {
 		readSensors();
 	}
 	else {
+		float dumVal = 0;
+		unsigned int readsIn_10_min = 600 / BASE_PERIOD_SEC;
+		// In 10-min, want to rise by 30. Values read every 4 sec.
+		float increment = 30. / readsIn_10_min;
+		//dumVal = dummy_T.risingVal(5, 90. / seconds);
+		d_Temp_F.addReading(now(), dummy_T.risingVal(3, 0.1));
 
-
+		d_IRSky_C.addReading(now(), dummy_IR.risingVal(-25, 0.005));
 	}
-
-	unsigned long timeStart = millis();
-	// Temperature.
-	d_Temp_F.addReading(now(), reading_Temp_F_DS18B20());	// temperature
-	// UV readings.
-	d_UVA.addReading(now(), sensor_UV.uva());
-	d_UVB.addReading(now(), sensor_UV.uvb());
-	d_UVIndex.addReading(now(), sensor_UV.index());
-	// P, RH
-	d_RH.addReading(now(), sensor_PRH.readHumidity());				// RH.
-	d_Pres_mb.addReading(now(), sensor_PRH.readPressure() / 100);	// Raw pressure in mb (hectopascals)
-	d_Temp_for_RH_C.addReading(now(), sensor_PRH.readTemperature());// Temp (C) of P, RH sensor.
-	float psl = pressureAtSeaLevel(
-		d_Pres_mb.valueLastAdded(),
-		gps.data.altitude(),
-		d_Temp_for_RH_C.valueLastAdded());
-	d_Pres_seaLvl_mb.addReading(now(), psl);
-	// IR sky
-	d_IRSky_C.addReading(now(), sensor_IR.readObjectTempC());
-	// Insolation/
-	float insol_norm = insol_norm_pct(readInsol_mV(), INSOL_REFERENCE_MAX);
-	d_Insol.addReading(now(), insol_norm);							// % Insolation
-	unsigned int timeEnd = millis() - timeStart;
 }
 
 /// <summary>
@@ -2235,15 +2218,15 @@ void setup() {
 		addDummyData();
 	}
 
-	if (_isDEBUG_addDummyReadings) {
+	/*if (_isDEBUG_addDummyReadings) {
 		float dumVal = 0;
 		unsigned int seconds = BASE_PERIOD_SEC * SECONDS_PER_HOUR * 5;
-		dumVal = dummy_T.risingVal(5, 90 / seconds);
+		dumVal = dummy_T.risingVal(5, 90. / seconds);
 		d_Temp_F.addReading(now(), dumVal);
 
-		d_IRSky_C.addReading(now(), dummy_IR.risingVal(-25, ));
+		d_IRSky_C.addReading(now(), dummy_IR.risingVal(-25, 90 / (seconds * 5)));
 
-	}
+	}*/
 
 
 	if (_isDEBUG_Test_setup) {
@@ -2328,7 +2311,7 @@ void loop() {
 		readWind();
 		readFan();
 		// Read data for other sensors.
-		readSensors();
+		readSensors(_isDEBUG_addDummyReadings);
 		portENTER_CRITICAL_ISR(&timerMux_base);
 		_countInterrupts_base--;	// Base timer interrupt handled.
 		portEXIT_CRITICAL_ISR(&timerMux_base);
