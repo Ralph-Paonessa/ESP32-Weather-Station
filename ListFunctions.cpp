@@ -12,11 +12,26 @@ using std::list;
 /// Adds dataPoint to list and limits list size. (If adding 
 /// creates too many elements, the first element is removed.)
 /// </summary>
-/// <param name="targetList">dataPoint List to add to.</param>
+/// <param name="targetList">List of dataPoints to add to.</param>
 /// <param name="dp">dataPoint to add.</param>
 /// <param name="numElements">Maximum allowed elements in list.</param>
 void ListFunctions::addToList(list<dataPoint>& targetList, dataPoint dp, int numElements) {
 	targetList.push_back(dp);		// Add to list (raw).
+	if (targetList.size() > numElements) {
+		targetList.pop_front();		// If too many, remove the first.
+	}
+}
+
+/// <summary>
+/// Adds values to list and limits list size. (If adding 
+/// creates too many elements, the first element is removed.)
+/// </summary>
+/// <param name="targetList">List of values to add to.</param>
+/// <param name="val">Value to add.</param>
+/// <param name="numElements">Maximum allowed elements in list.</param>
+void ListFunctions::addToList(list<float>& targetList, float val, int numElements)
+{
+	targetList.push_back(val);		// Add value to list.
 	if (targetList.size() > numElements) {
 		targetList.pop_front();		// If too many, remove the first.
 	}

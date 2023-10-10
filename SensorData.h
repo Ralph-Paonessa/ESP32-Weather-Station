@@ -35,6 +35,9 @@ protected:		// Protected items are accessible by inherited classes.
 	float _avg_10_min = 0;			// Average over 10 min.
 	float _avg_60_min = 0;			// Average over 60 min.
 
+	float _avgSmoothed = 0;			// Avg of the last few readings (for smoothing).
+	list<float> _valuesToSmooth;	// List of recent values to average for smoothing.
+
 	dataPoint _min;					// Data point with today's time and minimum value. 
 	dataPoint _max;					// Data point with today's time and maximum value.
 

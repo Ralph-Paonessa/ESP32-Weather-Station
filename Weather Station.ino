@@ -1070,25 +1070,25 @@ String processor(const String& var) {
 	///  Weather data daily minima.  ///////////////////
 
 	if (var == "TEMPERATURE_F_LO") {
-		return String(d_Temp_F.max().value, 0);
+		return String(d_Temp_F.min().value, 0);
 	}
 	if (var == "WIND_SPEED_LO") {
-		return String(windSpeed.max().value, 0);	// 10-min avg
+		return String(windSpeed.min().value, 0);	// 10-min avg
 	}
 	if (var == "WIND_GUST_LO") {
-		return String(windSpeed.max().value, 0);
+		return String(windSpeed.min().value, 0);
 	}
 	if (var == "WIND_ANGLE_LO") {
 		return "??";		// avg since last cleared (<= 10 min)
 	}
 	if (var == "PRESSURE_MB_SL_LO") {
-		return String(d_Pres_seaLvl_mb.max().value, 0);
+		return String(d_Pres_seaLvl_mb.min().value, 0);
 	}
 	if (var == "REL_HUMIDITY_LO") {
-		return String(d_RH.max().value, 0);
+		return String(d_RH.min().value, 0);
 	}
 	if (var == "IR_T_SKY_LO") {
-		return String(d_IRSky_C.max().value, 0);
+		return String(d_IRSky_C.min().value, 0);
 	}
 
 
