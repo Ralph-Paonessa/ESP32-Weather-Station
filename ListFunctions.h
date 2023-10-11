@@ -46,8 +46,22 @@ namespace ListFunctions {
 	/// <param name="numToAverage">
 	/// The number of elements at the end of the list to average.
 	/// </param>
-	/// <returns>Average.</returns>
+	/// <returns>Average value.</returns>
 	float listAverage(list<dataPoint>& targetList, int numElements);
+
+
+	/// <summary>
+	/// Returns the average of the last values of members 
+	/// of a list of values.
+	/// </summary>
+	/// <param name="targetList">
+	/// The list of values to average.</param>
+	/// <param name="numToAverage">
+	/// The number of elements at the end of the list to average.
+	/// </param>
+	/// <returns>Average value.</returns>
+	float listAverage(list<float>& targetList, int numElements);
+
 
 	float listMaximum(list<dataPoint>& targetList, int numElements);
 

@@ -46,7 +46,7 @@ void ListFunctions::addToList(list<float>& targetList, float val, int numElement
 /// <param name="numToAverage">
 /// The number of elements at the end of the list to average.
 /// </param>
-/// <returns>Average.</returns>
+/// <returns>Average value.</returns>
 float ListFunctions::listAverage(list<dataPoint>& targetList, int numToAverage) {
 	// Ensure we don't iterate past the first element.
 	if (numToAverage > targetList.size()) {
@@ -63,6 +63,35 @@ float ListFunctions::listAverage(list<dataPoint>& targetList, int numToAverage) 
 	}
 	return total / numToAverage;
 }
+
+/// <summary>
+/// Returns the average of the end values of members 
+/// of a dataPoint list.
+/// </summary>
+/// <param name="targetList">
+/// The list of dataPoint to average.</param>
+/// <param name="numToAverage">
+/// The number of elements at the end of the list to average.
+/// </param>
+/// <returns>Average value.</returns>
+float ListFunctions::listAverage(list<float>& targetList, int numToAverage) {
+	// Ensure we don't iterate past the first element.
+	if (numToAverage > targetList.size()) {
+		numToAverage = targetList.size();
+	}
+	// Iterate through the last (most recent) elements.
+	auto it = targetList.rbegin();	// Reverse iterator to last element.
+	float total = 0;
+	for (int i = 0; i < numToAverage; i++)
+	{		
+		total += *it;
+		it++;
+	}
+	return total / numToAverage;
+}
+
+
+
 
 /// <summary>
 /// Returns the largest value of a list of dataPoint from the last numElements.

@@ -18,7 +18,9 @@ using std::list;
 using namespace ListFunctions;
 using namespace App_Settings;
 
-// Base class to to inherit to record and process sensor data.
+/// <summary>
+/// Exposes methods to read and process sensor data.
+/// </summary>
 class SensorData {
 
 protected:		// Protected items are accessible by inherited classes.
@@ -30,28 +32,44 @@ protected:		// Protected items are accessible by inherited classes.
 	dataPoint _dataLastRead;		// Data point (time, value) of most recent reading.
 
 	float _sumReadings;				// Accumulating sum of readings.
-	int _countReadings;				// Number of readings since initialization.
+	unsigned int _countRead;		// Number of readings in average.
+
+	float _sumSmooth;
+	unsigned int _countSmoothRead = 0;
+
+	// Samples required for smoothing avg.
+	const unsigned int COUNT_FOR_SMOOTH = 10;
 
 	float _avg_10_min = 0;			// Average over 10 min.
 	float _avg_60_min = 0;			// Average over 60 min.
 
+	void process_Smoothing_MinMax(unsigned long time, float value);
+
 	float _avgSmoothed = 0;			// Avg of the last few readings (for smoothing).
 	list<float> _valuesToSmooth;	// List of recent values to average for smoothing.
 
-	dataPoint _min;					// Data point with today's time and minimum value. 
-	dataPoint _max;					// Data point with today's time and maximum value.
+	const float VAL_LIMIT = 999999;	// No sensor value will ever be greater.
 
+	dataPoint _minDP = dataPoint(0, -VAL_LIMIT);	// dp (time, min val). 
+	dataPoint _maxDP = dataPoint(0, VAL_LIMIT);		// dp (time, max val). 
+		
 	/// <summary>
-	/// Clears running average, but leaves data average lists intact.
+	/// Clears running average.
 	/// </summary>
 	void clearAverage();
+
+	/// <summary>
+	/// Clears smoothing average.
+	/// </summary>
+	void clearAverageSmooth();
 
 	/// <summary>
 	/// Clears saved minimum and maximum data points.
 	/// </summary>
 	void clearMinMax();
 
-	bool _isMinMaxRestart = true;	// True if no min or max values have been recorded yet.
+	// True if only a single value so far for min, max.
+	bool _isSingleValForMinMax = true;
 
 	list<dataPoint> _data_10_min;	// List of Data_Points at 10-min intervals.
 	list<dataPoint> _data_60_min;	// List of Data_Points at 60-min intervals.
@@ -63,11 +81,12 @@ public:
 	SensorData();
 
 	/// <summary>
-	/// Adds dataPoint and accumulates average.
+	/// Adds dataPoint, accumulates average, and checks for min, max.
 	/// </summary>
 	/// <param name="time">Reading time, sec.</param>
 	/// <param name="value">Reading value.</param>
 	void addReading(unsigned long time, float value);
+
 
 	/// <summary>
 	/// Saves this data point (time, value) as the 
@@ -76,7 +95,7 @@ public:
 	/// </summary>
 	/// <param name="time">Reading time.</param>
 	/// <param name="value">Reading value.</param>
-	void min_Update(const unsigned long& time, const float& value);
+	dataPoint min_Find(const unsigned long& time, const float& value);
 
 	/// <summary>
 	/// Saves this data point (time, value) as the 
@@ -86,9 +105,8 @@ public:
 	/// <param name="time">Reading time.</param>
 	/// <param name="value">Reading value.</param>
 	/// </summary>
-	/// <param name="time"></param>
-	/// <param name="value"></param>
-	void max_Update(const unsigned long& time, const float& value);
+	/// <returns>Data point with greater value.<returns>
+	dataPoint max_Find(const unsigned long& time, const float& value);
 
 	void process_data_10_min();
 	void process_data_60_min();
@@ -137,7 +155,7 @@ public:
 	list<dataPoint> maxima_daily();
 
 
-	
+
 
 	void addLabels(String label, String labelShort, String units);
 	void addLabels(String label, String labelShort, String units, String units_html);

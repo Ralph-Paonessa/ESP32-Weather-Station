@@ -5,26 +5,24 @@
 #include "SensorData.h"
 
 /// <summary>
-/// Base class to to inherit to record and process sensor data.
+/// Exposes methods to read and process sensor data.
 /// </summary>
 SensorData::SensorData() {
 }
 
 /// <summary>
-/// Adds dataPoint and accumulates average.
+/// Adds dataPoint, accumulates average, and checks for min, max.
 /// </summary>
 /// <param name="time">Reading time, sec.</param>
 /// <param name="value">Reading value.</param>
 void SensorData::addReading(unsigned long time, float value) {
 	_timeLastRead = time;
 	_dataLastRead = dataPoint(time, value);	// save most recent
-	_countReadings++;
+	_countRead++;
 	_sumReadings += value;
-	min_Update(time, value);
-	max_Update(time, value);
-	_isMinMaxRestart = false;
+	// Smooth the data and find min, max.
+	process_Smoothing_MinMax(time, value);	
 }
-
 
 /// <summary>
 /// Saves this data point (time, value) as the 
@@ -33,16 +31,16 @@ void SensorData::addReading(unsigned long time, float value) {
 /// </summary>
 /// <param name="time">Reading time.</param>
 /// <param name="value">Reading value.</param>
-void SensorData::min_Update(const unsigned long& time, const float& value) {
-	if (!_isMinMaxRestart) {
+dataPoint SensorData::min_Find(const unsigned long& time, const float& value) {
+	if (!_isSingleValForMinMax) {
 		// Continue comparisons.
-		if (value < _min.value) {
-			_min = dataPoint(time, value);
+		if (value < _minDP.value) {
+			return dataPoint(time, value);
 		}
 	}
 	else {
 		// Nothing to compare, so start new min.
-		_min = dataPoint(time, value);
+		return dataPoint(time, value);
 	}
 }
 
@@ -53,45 +51,80 @@ void SensorData::min_Update(const unsigned long& time, const float& value) {
 /// </summary>
 /// <param name="time">Reading time.</param>
 /// <param name="value">Reading value.</param>
-void SensorData::max_Update(const unsigned long& time, const float& value) {
-	if (!_isMinMaxRestart) {
+/// <returns>Data point with greater value.<returns>
+dataPoint SensorData::max_Find(const unsigned long& time, const float& value) {
+	if (!_isSingleValForMinMax) {
 		// Continue comparisons.
-		if (value > _max.value) {
-			_max = dataPoint(time, value);
+		if (value > _maxDP.value) {
+			return dataPoint(time, value);
 		}
 	}
 	else {
 		// Nothing to compare, so start new min and max.
-		_max = dataPoint(time, value);
+		return dataPoint(time, value);
 	}
 }
 
 /// <summary>
-/// Clears running average, but leaves data average lists intact.
+/// Smooths the data over several cycles 
+/// and uses this for min, max.
+/// </summary>
+/// <param name="time"></param>
+/// <param name="value"></param>
+void SensorData::process_Smoothing_MinMax(unsigned long time, float value)
+{
+	_countSmoothRead++;
+	if (_countSmoothRead > 1) {
+		// There is more than one reading to compare.
+		_isSingleValForMinMax = false;
+	}
+	_sumSmooth += value;
+	// Average the values over several cycles to 
+	// smooth for min, max.
+	if (_countSmoothRead = COUNT_FOR_SMOOTH) {
+		// Enough values, so use average for finding min, max.
+		float valSmoothed = _sumSmooth / _countSmoothRead;
+		_minDP = min_Find(time, valSmoothed);
+		_maxDP = max_Find(time, valSmoothed);
+		// Restart smoothing.
+		clearAverageSmooth();
+		_isSingleValForMinMax = true;	// Reset.
+	}
+}
+
+/// <summary>
+/// Clears running average.
 /// </summary>
 void SensorData::clearAverage() {
 	_sumReadings = 0;
-	_countReadings = 0;
+	_countRead = 0;
+}
+
+/// <summary>
+/// Clears smoothing average.
+/// </summary>
+void SensorData::clearAverageSmooth() {
+	_sumSmooth = 0;
+	_countSmoothRead = 0;
+	_maxDP = dataPoint(0, VAL_LIMIT);	// start at low limit
+	_minDP = dataPoint(0, -VAL_LIMIT);	// start at high limit
 }
 
 /// <summary>
 /// Reset min and max values.
 /// </summary>
-void SensorData::clearMinMax()
-{
-	_min = 999999;	// readings never higher
-	_max = -999999;	// readings never lower
-	_isMinMaxRestart = true;
+void SensorData::clearMinMax(){
+	_minDP = VAL_LIMIT;		// readings never higher
+	_maxDP = -VAL_LIMIT;	// readings never lower	
 }
 
 /// <summary>
 /// Saves data to 10-min list.
 /// </summary>
 /// <returns></returns>
-void SensorData::process_data_10_min()
-{
+void SensorData::process_data_10_min(){
 	// Avg over last 10 min.
-	_avg_10_min = _sumReadings / _countReadings;
+	_avg_10_min = _sumReadings / _countRead;
 	// Add to 10-min list of observations.
 	addToList(_data_10_min,
 		dataPoint(_timeLastRead, _avg_10_min),
@@ -103,8 +136,7 @@ void SensorData::process_data_10_min()
 /// Saves data to 60-min list.
 /// </summary>
 /// <returns></returns>
-void SensorData::process_data_60_min()
-{
+void SensorData::process_data_60_min(){
 	// Average last 6 x 10 min and add to 60-min list.
 	_avg_60_min = listAverage(_data_10_min, 6);	// Save the latest average.
 	addToList(_data_60_min,
@@ -118,9 +150,10 @@ void SensorData::process_data_60_min()
 /// <returns></returns>
 void SensorData::process_data_day() {
 	// Save list of daily minima and maxima.
-	addToList(_minima_daily, _min, SIZE_DAY_LIST);
-	addToList(_maxima_daily, _max, SIZE_DAY_LIST);
+	addToList(_minima_daily, _minDP, SIZE_DAY_LIST);
+	addToList(_maxima_daily, _maxDP, SIZE_DAY_LIST);
 	clearMinMax();
+	_isSingleValForMinMax = true;
 }
 
 /// <summary>
@@ -156,7 +189,7 @@ float SensorData::avg_60_min()
 /// </summary>
 /// <returns>Today's minimum.</returns>
 dataPoint SensorData::min() {
-	return _min;
+	return _minDP;
 }
 
 /// <summary>
@@ -164,7 +197,7 @@ dataPoint SensorData::min() {
 /// </summary>
 /// <returns>Today's maximum.</returns>
 dataPoint SensorData::max() {
-	return _max;
+	return _maxDP;
 }
 
 
@@ -274,7 +307,7 @@ void SensorData::addDummyData_maxima(float valueStart,
 		timeStart += SECONDS_PER_HOUR;
 	}
 	dataPoint dpMax{ timeStart, valueStart };
-	_max = dpMax;
+	_maxDP = dpMax;
 }
 
 
