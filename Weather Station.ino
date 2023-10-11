@@ -1018,29 +1018,29 @@ String processor(const String& var) {
 	///  Weather data daily maxima.  ///////////////////
 
 	if (var == "TEMPERATURE_F_HI") {
-		return String(d_Temp_F.max().value, 0);
+		return String(d_Temp_F.max_today().value, 0);
 	}
 	if (var == "WIND_SPEED_HI") {
-		return String(windSpeed.max().value, 0);
+		return String(windSpeed.max_today().value, 0);
 	}
 	if (var == "WIND_GUST_HI") {
-		return String(windSpeed.max().value, 0);
+		return String(windSpeed.max_today().value, 0);
 	}
 	if (var == "WIND_ANGLE_HI") {
 		return "??";		// avg since last cleared (<= 10 min)
 	}
 	if (var == "PRESSURE_MB_SL_HI") {
-		return String(d_Pres_seaLvl_mb.max().value, 0);
+		return String(d_Pres_seaLvl_mb.max_today().value, 0);
 	}
 	if (var == "INSOLATION_PERCENT_HI") {
-		return String(d_Insol.max().value, 0);
+		return String(d_Insol.max_today().value, 0);
 	}
 	if (var == "REL_HUMIDITY_HI") {
-		return String(d_RH.max().value, 0);
+		return String(d_RH.max_today().value, 0);
 	}
 	if (var == "UV_A_HI") {
 		if (isGood_UV) {
-			return String(d_UVA.max().value, 0);
+			return String(d_UVA.max_today().value, 0);
 		}
 		else {
 			return String("na");
@@ -1048,7 +1048,7 @@ String processor(const String& var) {
 	}
 	if (var == "UV_B_HI") {
 		if (isGood_UV) {
-			return String(d_UVB.max().value, 0);
+			return String(d_UVB.max_today().value, 0);
 		}
 		else {
 			return String("na");
@@ -1056,39 +1056,39 @@ String processor(const String& var) {
 	}
 	if (var == "UV_INDEX_HI") {
 		if (isGood_UV) {
-			return String(d_UVIndex.max().value, 1);
+			return String(d_UVIndex.max_today().value, 1);
 		}
 		else {
 			return String("na");
 		}
 	}
 	if (var == "IR_T_SKY_HI") {
-		return String(d_IRSky_C.max().value, 0);
+		return String(d_IRSky_C.max_today().value, 0);
 	}
 
 
 	///  Weather data daily minima.  ///////////////////
 
 	if (var == "TEMPERATURE_F_LO") {
-		return String(d_Temp_F.min().value, 0);
+		return String(d_Temp_F.min_today().value, 0);
 	}
 	if (var == "WIND_SPEED_LO") {
-		return String(windSpeed.min().value, 0);	// 10-min avg
+		return String(windSpeed.min_today().value, 0);	// 10-min avg
 	}
 	if (var == "WIND_GUST_LO") {
-		return String(windSpeed.min().value, 0);
+		return String(windSpeed.min_today().value, 0);
 	}
 	if (var == "WIND_ANGLE_LO") {
 		return "??";		// avg since last cleared (<= 10 min)
 	}
 	if (var == "PRESSURE_MB_SL_LO") {
-		return String(d_Pres_seaLvl_mb.min().value, 0);
+		return String(d_Pres_seaLvl_mb.min_today().value, 0);
 	}
 	if (var == "REL_HUMIDITY_LO") {
-		return String(d_RH.min().value, 0);
+		return String(d_RH.min_today().value, 0);
 	}
 	if (var == "IR_T_SKY_LO") {
-		return String(d_IRSky_C.min().value, 0);
+		return String(d_IRSky_C.min_today().value, 0);
 	}
 
 
@@ -1612,7 +1612,7 @@ void serverRouteHandler() {
 			});
 
 
-		// 60-min charts
+		// Daily minima charts
 		server.on("/data_60", HTTP_GET,
 			[](AsyncWebServerRequest* request) {
 				// Which chart?
@@ -1655,9 +1655,6 @@ void serverRouteHandler() {
 			});
 
 
-
-
-
 		// Daily maxima charts.
 		server.on("/data_max", HTTP_GET,
 			[](AsyncWebServerRequest* request) {
@@ -1668,32 +1665,31 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", "");
 					break;
 				case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.maxima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_Insol.maxima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.maxima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_IRSky_C.maxima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_TEMPERATURE_F:
-					//request->send_P(200, "text/plain", d_Temp_F.maxima_daily_string_delim(false, 0).c_str());
-					request->send_P(200, "text/plain", d_Temp_F.maxima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_Temp_F.maxima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.maxima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.maxima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.maxima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_RH.maxima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.maxima_daily_string_delim(false, 1).c_str());
+					request->send_P(200, "text/plain", d_UVIndex.maxima_byDay_string_delim(false, 1).c_str());
 					break;
 				case CHART_WIND_DIRECTION:
-					request->send_P(200, "text/plain", windDir.maxima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", windDir.maxima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.maxima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", windSpeed.maxima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windSpeed.maxima_daily_string_delim(true, 0).c_str());
+					request->send_P(200, "text/plain", windSpeed.maxima_byDay_string_delim(true, 0).c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");
@@ -1712,32 +1708,32 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", "");
 					break;
 				case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.minima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_Insol.minima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.minima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_IRSky_C.minima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_TEMPERATURE_F:
-					//request->send_P(200, "text/plain", d_Temp_F.minima_daily_string_delim(false, 0).c_str());
-					request->send_P(200, "text/plain", d_Temp_F.minima_daily_string_delim(false, 0).c_str());
+					//request->send_P(200, "text/plain", d_Temp_F.minima_byDay_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_Temp_F.minima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.minima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.minima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.minima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_RH.minima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.minima_daily_string_delim(false, 1).c_str());
+					request->send_P(200, "text/plain", d_UVIndex.minima_byDay_string_delim(false, 1).c_str());
 					break;
 				case CHART_WIND_DIRECTION:
-					request->send_P(200, "text/plain", windDir.minima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", windDir.minima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.minima_daily_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", windSpeed.minima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windSpeed.minima_daily_string_delim(true, 0).c_str());
+					request->send_P(200, "text/plain", windSpeed.minima_byDay_string_delim(true, 0).c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");
@@ -2012,14 +2008,10 @@ void readSensors(bool isAddDummyReadings) {
 		readSensors();
 	}
 	else {
-		float dumVal = 0;
-		unsigned int readsIn_10_min = 600 / BASE_PERIOD_SEC;
-		// In 10-min, want to rise by 30. Values read every 4 sec.
-		float increment = 30. / readsIn_10_min;
-		//dumVal = dummy_T.risingVal(5, 90. / seconds);
+		
 		d_Temp_F.addReading(now(), dummy_T.risingVal(3, 0.1));
 
-		d_IRSky_C.addReading(now(), dummy_IR.risingVal(-25, 0.005));
+		//d_IRSky_C.addReading(now(), dummy_IR.risingVal(-25, 0.005));
 	}
 }
 
@@ -2368,8 +2360,8 @@ void loop() {
 
 
 		//// LOG EXTREMA -- NEED STRING LISTS!
-		d_Temp_F.maxima_daily(); // XXX Not STRING!
-		d_Temp_F.minima_daily();
+		d_Temp_F.maxima_dayList(); // XXX Not STRING!
+		d_Temp_F.minima_dayList();
 
 
 

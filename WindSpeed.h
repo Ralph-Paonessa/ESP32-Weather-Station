@@ -40,7 +40,7 @@ private:
 	/// <summary>
 	/// Reset min and max values.
 	/// </summary>
-	void clearMinMax();
+	void clearMinMax_today();
 
 	float _gust_last_10_min;	// Gust that occurred in last 10 min.
 	float _gust_last_60_min;	// Gust that occurred in last 60 min.

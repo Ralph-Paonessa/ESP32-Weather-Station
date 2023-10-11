@@ -17,7 +17,7 @@ WindSpeed::WindSpeed(float calibrationFactor)
 /// <summary>
 /// Reset accumulate min and max.
 /// </summary>
-void WindSpeed::clearMinMax() {
+void WindSpeed::clearMinMax_today() {
 	_speedMax_10_min = 0;
 	_speedMin_10_min = MIN_SPEED_LIMIT;
 }
@@ -30,7 +30,7 @@ void WindSpeed::process_gusts_10_min() {
 		_speedMax_10_min,
 		_speedMin_10_min);
 	clearAverage();	// Start another 10-min cycle.	
-	clearMinMax();
+	clearMinMax_today();
 }
 
 /// <summary>

@@ -9,7 +9,7 @@
 SensorDummy::SensorDummy() {}
 
 
-float SensorDummy::randomValue(unsigned long seed, float max, float min)
+float SensorDummy::randomValue(unsigned long seed, float max, float min_today)
 {
 	// Generate a dummy reading value based on input criteria.
 	srand(seed);

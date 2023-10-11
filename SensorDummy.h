@@ -24,7 +24,7 @@ public:
 	// Constructor
 	SensorDummy();
 
-	float randomValue(unsigned long seed, float max, float min);
+	float randomValue(unsigned long seed, float max, float min_today);
 
 	float risingVal(float initialVal, float increment);
 };
