@@ -138,7 +138,12 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 /// </summary>
 void GPSModule::addDummyGpsData() {
 	data._altitude = 1234.;	// Dummy altitude (need for P at sea level)
-	setTime(23, 45, 0, 4, 7, 2099);	// Dummy time 3:30:00 7/4/2099.
+	setTime(GPS_DUMMY_HOUR, 
+		GPS_DUMMY_MIN, 
+		GPS_DUMMY_SEC, 
+		GPS_DUMMY_DAY, 
+		GPS_DUMMY_MONTH, 
+		GPS_DUMMY_YEAR);
 }
 
 /// <summary>

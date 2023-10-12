@@ -1077,31 +1077,16 @@ void catchUnhandledBaseTimerInterrupts() {
 	}
 }
 
-/// <summary>
-/// Adds simulate wind sensor readings.
-/// </summary>
-void readWind_Simulate() {
-	unsigned int rots = dummy_anemCount.sawtooth(30, 0.05, 300);
-	windSpeed.addReading(dataPoint(now(), rots));
-	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);
-
-	// Read wind direction.
-	float windAngle = dummy_windDir.sawtooth(90, 1, 360);
-	windDir.addReading(now(), windAngle, speed);	// weighted by speed
-}
 
 
 /// <summary>
 /// Reads and saves wind speed, gusts, and direction.
 /// </summary>
 void readWind() {
-	// Read wind speed.
-
-	if (_isDEBUG_simulateReadings)
-	{
+	if (_isDEBUG_simulateReadings) {
 		readWind_Simulate();
 	}
-
+	// Read wind speed.
 	windSpeed.addReading(dataPoint(now(), _anem_Rotations));
 	float speed = windSpeed.speedInstant(_anem_Rotations, BASE_PERIOD_SEC);
 
@@ -1114,6 +1099,20 @@ void readWind() {
 	_anem_Rotations = 0;	// Reset anemometer count.
 	portEXIT_CRITICAL_ISR(&hardwareMux_anem);
 }
+
+/// <summary>
+/// Adds simulate wind sensor readings.
+/// </summary>
+void readWind_Simulate() {
+	unsigned int rots = dummy_anemCount.sawtooth(30, 0.05, 300);
+	windSpeed.addReading(dataPoint(now(), rots));
+	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);
+
+	//// Read wind direction.
+	//float windAngle = dummy_windDir.sawtooth(90, 1, 360);
+	//windDir.addReading(now(), windAngle, speed);	// weighted by speed
+}
+
 
 /// <summary>
 /// Reads and saves fan speed.
@@ -1137,40 +1136,40 @@ void readSensors() {
 		readSensors_Simulate();
 		return;
 	}
-	dataPoint dp;	// holds reading
-	// Temperature.
-	dp = dataPoint(now(), reading_Temp_F_DS18B20());
-	d_Temp_F.addReading(dp);
-	// UV readings.
-	dp = dataPoint(now(), sensor_UV.uva());
-	d_UVA.addReading(dp);
-	dp = dataPoint(now(), sensor_UV.uvb());
-	d_UVB.addReading(dp);
-	dp = dataPoint(now(), sensor_UV.index());
-	d_UVIndex.addReading(dp);
-	// P, RH
-	dp = dataPoint(now(), sensor_PRH.readHumidity());
-	d_RH.addReading(dp);
-	dp = dataPoint(now(), sensor_PRH.readPressure() / 100);
-	d_Pres_mb.addReading(dp);			// Raw pressure in mb (hectopascals)
-	dp = dataPoint(now(), sensor_PRH.readTemperature());
-	d_Temp_for_RH_C.addReading(dp);		// Temp (C) of P, RH sensor.
-	// P adjusted to sea level.
-	float psl = pressureAtSeaLevel(
-		d_Pres_mb.valueLastAdded(),
-		gps.data.altitude(),
-		d_Temp_for_RH_C.valueLastAdded());
-	dp = dataPoint(now(), psl);
-	d_Pres_seaLvl_mb.addReading(dp);
-	// IR sky
-	dp = dataPoint(now(), sensor_IR.readObjectTempC());
-	d_IRSky_C.addReading(dp);
-	// Insolation/
-	float insol_norm = insol_norm_pct(readInsol_mV(), INSOL_REFERENCE_MAX);
-	dp = dataPoint(now(), insol_norm);
-	d_Insol.addReading(dp);	// % Insolation
+	//dataPoint dp;	// holds reading
+	//// Temperature.
+	//dp = dataPoint(now(), reading_Temp_F_DS18B20());
+	//d_Temp_F.addReading(dp);
+	//// UV readings.
+	//dp = dataPoint(now(), sensor_UV.uva());
+	//d_UVA.addReading(dp);
+	//dp = dataPoint(now(), sensor_UV.uvb());
+	//d_UVB.addReading(dp);
+	//dp = dataPoint(now(), sensor_UV.index());
+	//d_UVIndex.addReading(dp);
+	//// P, RH
+	//dp = dataPoint(now(), sensor_PRH.readHumidity());
+	//d_RH.addReading(dp);
+	//dp = dataPoint(now(), sensor_PRH.readPressure() / 100);
+	//d_Pres_mb.addReading(dp);			// Raw pressure in mb (hectopascals)
+	//dp = dataPoint(now(), sensor_PRH.readTemperature());
+	//d_Temp_for_RH_C.addReading(dp);		// Temp (C) of P, RH sensor.
+	//// P adjusted to sea level.
+	//float psl = pressureAtSeaLevel(
+	//	d_Pres_mb.valueLastAdded(),
+	//	gps.data.altitude(),
+	//	d_Temp_for_RH_C.valueLastAdded());
+	//dp = dataPoint(now(), psl);
+	//d_Pres_seaLvl_mb.addReading(dp);
+	//// IR sky
+	//dp = dataPoint(now(), sensor_IR.readObjectTempC());
+	//d_IRSky_C.addReading(dp);
+	//// Insolation/
+	//float insol_norm = insol_norm_pct(readInsol_mV(), INSOL_REFERENCE_MAX);
+	//dp = dataPoint(now(), insol_norm);
+	//d_Insol.addReading(dp);	// % Insolation
 
-	unsigned int timeEnd = millis() - timeStart;
+	//unsigned int timeEnd = millis() - timeStart;
 }
 
 /// <summary>

@@ -26,6 +26,14 @@ namespace App_Settings {
 	const int	GPS_DELAY_BETWEEN_CYCLES = 15;	// Delay before getting another GPS fix, sec.
 	const float GPS_MAX_ALLOWED_HDOP = 1.5;		// Minimum HDOP precision required before syncing.
 
+
+	const int	GPS_DUMMY_HOUR = 23;
+	const int	GPS_DUMMY_MIN = 55;
+	const int	GPS_DUMMY_SEC = 0;
+	const int	GPS_DUMMY_DAY = 1;
+	const int	GPS_DUMMY_MONTH = 1;
+	const int	GPS_DUMMY_YEAR = 2099;
+
 	const int	UTC_OFFSET_HOURS = -8;
 	const bool	IS_DAYLIGHT_TIME = true;
 
