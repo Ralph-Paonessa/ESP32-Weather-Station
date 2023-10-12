@@ -80,7 +80,7 @@ bool _isDEBUG_BypassWebServer = false;	// Bypass Web Server.
 bool _isDEBUG_Test_setup = false;		// Run only test code inserted in Setup.
 bool _isDEBUG_Test_loop = false;		// Run test code inserted in Loop.
 bool _isDEBUG_addDummyData = false;		// Add dummy data.
-bool _isDEBUG_addDummyReadings = true;	// Add dummy sensor reading values.
+bool _isDEBUG_simulateReadings = true;	// Add dummy sensor reading values.
 bool _isDEBUG_AddDelayInLoop = false;	// Add delay in loop.
 const int _LOOP_DELAY_DEBUG_ms = 100;	// Debug delay in loop, msec.
 /************************************************************/
@@ -342,7 +342,7 @@ bool wifiConnect(unsigned int timeout_sec) {
 		) {
 		// Trying to connect ...
 	}
-	String msg = "WiFi connected in ";
+	String msg = "WiFi connection required ";
 	msg += String((millis() - timeStart) / 1000.) + "s";
 	sd.logStatus(msg);
 	return  WiFi.isConnected();
@@ -601,8 +601,8 @@ void logDebugStatus() {
 	if (_isDEBUG_addDummyData) {
 		sd.logStatus_indent("ADD DUMMY DATA");
 	}
-	if (_isDEBUG_addDummyReadings) {
-		sd.logStatus_indent("ADD DUMMY READINGS");
+	if (_isDEBUG_simulateReadings) {
+		sd.logStatus_indent("USE DUMMY DATA FOR SENSOR READINGS");
 	}
 	if (_isDEBUG_AddDelayInLoop) {
 		String msg = String(_LOOP_DELAY_DEBUG_ms);
@@ -1911,7 +1911,7 @@ void catchUnhandledBaseTimerInterrupts() {
 /// <param name="val">Value to add.</param>
 void readSensors_dummy(float val) {
 	// Temperature.
-	d_Temp_F.addReading(now(), val);	// temperature
+	d_Temp_F.addReading(dataPoint(now(), val));	// temperature
 }
 
 /// <summary>
@@ -1931,7 +1931,7 @@ void readWind() {
 	*/
 	int rots = _anem_Rotations;
 
-	windSpeed.addReading(now(), _anem_Rotations);
+	windSpeed.addReading(dataPoint(now(), _anem_Rotations));
 	float speed = windSpeed.speedInstant(_anem_Rotations, BASE_PERIOD_SEC);
 
 	// Read wind direction (average over 0-360 deg).
@@ -1963,7 +1963,7 @@ void readWind() {
 /// </summary>
 void readFan() {
 	// Get fan speed.
-	d_fanRPM.addReading(now(), fanRPM(_fanHalfRots, BASE_PERIOD_SEC));
+	d_fanRPM.addReading(dataPoint(now(), fanRPM(_fanHalfRots, BASE_PERIOD_SEC)));
 	// Reset hardware interrupt count.
 	portENTER_CRITICAL(&hardwareMux_fan);
 	_fanHalfRots = 0;		// Reset fan rotations.		
@@ -1973,46 +1973,54 @@ void readFan() {
 /// <summary>
 /// Reads and saves data from sensors.
 /// </summary>
-void readSensors() {
+void readSensors(bool _isSimulateReadings = false) {
 	unsigned long timeStart = millis();
+	if (_isSimulateReadings)	{
+		// Simulate sensor readings.
+		sensorsAddDummyData();
+		return;
+	}
+	dataPoint dp;	// holds reading
 	// Temperature.
-	d_Temp_F.addReading(now(), reading_Temp_F_DS18B20());	// temperature
+	dp = dataPoint(now(), reading_Temp_F_DS18B20());
+	d_Temp_F.addReading(dp);
 	// UV readings.
-	d_UVA.addReading(now(), sensor_UV.uva());
-	d_UVB.addReading(now(), sensor_UV.uvb());
-	d_UVIndex.addReading(now(), sensor_UV.index());
+	dp = dataPoint(now(), sensor_UV.uva());
+	d_UVA.addReading(dp);
+	dp = dataPoint(now(), sensor_UV.uvb());
+	d_UVB.addReading(dp);
+	dp = dataPoint(now(), sensor_UV.index());
+	d_UVIndex.addReading(dp);
 	// P, RH
-	d_RH.addReading(now(), sensor_PRH.readHumidity());				// RH.
-	d_Pres_mb.addReading(now(), sensor_PRH.readPressure() / 100);	// Raw pressure in mb (hectopascals)
-	d_Temp_for_RH_C.addReading(now(), sensor_PRH.readTemperature());// Temp (C) of P, RH sensor.
+	dp = dataPoint(now(), sensor_PRH.readHumidity());
+	d_RH.addReading(dp);
+	dp = dataPoint(now(), sensor_PRH.readPressure() / 100);
+	d_Pres_mb.addReading(dp);			// Raw pressure in mb (hectopascals)
+	dp = dataPoint(now(), sensor_PRH.readTemperature());
+	d_Temp_for_RH_C.addReading(dp);		// Temp (C) of P, RH sensor.
+	// P adjusted to sea level.
 	float psl = pressureAtSeaLevel(
 		d_Pres_mb.valueLastAdded(),
 		gps.data.altitude(),
 		d_Temp_for_RH_C.valueLastAdded());
-	d_Pres_seaLvl_mb.addReading(now(), psl);
+	dp = dataPoint(now(), psl);
+	d_Pres_seaLvl_mb.addReading(dp);
 	// IR sky
-	d_IRSky_C.addReading(now(), sensor_IR.readObjectTempC());
+	dp = dataPoint(now(), sensor_IR.readObjectTempC());
+	d_IRSky_C.addReading(dp);
 	// Insolation/
 	float insol_norm = insol_norm_pct(readInsol_mV(), INSOL_REFERENCE_MAX);
-	d_Insol.addReading(now(), insol_norm);							// % Insolation
+	dp = dataPoint(now(), insol_norm);
+	d_Insol.addReading(dp);	// % Insolation
+
 	unsigned int timeEnd = millis() - timeStart;
 }
 
 /// <summary>
-/// Reads and saves data from sensors.
+/// Adds dummy data to sensor readings.
 /// </summary>
-void readSensors(bool isAddDummyReadings) {
-
-	if (!isAddDummyReadings)
-	{
-		readSensors();
-	}
-	else {
-		
-		d_Temp_F.addReading(now(), dummy_T.risingVal(3, 0.1));
-
-		//d_IRSky_C.addReading(now(), dummy_IR.risingVal(-25, 0.005));
-	}
+void sensorsAddDummyData() {
+	d_Temp_F.addReading(dataPoint(now(), dummy_T.risingVal(3, 0.1)));
 }
 
 /// <summary>
@@ -2210,7 +2218,7 @@ void setup() {
 		addDummyData();
 	}
 
-	/*if (_isDEBUG_addDummyReadings) {
+	/*if (_isDEBUG_simulateReadings) {
 		float dumVal = 0;
 		unsigned int seconds = BASE_PERIOD_SEC * SECONDS_PER_HOUR * 5;
 		dumVal = dummy_T.risingVal(5, 90. / seconds);
@@ -2303,7 +2311,7 @@ void loop() {
 		readWind();
 		readFan();
 		// Read data for other sensors.
-		readSensors(_isDEBUG_addDummyReadings);
+		readSensors(_isDEBUG_simulateReadings);
 		portENTER_CRITICAL_ISR(&timerMux_base);
 		_countInterrupts_base--;	// Base timer interrupt handled.
 		portEXIT_CRITICAL_ISR(&timerMux_base);
@@ -2355,28 +2363,10 @@ void loop() {
 		_oldMonth = month();
 		_oldYear = year();
 		sd.logStatus("New day rollover.", gps.dateTime());
-
-
-
-
-		//// LOG EXTREMA -- NEED STRING LISTS!
-		d_Temp_F.maxima_dayList(); // XXX Not STRING!
-		d_Temp_F.minima_dayList();
-
-
-
 	}
-	else {
-		// SAME DAY.
-		// Update summary of today's data.
+	
 
-
-
-
-
-	}
-
-	/// ==========  CHECK FOR LOST WIFI CONNECTION  ========== //
+	/// ==========  TEST FOR LOST WIFI CONNECTION  ========== //
 	/*
 	If WiFi is lost, we're screwed because the time
 	to reconnect may throw of the sensor read timings.

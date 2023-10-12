@@ -63,7 +63,8 @@ void WindDirection::clearAverage() {
 /// <param name="degrees">Wind direction (uncorrected), deg.</param>
 /// <param name="speed">Speed at time of reading, mph.</param>
 void WindDirection::addReading(long time, float degrees, float speed) {
-	_timeLastRead = time;
+	_dataLastAdded = dataPoint(time, degrees);
+	///////////_timeLastAdded = time;
 	// Only record direction for speeds greater than threshold.
 	if (speed >= WIND_DIRECTION_SPEED_THRESHOLD) {
 		degrees -= _offsetAngle;	// Adjust for any offset.

@@ -75,7 +75,7 @@ void WindSpeed::addGust_10_min(list<dataPoint>& targetList, float max, float min
 	}
 	// Add gust to 10-min gust list.
 	_gust_last_10_min = gust;
-	addToList(targetList, dataPoint(_timeLastRead, gust), SIZE_10_MIN_LIST);
+	addToList(targetList, dataPoint(_dataLastAdded.time, gust), SIZE_10_MIN_LIST);
 }
 
 /// <summary>

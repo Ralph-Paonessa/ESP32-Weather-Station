@@ -28,8 +28,8 @@ protected:		// Protected items are accessible by inherited classes.
 	String _label, _labelShort;		// Identifying info.
 	String _units, _units_html;		// Units used.
 
-	long _timeLastRead;				// Time of most recent reading.
-	dataPoint _dataLastRead;		// Data point (time, value) of most recent reading.
+	//long _timeLastAdded;			// Time of most recent reading.
+	dataPoint _dataLastAdded;		// Data point (time, value) of most recent reading.
 
 	float _sumReadings;				// Accumulating sum of readings.
 	unsigned int _countRead;		// Number of readings in average.
@@ -74,12 +74,8 @@ public:
 	// Constructor.
 	SensorData();
 
-	/// <summary>
-	/// Adds dataPoint, accumulates average, and checks for min, max.
-	/// </summary>
-	/// <param name="time">Reading time, sec.</param>
-	/// <param name="value">Reading value.</param>
-	void addReading(unsigned long time, float value);
+
+	void addReading(dataPoint dp);
 
 
 	void process_data_10_min();
@@ -87,6 +83,8 @@ public:
 	void process_data_60_min();
 
 	void process_data_day();
+
+	dataPoint dataLastAdded();
 
 	float valueLastAdded();
 
@@ -98,8 +96,6 @@ public:
 	/// Clears saved minimum and maximum for the day.
 	/// </summary>
 	void clearMinMax_day();
-
-
 
 	/// <summary>
 	/// Returns dataPoint with today's minimum value so far.
