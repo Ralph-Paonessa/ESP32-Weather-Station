@@ -65,28 +65,11 @@ Rev. October 7, 2023
 
 //#if defined(VM_DEBUG)
 #include "Testing.h"			// DEBUG AND TESTING
-#include "SensorDummy.h"
+#include "SensorSimulate.h"
 //#endif
 
 using namespace App_Settings;
 using namespace Utilities;
-
-///**************************************************************/
-///*****************      DEBUGGING FLAGS      ******************/
-///**************************************************************/
-//
-//bool _isDEBUG_BypassGPS = true;			// Bypass gps syncing.
-//bool _isDEBUG_BypassWifi = false;		// Bypass WiFi connect.
-//bool _isDEBUG_BypassSDCard = true;		// Bypass SD card.
-//bool _isDEBUG_ListLittleFS = false;		// List contents of LittleFS.
-//bool _isDEBUG_BypassWebServer = false;	// Bypass Web Server.
-//bool _isDEBUG_Test_setup = false;		// Run only test code inserted in Setup.
-//bool _isDEBUG_Test_loop = false;		// Run test code inserted in Loop.
-//bool _isDEBUG_addDummyData = false;		// Add dummy data.
-//bool _isDEBUG_simulateReadings = true;	// Add dummy sensor reading values.
-//bool _isDEBUG_AddDelayInLoop = false;	// Add delay in loop.
-//const int _LOOP_DELAY_DEBUG_ms = 100;	// Debug delay in loop, msec.
-///************************************************************/
 
 /*
 SensorData objects to average readings.
@@ -106,10 +89,26 @@ SensorData d_Insol;				// Insolaton readings.
 SensorData d_IRSky_C;			// IR sky temperature readings.
 SensorData d_fanRPM;			// Fan RPM readings.
 
+//
+//SensorSimulate dummy_T;
+//SensorSimulate dummy_IR;
+//SensorSimulate dummy_Wind;
 
-SensorDummy dummy_T;
-SensorDummy dummy_IR;
-SensorDummy dummy_Wind;
+
+SensorSimulate dummy_Temp_F;			// Temperature readings.
+SensorSimulate dummy_Pres_mb;			// Pressure readings.
+SensorSimulate dummy_Pres_seaLvl_mb;	// Pressure readings.
+SensorSimulate dummy_Temp_for_RH_C;		// Sensor temperature for pressure readings.
+SensorSimulate dummy_RH;				// Rel. humidity readings.
+SensorSimulate dummy_UVA;				// UVA readings.
+SensorSimulate dummy_UVB;				// UVB readings.
+SensorSimulate dummy_UVIndex;			// UV Index readings.
+SensorSimulate dummy_Insol;				// Insolaton readings.
+SensorSimulate dummy_IRSky_C;			// IR sky temperature readings.
+SensorSimulate dummy_fanRPM;			// Fan RPM readings.
+
+SensorSimulate dummy_anemCount;			// Anemometer RPM readings.
+SensorSimulate dummy_windDir;			// Anemometer RPM readings.
 
 
 // Keep track of timer interrupts that trigger readings.
@@ -601,7 +600,7 @@ void logDebugStatus() {
 	if (_isDEBUG_Test_loop) {
 		sd.logStatus_indent("RUN TEST CODE IN LOOP");
 	}
-	if (_isDEBUG_addDummyData) {
+	if (_isDEBUG_addDummyDataList) {
 		sd.logStatus_indent("ADD DUMMY DATA");
 	}
 	if (_isDEBUG_simulateReadings) {
@@ -1079,51 +1078,36 @@ void catchUnhandledBaseTimerInterrupts() {
 }
 
 /// <summary>
-/// Adds the specified value to a dummy sensor reading.
+/// Adds simulate wind sensor readings.
 /// </summary>
-/// <param name="val">Value to add.</param>
-void readSensors_dummy(float val) {
-	// Temperature.
-	d_Temp_F.addReading(dataPoint(now(), val));	// temperature
+void readWind_Simulate() {
+	unsigned int rots = dummy_anemCount.sawtooth(30, 0.05, 300);
+	windSpeed.addReading(dataPoint(now(), rots));
+	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);
+
+	// Read wind direction.
+	float windAngle = dummy_windDir.sawtooth(90, 1, 360);
+	windDir.addReading(now(), windAngle, speed);	// weighted by speed
 }
+
 
 /// <summary>
 /// Reads and saves wind speed, gusts, and direction.
 /// </summary>
 void readWind() {
 	// Read wind speed.
-	/*
-		XXX NOTE: Can _anem_Rotations still increase after
-		timer interrupt signals BASE_PERIOD_SEC, while other
-		processing delays the time until
 
-			windSpeed.addReading(now(), _anem_Rotations)
-
-		Should _anem_Rotations be held in another variable
-		immediately when BASE_PERIOD_SEC is reached???
-	*/
-	int rots = _anem_Rotations;
+	if (_isDEBUG_simulateReadings)
+	{
+		readWind_Simulate();
+	}
 
 	windSpeed.addReading(dataPoint(now(), _anem_Rotations));
 	float speed = windSpeed.speedInstant(_anem_Rotations, BASE_PERIOD_SEC);
 
-	// Read wind direction (average over 0-360 deg).
-	/*
-	Wind direction should be weighted by speed!
-	If the direction is
-		90 at 20 mph for 5 min
-		180 at 2 mph for 5 min
-	the direction shouldn't be a straight avg = 135.
-	It should be weighted more heavily towards 90, where
-	most of the wind flow was!
-	ALSO, direction stuck at X when wind stops blowing
-	should not contribute to direction -- or direction
-	should be nothing!
-		if (speed < threshold), direction = nothing
-	*/
-
+	// Read wind direction.
 	float windAngle = windAngleReading();
-	windDir.addReading(now(), windAngle, speed);
+	windDir.addReading(now(), windAngle, speed);	// weighted by speed
 
 	// Reset hardware interrupt count.
 	portENTER_CRITICAL_ISR(&hardwareMux_anem);
@@ -1146,11 +1130,11 @@ void readFan() {
 /// <summary>
 /// Reads and saves data from sensors.
 /// </summary>
-void readSensors(bool _isSimulateReadings = false) {
+void readSensors() {
 	unsigned long timeStart = millis();
-	if (_isSimulateReadings) {
+	if (_isDEBUG_simulateReadings) {
 		// Simulate sensor readings.
-		sensorsAddDummyData();
+		readSensors_Simulate();
 		return;
 	}
 	dataPoint dp;	// holds reading
@@ -1190,10 +1174,41 @@ void readSensors(bool _isSimulateReadings = false) {
 }
 
 /// <summary>
-/// Adds dummy data to sensor readings.
+/// Adds simulated values to sensor readings.
 /// </summary>
-void sensorsAddDummyData() {
-	d_Temp_F.addReading(dataPoint(now(), dummy_T.risingVal(3, 0.1)));
+void readSensors_Simulate() {
+	dataPoint dp;	// holds reading
+	// Temperature.
+	dp = dataPoint(now(), dummy_Temp_F.sawtooth(10, 0.02, 20));
+	d_Temp_F.addReading(dp);
+	// UV readings.
+	dp = dataPoint(now(), dummy_UVA.linear(3, 0.1));
+	d_UVA.addReading(dp);
+	dp = dataPoint(now(), dummy_UVB.linear(3, 0.1));
+	d_UVB.addReading(dp);
+	dp = dataPoint(now(), dummy_UVIndex.sawtooth(0, 0.05, 10));
+	d_UVIndex.addReading(dp);
+	// P, RH
+	dp = dataPoint(now(), dummy_RH.sawtooth(0, 0.05, 50));
+	d_RH.addReading(dp);
+	dp = dataPoint(now(), dummy_Pres_mb.linear(3, 0.1) / 100);
+	d_Pres_mb.addReading(dp);			// Raw pressure in mb (hectopascals)
+	dp = dataPoint(now(), dummy_RH.linear(10, 0.02));
+	d_Temp_for_RH_C.addReading(dp);		// Temp (C) of P, RH sensor.
+	// P adjusted to sea level.
+	float psl = pressureAtSeaLevel(
+		dummy_Pres_seaLvl_mb.linear(3, 0.1),
+		gps.data.altitude(),
+		d_Temp_for_RH_C.valueLastAdded());
+	dp = dataPoint(now(), psl);
+	d_Pres_seaLvl_mb.addReading(dp);
+	// IR sky
+	dp = dataPoint(now(), dummy_IRSky_C.sawtooth(0, 0.02, 10));
+	d_IRSky_C.addReading(dp);
+	// Insolation/
+	float insol_norm = insol_norm_pct(dummy_Insol.linear(3, 0.1), INSOL_REFERENCE_MAX);
+	dp = dataPoint(now(), insol_norm);
+	d_Insol.addReading(dp);	// % Insolation
 }
 
 /// <summary>
@@ -1387,17 +1402,17 @@ void setup() {
 
 	//#if defined(VM_DEBUG)
 		////////  TESTING   ////////
-	if (_isDEBUG_addDummyData) {
+	if (_isDEBUG_addDummyDataList) {
 		addDummyData();
 	}
 
 	/*if (_isDEBUG_simulateReadings) {
 		float dumVal = 0;
 		unsigned int seconds = BASE_PERIOD_SEC * SECONDS_PER_HOUR * 5;
-		dumVal = dummy_T.risingVal(5, 90. / seconds);
+		dumVal = dummy_T.linear(5, 90. / seconds);
 		d_Temp_F.addReading(now(), dumVal);
 
-		d_IRSky_C.addReading(now(), dummy_IR.risingVal(-25, 90 / (seconds * 5)));
+		d_IRSky_C.addReading(now(), dummy_IR.linear(-25, 90 / (seconds * 5)));
 
 	}*/
 
@@ -1484,7 +1499,7 @@ void loop() {
 		readWind();
 		readFan();
 		// Read data for other sensors.
-		readSensors(_isDEBUG_simulateReadings);
+		readSensors();
 		portENTER_CRITICAL_ISR(&timerMux_base);
 		_countInterrupts_base--;	// Base timer interrupt handled.
 		portEXIT_CRITICAL_ISR(&timerMux_base);

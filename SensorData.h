@@ -64,7 +64,7 @@ protected:		// Protected items are accessible by inherited classes.
 	/// </summary>
 	void clearAverageSmooth();
 
-	
+
 	list<dataPoint> _data_10_min;		// List of Data_Points at 10-min intervals.
 	list<dataPoint> _data_60_min;		// List of Data_Points at 60-min intervals.
 	list<dataPoint> _minima_dayList;	// List of daily minima.
@@ -74,7 +74,11 @@ public:
 	// Constructor.
 	SensorData();
 
-
+	/// <summary>
+	/// Adds sensor reading and time, accumulates average, 
+	/// and processes min, max.
+	/// </summary>
+	/// <param name="dp">(time, value) dataPoint.</param>
 	void addReading(dataPoint dp);
 
 

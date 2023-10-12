@@ -84,7 +84,7 @@
     <ClCompile Include="ListFunctions.cpp" />
     <ClCompile Include="SDCard.cpp" />
     <ClCompile Include="SensorData.cpp" />
-    <ClCompile Include="SensorDummy.cpp" />
+    <ClCompile Include="SensorSimulate.cpp" />
     <ClCompile Include="Testing.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Weather Station.ino">
@@ -131,7 +131,7 @@
     <ClInclude Include="ListFunctions.h" />
     <ClInclude Include="SDCard.h" />
     <ClInclude Include="SensorData.h" />
-    <ClInclude Include="SensorDummy.h" />
+    <ClInclude Include="SensorSimulate.h" />
     <ClInclude Include="Testing.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="WindDirection.h" />
