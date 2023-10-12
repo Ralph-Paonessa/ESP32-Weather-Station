@@ -111,6 +111,14 @@
     <None Include="ReadMe_wind.md" />
     <None Include="src\arduino folders read me.txt">
     </None>
+    <ClCompile Include="WebServer.ino">
+      <FileType>CppCode</FileType>
+      <DeploymentContent>true</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="WebServer Processor.ino">
+      <FileType>CppCode</FileType>
+      <DeploymentContent>true</DeploymentContent>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectCapability Include="VisualMicro" />
@@ -118,6 +126,7 @@
   <ItemGroup>
     <ClInclude Include="App_Settings.h" />
     <ClInclude Include="DataPoint.h" />
+    <ClInclude Include="DebugFlags.h" />
     <ClInclude Include="GPSModule.h" />
     <ClInclude Include="ListFunctions.h" />
     <ClInclude Include="SDCard.h" />
