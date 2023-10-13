@@ -42,6 +42,9 @@ private:
 	/// </summary>
 	void clearMinMax_today();
 
+	dataPoint _min_gust_today = dataPoint(0, VAL_LIMIT);	// Today's minimum.
+	dataPoint _max_gust_today = dataPoint(0, -VAL_LIMIT);	// Today's maximum.
+
 	float _gust_last_10_min;	// Gust that occurred in last 10 min.
 	float _gust_last_60_min;	// Gust that occurred in last 60 min.
 
@@ -58,6 +61,9 @@ public:
 	// Constructor	
 	WindSpeed(float calibrationFactor);		// Overload of SensorData.
 
+	void addReading(unsigned long time, int rotations);
+
+
 	/// <summary>
 	/// Returns wind speed from anemometer rotations.
 	/// </summary>
@@ -67,12 +73,18 @@ public:
 	float speedInstant(int rotations, float period);
 
 	void process_gusts_10_min();
-	void process_gust_60_min();
+	void process_gusts_60_min();
+
+	void process_gusts_day();
 
 	float gust_10_min();
 	float gust_60_min();
 
-	void addDummyGustData_10_min(float valueStart, float increment, int numElements, unsigned long timeStart);
+	void addDummyGustData_10_min(
+		float valueStart, 
+		float increment, 
+		int numElements, 
+		unsigned long timeStart);
 
 	String gusts_10_min_string_delim(bool isConvertZeroToEmpty, int decimalPlaces);
 	String gusts_60_min_string_delim(bool isConvertZeroToEmpty, int decimalPlaces);

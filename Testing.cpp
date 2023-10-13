@@ -234,7 +234,7 @@ float Testing::addDummyRotations(list<float> srcList, WindSpeed& speedObj, float
 	float elapsed = 0;
 	for (list<float>::iterator it = srcList.begin(); it != srcList.end(); ++it) {
 
-		speedObj.addReading(dataPoint(999999, *it));
+		speedObj.addReading(999999, *it);
 		elapsed += rawPeriod;
 	}
 	return elapsed;

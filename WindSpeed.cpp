@@ -15,6 +15,26 @@ WindSpeed::WindSpeed(float calibrationFactor)
 }
 
 /// <summary>
+/// Adds anemometer reading.
+/// </summary>
+/// <param name="time">Reading time, sec.</param>
+/// <param name="rotations">Anemometer rotation count over BASE_PERIOD.</param>
+void WindSpeed::addReading(unsigned long time, int rotations)
+{	
+	/*
+	 Get raw (instantaneous) speed data for this reading. This data
+	 will be compiled into averages for various periods (2-, 10-,
+	 and 60-min), and these averages will be stored in lists.
+	 Should happen at every raw BASE_PERIOD.
+	 */
+	float speed = speedInstant(rotations, BASE_PERIOD_SEC);	// WindSpeed for BASE_PERIOD.
+	_dataLastAdded = dataPoint(time, speed);
+	_countReadings++;
+	_sumReadings += speed;
+	process_Smoothed_Min_Max(_dataLastAdded);
+}
+
+/// <summary>
 /// Reset accumulate min and max.
 /// </summary>
 void WindSpeed::clearMinMax_today() {
@@ -36,9 +56,20 @@ void WindSpeed::process_gusts_10_min() {
 /// <summary>
 /// Calculate speed average for 60-min period and hold in list.
 /// </summary>
-void WindSpeed::process_gust_60_min() {
+void WindSpeed::process_gusts_60_min() {
 	_gust_last_60_min = listMaximum(_gusts_10_min, 6);
 	addToList(_gusts_60_min, _gust_last_60_min, SIZE_60_MIN_LIST);
+}
+
+/// <summary>
+/// Processes data for a full calendar day.
+/// </summary>
+/// <returns></returns>
+void WindSpeed::process_gusts_day() {
+	// Save list of daily minima and maxima.
+	addToList(_minima_dayList,     ?      // _min_today, SIZE_DAY_LIST);
+	addToList(_maxima_dayList,     ?      // _max_today, SIZE_DAY_LIST);
+	clearMinMax_day();
 }
 
 /// <summary>
@@ -189,4 +220,3 @@ String WindSpeed::beaufortWind(float speed) {
 	else
 		return "RUN";
 }
-

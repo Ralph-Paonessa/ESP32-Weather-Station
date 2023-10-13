@@ -16,19 +16,18 @@ SensorData::SensorData() {
 /// </summary>
 /// <param name="dp">(time, value) dataPoint.</param>
 void SensorData::addReading(dataPoint dp) {
-	//_timeLastAdded = dp.time;
 	_dataLastAdded = dp;	// save most recent
-	_countRead++;
+	_countReadings++;
 	_sumReadings += dp.value;
 	// Smooth the data and find min, max.
-	process_Smoothing_MinMax(dp);
+	process_Smoothed_Min_Max(dp);
 }
 
 /// <summary>
 /// 
 /// </summary>
 /// <param name="dp"></param>
-void SensorData::process_Smoothing_MinMax(dataPoint dp) {
+void SensorData::process_Smoothed_Min_Max(dataPoint dp) {
 	_countSmoothRead++;
 	_sumSmooth += dp.value;
 	// After COUNT_FOR_SMOOTH cycles, get smoothed 
@@ -47,7 +46,7 @@ void SensorData::process_Smoothing_MinMax(dataPoint dp) {
 /// </summary>
 void SensorData::clearAverage() {
 	_sumReadings = 0;
-	_countRead = 0;
+	_countReadings = 0;
 }
 
 /// <summary>
@@ -70,10 +69,9 @@ void SensorData::clearMinMax_day() {
 /// <summary>
 /// Saves data to 10-min list.
 /// </summary>
-/// <returns></returns>
 void SensorData::process_data_10_min() {
 	// Avg over last 10 min.
-	_avg_10_min = _sumReadings / _countRead;
+	_avg_10_min = _sumReadings / _countReadings;
 	// Add to 10-min list of observations.
 	addToList(_data_10_min,
 		dataPoint(_dataLastAdded.time, _avg_10_min),
@@ -102,7 +100,6 @@ void SensorData::process_data_day() {
 	addToList(_minima_dayList, _min_today, SIZE_DAY_LIST);
 	addToList(_maxima_dayList, _max_today, SIZE_DAY_LIST);
 	clearMinMax_day();
-	//_isSingleValForMinMax = true;
 }
 
 /// <summary>
@@ -241,7 +238,6 @@ void SensorData::addDummyData_60_min(float valueStart,
 	}
 	_avg_60_min = valueStart;
 }
-
 
 /// <summary>
 /// Adds the specified number of elements of dummy data to the 

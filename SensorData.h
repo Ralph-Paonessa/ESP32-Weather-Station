@@ -28,11 +28,10 @@ protected:		// Protected items are accessible by inherited classes.
 	String _label, _labelShort;		// Identifying info.
 	String _units, _units_html;		// Units used.
 
-	//long _timeLastAdded;			// Time of most recent reading.
 	dataPoint _dataLastAdded;		// Data point (time, value) of most recent reading.
 
 	float _sumReadings;				// Accumulating sum of readings.
-	unsigned int _countRead;		// Number of readings in average.
+	unsigned int _countReadings;		// Number of readings in average.
 
 	float _sumSmooth;
 	unsigned int _countSmoothRead = 0;
@@ -43,7 +42,7 @@ protected:		// Protected items are accessible by inherited classes.
 	float _avg_10_min = 0;			// Average over 10 min.
 	float _avg_60_min = 0;			// Average over 60 min.
 
-	void process_Smoothing_MinMax(dataPoint dp);
+	void process_Smoothed_Min_Max(dataPoint dp);
 
 	float _avgSmoothed = 0;			// Avg of the last few readings (for smoothing).
 
@@ -51,7 +50,7 @@ protected:		// Protected items are accessible by inherited classes.
 
 	// Initialize at impossible extremes.
 
-	dataPoint _min_today = dataPoint(0, VAL_LIMIT);	// Today's minimum.
+	dataPoint _min_today = dataPoint(0, VAL_LIMIT);		// Today's minimum.
 	dataPoint _max_today = dataPoint(0, -VAL_LIMIT);	// Today's maximum.
 
 	/// <summary>
@@ -63,7 +62,6 @@ protected:		// Protected items are accessible by inherited classes.
 	/// Clears smoothing average.
 	/// </summary>
 	void clearAverageSmooth();
-
 
 	list<dataPoint> _data_10_min;		// List of Data_Points at 10-min intervals.
 	list<dataPoint> _data_60_min;		// List of Data_Points at 60-min intervals.
@@ -80,7 +78,6 @@ public:
 	/// </summary>
 	/// <param name="dp">(time, value) dataPoint.</param>
 	void addReading(dataPoint dp);
-
 
 	void process_data_10_min();
 
@@ -193,7 +190,7 @@ public:
 		float valueStart,
 		float increment,
 		int numElements,
-		unsigned long timeStart);
+		unsigned long timeStart);	
 };
 
 #endif
