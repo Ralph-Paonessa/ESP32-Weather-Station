@@ -2,38 +2,53 @@
 
 ## ***This document is only a collection of notes that needs to be re-written.***
 
-// WindSpeed.h
-// v 1.1
-// Ralph Paonessa
-// 3/9/2022
 
-/*
-Timer interrupt signals when to get "raw" wind speed,
-which is average over brief BASE_PERIOD, which is shortest
-period we can effectively measure. These small periods
-are necessary to look for brief gusts.
+## Measuring wind speed
 
-  GOALS  //////////////////////
+A timer interrupt every short BASE_PERIOD_SEC signals that we should 
+get the "instantaneous" wind speed, which we define here as the speed 
+during the shortest period we can practially measure. This is 
+set by BASE_PERIOD_SEC, which is on the order of 1 to 5 
+seconds.
 
-	1. Get "instantaneous" wind speed over a specified time of
-		rotations (BASE_PERIOD, e.g., 2.5 sec).
-	2. Calculate average wind speed over a specified time. E.g., 10 min.
-	3. Determine wind gusts and variance during the wind averaging time.
-	4. Log or report all sensor data after a specified number of wind
-			speed measurements.
+One reason to keep this period short is that the instantaneous 
+speed will be used to determine wind gusts, which can be as short as 
+a few seconds.
 
- Standard to follow
-	- measure raw speeds over BASE_PERIOD 2-5 sec. (This will not be
-			public.)
-	- Get maxWindSpeed as max of speed over 10 min.
-	- Get avgWindSpeed over 2 min.
-	- Get maxWindSpeed over 2 min.
-	- report speed as average of avgWindSpeed over a reporting
-			time of 10 min.
-	- report wind gust as max wind speed during current reporting time.
+### Wind Speed data available in user interface:
 
+ - Current speed = instantaneous speed
+ - Wind speeds averaged over 10- and 60-minutes intervals.
+ - Today's current high and low speed.
+ - Daily highs and lows over several days.
 
-	HOW WIND SPEED IS MEASURED [Ref. 1]
+ ## Measuring wind gusts
+
+ A wind gust is defined here as an instantaneous speed that is 
+ "significantly"  greater the the previous one. (See later for 
+ what is considered "significant.")
+
+ Each time a gust is found, it will be compared to previously the 
+ highest previous gust (_maxGust). If it is greater, it will be set 
+ as the new _maxGust.
+
+ At the end of each 10-min period, _maxGust will be saved as the
+ reported wind gust for that period; then _maxGust will be reset 
+ for the next 10-min period.
+
+ ### Wind Gust data available in user interface:
+
+ - Current gust = _maxGust
+ - Highest Gusts found over 10- and 60-minutes intervals.
+ - Today's current high and low gusts.
+ - Daily highs and lows over several days.
+
+ # Accepted practices for wind speed and gust measurements.
+
+ I have endeavored to learn how meteorological organizations 
+ handle wind measurements. FWIW, this is what I've found.
+
+## HOW WIND SPEED IS MEASURED [Ref. 1]
 
 	Defines: "WIND SPEED", "WIND GUST", "SUSTAINED WIND", "PEAK WIND"
 
@@ -61,7 +76,7 @@ are necessary to look for brief gusts.
 
 	-----------------------------------------------------------
 
-	WIND GUSTS [Ref. 2]
+## WIND GUSTS [Ref. 2]
 
 	According to U.S. weather observing practice, gusts are reported when the
 	"PEAK WIND SPEED"(*) reaches at least 16 knots (18.41 mph) and the variation
@@ -74,7 +89,7 @@ ________________
 
 	[2] https://graphical.weather.gov/definitions/defineWindGust.html
 
-**  MY TAKE FROM [1] et al.  **
+##  MY TAKE FROM [1] et al.  
 
 There is some ambiguity or flexibility regarding how often to average
 and report a wind speed. But it seems that the shortest practical period
@@ -126,44 +141,63 @@ HOW TO IMPLEMENT:
 
 
 
-	IMPLEMENTATION
-	INST_SPEED = anemometer output over 2.5 seconds. (Not reported.)
-	SPEED = *2 minute* average OF INST_SPEED   (48 cycles x 2.5 sec).
-	GUST: Occurs if (MAX Inst. WindSpeed) during most recent 10 minute
-	time is at least 10 knots greater than (MIN Inst. WindSpeed) during time.
-
-	If (MAX - MIN) >= 10, then GUST = MAX.   // over 10 min time
-
-	- Report readings every *2 min*
-	- Accumulate values over *10 min*
-	- Look at past *10 min* to get gusts
-	- Summarize data every *1hour*
-	- Maintain data in memory for last N hours, to show trends.
 
 
+## What is the optimum wind speed sampling frequency?
 
- Data will be logged every ( countPeriod * numForAvgWindSpeed ) sec.
- Not worthwhile to report "instantaneous" wind speed measured every
- few seconds.
-	- Clutters up data.
-	- WindSpeed can be highly variable, therefore misleading.
- Wind is averaged over ( countPeriod * numForAvgWindSpeed ) seconds.
- Some other data should be averaged, such as wind directionCardinal, strength.
-
- When someone requests data, they get the last logged data, which is
- at most X min old?
- Can also include most recent measurements?
-*/
-
-/*
-
-What is optimum wind speed sampling frequency?
 	Too low		-->	Lowest speeds inaccurate.
 					But, miss brief high gusts.
 	Too high	--> Excess processing required.
 
+
+
+| Attempt | #1    | #2    |
+| :---:   | :---: | :---: |
+| Seconds | 301   | 283   |
+
+
 ----------------------------------------------------
-SAMPLE WIND SPEED MEASUREMENT VALUES
+### SAMPLE WIND SPEED MEASUREMENT VALUES
+----------------------------------------------------
+|WindSpeed mph	|Freq. Hz		|Counts	in 0.25s	|Counts	in 2.5s	|Counts in 120s|
+
+|mph		Hz						
+|-----	------		--------	--------	--------
+|1		0.44		0.1			1.1			53
+|2		0.89		0.2			2.2			107
+
+
+
+3		1.33		0.3			3.3			160
+4		1.78		0.4			4.4			213
+5		2.22		0.6			5.6			267
+6		2.67		0.7			6.7			320
+7		3.11		0.8			7.8			373
+8		3.56		0.9			8.9			427
+9		4.00		1.0			10.0		480
+10		4.44		1.1			11.1		533
+11		4.89		1.2			12.2		587
+12		5.33		1.3			13.3		640
+13		5.78		1.4			14.4		693
+14		6.22		1.6			15.6		747
+15		6.67		1.7			16.7		800
+20		8.89		2.2			22.2		1067
+30		13.3		3.3			33.3		1600
+40		17.8		4.4			44.4		2133
+50		22.2		5.6			55.6		2667
+60		26.7		6.7			66.7		3200
+70		31.1		7.8			77.8		3733
+80		35.6		8.9			88.9		4267
+90		40.0		10.0		100.0		4800
+100		44.4		11.1		111.1		5333
+125		55.6		13.9		138.9		6667
+150		66.7		16.7		166.7		8000
+175		77.8		19.4		194.4		9333
+200		88.9		22.2		222.2		10667
+
+
+----------------------------------------------------
+### SAMPLE WIND SPEED MEASUREMENT VALUES
 ----------------------------------------------------
 WindSpeed	Freq.		Counts		Counts		Counts
 mph		Hz			in 0.25s	in 2.5s		in 120s
@@ -197,9 +231,8 @@ mph		Hz			in 0.25s	in 2.5s		in 120s
 175		77.8		19.4		194.4		9333
 200		88.9		22.2		222.2		10667
 ---------------------------------------------------
-*/
 
-/*
+
 NOTE: We can compile the various average_N values into
 lists that can be called by the program.
 
