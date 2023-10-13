@@ -73,7 +73,7 @@ public:
 	SensorData();
 
 	/// <summary>
-	/// Adds sensor reading and time, accumulates average, 
+	/// Adds (time, value) dataPoint, accumulates average, 
 	/// and processes min, max.
 	/// </summary>
 	/// <param name="dp">(time, value) dataPoint.</param>

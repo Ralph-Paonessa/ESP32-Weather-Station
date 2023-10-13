@@ -146,7 +146,7 @@ float SensorData::avg_60_min()
 }
 
 /// <summary>
-/// Current daily minimum.
+/// Minimum so far today.
 /// </summary>
 /// <returns>Today's minimum.</returns>
 dataPoint SensorData::min_today()
@@ -155,7 +155,7 @@ dataPoint SensorData::min_today()
 }
 
 /// <summary>
-/// Current daily maximum.
+/// Maximum so far today.
 /// </summary>
 /// <returns>Today's maximum.</returns>
 dataPoint SensorData::max_today()
@@ -173,7 +173,7 @@ list<dataPoint> SensorData::data_10_min()
 }
 
 /// <summary>
-/// List of dataPoint at 60-min intervals.
+/// List of dataPoints at 60-min intervals.
 /// </summary>
 /// <returns></returns>
 list<dataPoint> SensorData::data_60_min()

@@ -1105,11 +1105,10 @@ void readWind() {
 /// Adds simulate wind sensor readings.
 /// </summary>
 void readWind_Simulate() {
-	unsigned int rots = dummy_anemCount.sawtooth(10, 1, 20);
-	//unsigned int rots = 20;
-	windSpeed.addReading(dataPoint(now(), rots));
+	unsigned int rots = dummy_anemCount.sawtooth(1, 0.2, 15);
 	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);
-
+	windSpeed.addReading(dataPoint(now(), speed));
+	
 	//// Read wind direction.
 	//float windAngle = dummy_windDir.sawtooth(90, 1, 360);
 	//windDir.addReading(now(), windAngle, speed);	// weighted by speed

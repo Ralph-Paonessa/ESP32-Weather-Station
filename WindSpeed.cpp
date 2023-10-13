@@ -44,6 +44,12 @@ void WindSpeed::clearMinMax_today() {
 	_speedMin_10_min = MIN_SPEED_LIMIT;
 }
 
+/***********************
+
+_speedMax_10_min IS NOT DETERMINED ANYWHERE!!!  XXX
+
+*************************/
+
 /// <summary>
 /// Calculate speed average for 10-min period and hold in list.
 /// </summary>
@@ -102,7 +108,7 @@ void WindSpeed::addGust_10_min(list<dataPoint>& targetList, float max, float min
 	// Gust must meet criteria.
 	if (
 		max >= GUST_THRESHOLD				// must exceed threshold, and
-		|| ((max - min) >= GUST_SPREAD)		// must exceed minimum by by GUST_SPREAD
+		&& ((max - min) >= GUST_SPREAD)		// must exceed minimum by by GUST_SPREAD
 		) {	
 		gust = max;							// New gust.
 	}
