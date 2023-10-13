@@ -20,26 +20,33 @@ void SensorData::addReading(dataPoint dp) {
 	_countReadings++;
 	_sumReadings += dp.value;
 	// Smooth the data and find min, max.
-	process_Smoothed_Min_Max(dp);
+
+	// REPLACE process_Smoothed_Min_Max(dp) with
+	// Find min and max so far for today.
+	_min_today = (dp.value < _min_today.value) ? dp : _min_today;
+	_max_today = (dp.value > _max_today.value) ? dp : _max_today;
+	
 }
 
-/// <summary>
-/// 
-/// </summary>
-/// <param name="dp"></param>
-void SensorData::process_Smoothed_Min_Max(dataPoint dp) {
-	_countSmoothRead++;
-	_sumSmooth += dp.value;
-	// After COUNT_FOR_SMOOTH cycles, get smoothed 
-	// average and use to find min, max.
-	if (_countSmoothRead == COUNT_FOR_SMOOTH) {
-		// Enough values, so use average for finding min, max.
-		float valSmoothed = _sumSmooth / _countSmoothRead;
-		_min_today = (dp.value < _min_today.value) ? dp : _min_today;
-		_max_today = (dp.value > _max_today.value) ? dp : _max_today;
-		clearAverageSmooth();	// Restart smoothing.
-	}
-}
+
+//// Smooth not working and must be redone with LIST!
+///// <summary>
+///// 
+///// </summary>
+///// <param name="dp"></param>
+//void SensorData::process_Smoothed_Min_Max(dataPoint dp) {
+//	_countSmoothRead++;
+//	_sumSmooth += dp.value;
+//	// After COUNT_FOR_SMOOTH cycles, get smoothed 
+//	// average and use to find min, max.
+//	if (_countSmoothRead == COUNT_FOR_SMOOTH) {
+//		// Enough values, so use average for finding min, max.
+//		float valSmoothed = _sumSmooth / _countSmoothRead;
+//		/*_min_today = (dp.value < _min_today.value) ? dp : _min_today;
+//		_max_today = (dp.value > _max_today.value) ? dp : _max_today;*/
+//		clearAverageSmooth();	// Restart smoothing.
+//	}
+//}
 
 /// <summary>
 /// Clears running average.
@@ -49,13 +56,13 @@ void SensorData::clearAverage() {
 	_countReadings = 0;
 }
 
-/// <summary>
-/// Clears smoothing average.
-/// </summary>
-void SensorData::clearAverageSmooth() {
-	_sumSmooth = 0;
-	_countSmoothRead = 0;
-}
+///// <summary>
+///// Clears smoothing average.
+///// </summary>
+//void SensorData::clearAverageSmooth() {
+//	_sumSmooth = 0;
+//	_countSmoothRead = 0;
+//}
 
 /// <summary>
 /// Clears saved minimum and maximum for the day.

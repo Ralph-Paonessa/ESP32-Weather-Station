@@ -59,11 +59,11 @@
     <ClCompile Include="WindSpeed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SensorDummy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WebServer.ino" />
     <ClCompile Include="WebServer Processor.ino" />
+    <ClCompile Include="SensorSimulate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataPoint.h">
@@ -99,10 +99,10 @@
     <ClInclude Include="__vm\.Weather Station.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SensorDummy.h">
+    <ClInclude Include="DebugFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DebugFlags.h">
+    <ClInclude Include="SensorSimulate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

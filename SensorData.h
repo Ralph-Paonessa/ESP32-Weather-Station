@@ -33,8 +33,8 @@ protected:		// Protected items are accessible by inherited classes.
 	float _sumReadings;				// Accumulating sum of readings.
 	unsigned int _countReadings;		// Number of readings in average.
 
-	float _sumSmooth;
-	unsigned int _countSmoothRead = 0;
+	/*float _sumSmooth;
+	unsigned int _countSmoothRead = 0;*/
 
 	// Samples required for smoothing avg.
 	const unsigned int COUNT_FOR_SMOOTH = 10;
@@ -42,7 +42,7 @@ protected:		// Protected items are accessible by inherited classes.
 	float _avg_10_min = 0;			// Average over 10 min.
 	float _avg_60_min = 0;			// Average over 60 min.
 
-	void process_Smoothed_Min_Max(dataPoint dp);
+	//void process_Smoothed_Min_Max(dataPoint dp);
 
 	float _avgSmoothed = 0;			// Avg of the last few readings (for smoothing).
 
@@ -58,10 +58,10 @@ protected:		// Protected items are accessible by inherited classes.
 	/// </summary>
 	void clearAverage();
 
-	/// <summary>
+	/*/// <summary>
 	/// Clears smoothing average.
 	/// </summary>
-	void clearAverageSmooth();
+	void clearAverageSmooth();*/
 
 	list<dataPoint> _data_10_min;		// List of Data_Points at 10-min intervals.
 	list<dataPoint> _data_60_min;		// List of Data_Points at 60-min intervals.

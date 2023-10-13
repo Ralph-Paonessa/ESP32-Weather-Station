@@ -1088,8 +1088,8 @@ void readWind() {
 		return;
 	}
 	// Read wind speed.
-	windSpeed.addReading(now(), _anem_Rotations);
 	float speed = windSpeed.speedInstant(_anem_Rotations, BASE_PERIOD_SEC);
+	windSpeed.addReading(dataPoint(now(), speed));
 
 	// Read wind direction.
 	float windAngle = windAngleReading();
@@ -1107,7 +1107,7 @@ void readWind() {
 void readWind_Simulate() {
 	unsigned int rots = dummy_anemCount.sawtooth(10, 1, 20);
 	//unsigned int rots = 20;
-	windSpeed.addReading(now(), rots);
+	windSpeed.addReading(dataPoint(now(), rots));
 	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);
 
 	//// Read wind direction.

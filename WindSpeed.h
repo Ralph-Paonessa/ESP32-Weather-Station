@@ -61,7 +61,7 @@ public:
 	// Constructor	
 	WindSpeed(float calibrationFactor);		// Overload of SensorData.
 
-	void addReading(unsigned long time, int rotations);
+	//void addReading(unsigned long time, int rotations);
 
 
 	/// <summary>
