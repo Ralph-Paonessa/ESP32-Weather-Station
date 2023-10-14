@@ -18,13 +18,13 @@ WindDirection::WindDirection(float offsetAngle) {
 /// Initialize the WindDirection object.
 /// </summary>
 void WindDirection::begin() {
-	WindDirection::clearAverage();
+	WindDirection::clear_10_min();
 }
 
 /// <summary>
 /// Clears all direction values and averages.
 /// </summary>
-void WindDirection::clearAverage() {
+void WindDirection::clear_10_min() {
 	_eSum = 0;
 	_nSum = 0;
 }

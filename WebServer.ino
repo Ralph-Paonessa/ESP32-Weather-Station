@@ -270,7 +270,7 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", windSpeed.data_10_min_string_delim(false, 0).c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windSpeed.gusts_10_min_string_delim(true, 0).c_str());
+					request->send_P(200, "text/plain", windGust.data_10_min_string_delim(true, 0).c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");
@@ -312,7 +312,7 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", windSpeed.data_60_min_string_delim(false, 0).c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windSpeed.gusts_60_min_string_delim(true, 0).c_str());
+					request->send_P(200, "text/plain", windGust.data_60_min_string_delim(true, 0).c_str()); 
 					break;
 				default:
 					request->send_P(200, "text/plain", "");
@@ -355,7 +355,7 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", windSpeed.data_60_min_string_delim(false, 0).c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windSpeed.gusts_60_min_string_delim(true, 0).c_str());
+					request->send_P(200, "text/plain", windGust.data_60_min_string_delim(true, 0).c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");

@@ -95,7 +95,7 @@ void Testing::windDirection(float angleStart, float angleIncrement, int cycles, 
 		angleStart += angleIncrement;
 	}
 
-	windDirect.clearAverage();
+	windDirect.clear_10_min();
 	Serial.println("\nAFTER ALL VALUES CLEARED ...");
 	///////////////Serial.print(" Readings = "); Serial.println(windDirect.countReadings(), 0);
 	Serial.print("angleAvg_now() = "); Serial.println(windDirect.angleAvg_now());
@@ -143,8 +143,8 @@ void Testing::windDirection(float angleStart, float angleIncrement, int cycles, 
 //				Serial.print("Latest speedInstant 2-min = "); Serial.println(windSpeed.speed_last_2_min().value);
 //				Serial.print("Latest speedInstant 10-min = "); Serial.println(windSpeed.speed_last_10_min().value);
 //				Serial.print("Latest speedInstant 60-min = "); Serial.println(windSpeed.avg_60_min().value);
-//				Serial.print("Latest gust 10-min = "); Serial.println(windSpeed.gust_10_min().value);
-//				Serial.print("Latest gust 60-min = "); Serial.println(windSpeed.gust_60_min().value);
+//				Serial.print("Latest gust 10-min = "); Serial.println(windSpeed.gust_last_10_min().value);
+//				Serial.print("Latest gust 60-min = "); Serial.println(windSpeed.gust_last_60_min().value);
 //				//Serial.println(listToString(wind.speeds_instant(), "raw");
 //				Serial.println(listToString_dataPoints(windSpeed.speeds_2_min(), "2-min"));
 //				Serial.println(listToString_dataPoints(windSpeed.data_10_min(), "10-min"));
@@ -167,8 +167,8 @@ void Testing::windDirection(float angleStart, float angleIncrement, int cycles, 
 //				Serial.print("Latest speedInstant 2-min = "); Serial.println(windSpeed.speed_last_2_min().value);
 //				Serial.print("Latest speedInstant 10-min = "); Serial.println(windSpeed.speed_last_10_min().value);
 //				Serial.print("Latest speedInstant 60-min = "); Serial.println(windSpeed.avg_60_min().value);
-//				Serial.print("Latest gust 10-min = "); Serial.println(windSpeed.gust_10_min().value);
-//				Serial.print("Latest gust 60-min = "); Serial.println(windSpeed.gust_60_min().value);
+//				Serial.print("Latest gust 10-min = "); Serial.println(windSpeed.gust_last_10_min().value);
+//				Serial.print("Latest gust 60-min = "); Serial.println(windSpeed.gust_last_60_min().value);
 //
 //				//Serial.println(listToString(wind.speeds_instant(), "raw");
 //				Serial.println(listToString_dataPoints(windSpeed.speeds_2_min(), "2-min"));

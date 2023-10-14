@@ -56,12 +56,12 @@
     <ClCompile Include="WindDirection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WindSpeed.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WebServer.ino" />
     <ClCompile Include="WebServer Processor.ino" />
     <ClCompile Include="SensorSimulate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WindSpeed2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -90,9 +90,6 @@
     <ClInclude Include="WindDirection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindSpeed.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="App_Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -103,6 +100,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SensorSimulate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WindSpeed2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

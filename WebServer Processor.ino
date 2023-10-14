@@ -35,7 +35,7 @@ String processor(const String& var) {
 		return String(windSpeed.valueLastAdded(), 0);	// 10-min avg
 	}
 	if (var == "WIND_GUST") {
-		return String(windSpeed.gust_10_min(), 0);
+		return String(windGust.max_10_min().value, 0);
 	}
 	if (var == "WIND_DIRECTION") {
 		return String(windDir.directionCardinal());		// avg since last cleared (<= 10 min)

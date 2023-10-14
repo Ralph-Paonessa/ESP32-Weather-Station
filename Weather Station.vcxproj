@@ -92,7 +92,7 @@
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="WindDirection.cpp" />
-    <ClCompile Include="WindSpeed.cpp" />
+    <ClCompile Include="WindSpeed2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\css\highcharts-custom.css" />
@@ -135,7 +135,7 @@
     <ClInclude Include="Testing.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="WindDirection.h" />
-    <ClInclude Include="WindSpeed.h" />
+    <ClInclude Include="WindSpeed2.h" />
     <ClInclude Include="__vm\.Weather Station.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>

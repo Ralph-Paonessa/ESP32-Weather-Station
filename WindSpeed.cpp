@@ -14,39 +14,37 @@ WindSpeed::WindSpeed(float calibrationFactor)
 	_calibrationFactor = calibrationFactor;
 }
 
-
-// Don't need this if main submits SPEED instead of ROTATIONS!
-///// <summary>
-///// Adds anemometer reading.
-///// </summary>
-///// <param name="time">Reading time, sec.</param>
-///// <param name="rotations">Anemometer rotation count over BASE_PERIOD.</param>
-//void WindSpeed::addReading(unsigned long time, int rotations)
-//{	
-//	/*
-//	 Get raw (instantaneous) speed data for this reading. This data
-//	 will be compiled into averages for various periods (2-, 10-,
-//	 and 60-min), and these averages will be stored in lists.
-//	 Should happen at every raw BASE_PERIOD.
-//	 */
-//	float speed = speedInstant(rotations, BASE_PERIOD_SEC);	// WindSpeed for BASE_PERIOD.
-//	_dataLastAdded = dataPoint(time, speed);
-//	_countReadings++;
-//	_sumReadings += speed;
-//	process_Smoothed_Min_Max(_dataLastAdded);
-//}
-
 /// <summary>
-/// Reset accumulate min and max.
+/// Returns wind speed from anemometer rotations.
 /// </summary>
-void WindSpeed::clearMinMax_today() {
-	_speedMax_10_min = 0;
-	_speedMin_10_min = MIN_SPEED_LIMIT;
+/// <param name="rotations"> Number of rotations.</param>
+/// <param name="period">Time period of rotations, sec.</param>
+/// <returns>Wind speed, mph</returns>
+float WindSpeed::speedInstant(int rotations, float period) {
+	/*************************************************************
+	Davis anemometer formula:
+		speed = rotations * 2.25 / time		[from Davis spec].
+			where
+			time = time during which rotations are counted (sec).
+	*************************************************************/
+	return rotations * _calibrationFactor / period;
 }
 
-/***********************
+// In SensorData
+///// <summary>
+///// Reset accumulated min and max.
+///// </summary>
+//void WindSpeed::clearMinMax_today() {
+//	_speedMax_10_min = 0;
+//	_speedMin_10_min = MIN_SPEED_LIMIT;
+//}
 
-_speedMax_10_min IS NOT DETERMINED ANYWHERE!!!  XXX
+/* NOT DETERMINED ANYWHERE!!!  XXX
+**********************
+
+_speedMax_10_min  
+_gust_last_10_min
+_gust_last_60_min
 
 *************************/
 
@@ -78,22 +76,6 @@ void WindSpeed::process_gusts_day() {
 //	addToList(_minima_dayList,     ?      // _min_today, SIZE_DAY_LIST);
 //	addToList(_maxima_dayList,     ?      // _max_today, SIZE_DAY_LIST);
 	clearMinMax_day();
-}
-
-/// <summary>
-/// Returns wind speed from anemometer rotations.
-/// </summary>
-/// <param name="rotations"> Number of rotations.</param>
-/// <param name="period">Time period of rotations, sec.</param>
-/// <returns>Wind speed, mph</returns>
-float WindSpeed::speedInstant(int rotations, float period) {
-	/*************************************************************
-	Davis anemometer formula:
-		speed = rotations * 2.25 / time		[from Davis spec].
-			where
-			time = time during which rotations are counted (sec).
-	*************************************************************/
-	return rotations * _calibrationFactor / period;
 }
 
 /// <summary>
@@ -144,7 +126,7 @@ void WindSpeed::addDummyGustData_10_min(
 /// Latest 10-min maximum gust.
 /// </summary>
 /// <returns>Float</returns>
-float WindSpeed::gust_10_min()
+float WindSpeed::gust_last_10_min()
 {
 	return _gust_last_10_min;
 }
@@ -153,7 +135,7 @@ float WindSpeed::gust_10_min()
 /// Latest 60-min maximum gust.
 /// </summary>
 /// <returns>Float</returns>
-float WindSpeed::gust_60_min()
+float WindSpeed::gust_last_60_min()
 {
 	return _gust_last_60_min;
 }

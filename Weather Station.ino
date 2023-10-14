@@ -10,6 +10,7 @@ Rev. October 7, 2023
 // ========  ESP32 Libraries  ================  
 
 // ESP Async Web Server
+#include "WindSpeed2.h"
 #include <AsyncEventSource.h>
 #include <AsyncJson.h>
 #include <AsyncWebSocket.h>
@@ -60,7 +61,7 @@ Rev. October 7, 2023
 #include "SDCard.h"
 #include "dataPoint.h"
 #include "SensorData.h"
-#include "WindSpeed.h"
+#include "WindSpeed2.h"
 #include "WindDirection.h"
 
 //#if defined(VM_DEBUG)
@@ -73,7 +74,7 @@ using namespace Utilities;
 
 /*
 SensorData objects to average readings.
-Wind speed handled by WindSpeed.
+Wind speed handled by WindSpeed2.
 Wind direction handled by WindDirection.
 */
 
@@ -89,10 +90,11 @@ SensorData d_Insol;				// Insolaton readings.
 SensorData d_IRSky_C;			// IR sky temperature readings.
 SensorData d_fanRPM;			// Fan RPM readings.
 
-//
-//SensorSimulate dummy_T;
-//SensorSimulate dummy_IR;
-//SensorSimulate dummy_Wind;
+WindSpeed2 windSpeed(DAVIS_SPEED_CAL_FACTOR);	// WindSpeed2 object for wind.
+SensorData windGust;
+WindDirection windDir(VANE_OFFSET);	// WindDirection object for wind.
+
+
 
 
 SensorSimulate dummy_Temp_F;			// Temperature readings.
@@ -242,12 +244,11 @@ Davis RJ11 "Telephone" Plug: 6p4c
 
 // ==========   Davis wind vane - wind direction   ================ //
 
-WindDirection windDir(VANE_OFFSET);	// WindDirection object for wind.
 const int WIND_VANE_PIN = 34;		// Wind vane is connected to GPIO 34 (Analog ADC1 CH6)
 
 // ==========   Davis anemometer - wind speed  ==================== //
 
-WindSpeed windSpeed(DAVIS_SPEED_CAL_FACTOR);	// WindSpeed object for wind.
+
 
 /*
  Wind speed is determined by counting anemometer
@@ -783,7 +784,7 @@ String sensorsDataString_current() {
 	s += "\t" + String(d_IRSky_C.valueLastAdded());
 	// Wind speed (3)
 	s += "\t" + String(windSpeed.avg_10_min());
-	s += "\t" + String(windSpeed.gust_10_min());
+	s += "\t" + String(windGust.max_10_min().value);
 	s += "\tna";	// + String(windSpeed.max_last_10_min);  XXX  ???
 	// Wind direction (2)
 	if (windSpeed.avg_10_min() > 0.5)
@@ -832,7 +833,7 @@ String sensorsDataString_10_min() {
 	s += "\t" + String(d_IRSky_C.avg_10_min());
 	// Wind speed (3)
 	s += "\t" + String(windSpeed.avg_10_min());
-	s += "\t" + String(windSpeed.gust_10_min());
+	s += "\t" + String(windGust.max_10_min().value);
 	s += "\tmax?";	// + String(windSpeed.max_last_10_min);  XXX  ???
 	// Wind direction (2)
 	if (windSpeed.avg_10_min() >= WIND_DIRECTION_SPEED_THRESHOLD)
@@ -912,7 +913,7 @@ void PrintSensorOutputs() {
 	Serial.print(windSpeed.avg_10_min(), 1);
 	Serial.print(F(" mph  \t"));
 
-	Serial.print(windSpeed.gust_10_min(), 1);
+	Serial.print(windGust.max_10_min().value, 1);
 	Serial.print(F(" mph  \t"));
 
 	// Wind direction.
@@ -1028,34 +1029,6 @@ void sensorsAddLabels() {
 	d_fanRPM.addLabels("Aspirator Fan speedInstant", "Fan speedInstant", "rpm");
 }
 
-/*
-***   HOW SENSORS ARE READ AND LISTS ARE COMPILED.   ***
-
-Frequent readings for most sensors are passed directly to
-SensorData objects where they are averaged and assembled
-into lists of data vs time for 10-min, 60-min, and 12-hr
-periods.
-
-Wind readings require special handling because of the need
-to detect sudden variations and extremes (gusts) over a brief
-period (ideally ca. 2.5 - 5 seconds).
-
-Wind speed is handled by Anemometer::WindSpeed.
-
-WindDirection is first handled by Anemometer::WindDirection, which
-averages the wind direction vectors. The average direction
-over 10 minutes is then passed to a SensorData object at
-10-minute intervals to be held in lists of data vs time.
-
-XXX
-NOTE: THIS METHOD AVERAGES THE WIND DIRECTION FOR 10
-MINUTES AND SAVES ONLY THAT 10-MIN AVERAGE. IS THAT TOO
-SHORT A PERIOD, SMEARING THE DIRECTION? ALSO, SHOULD
-DIRECTION BE WEIGHTED BY SPEED?? E.G., SHOULD A 20 MPH N
-WIND FOR 5 MINUTES COUNT AS MUCH AS A SUBSEQUENT 1 MPH E
-WIND FOR 5 MINUTES??
-XXX
-*/
 
 /// <summary>
 /// Check for too many (i.e., unhandled) timer interrupts 
@@ -1089,7 +1062,16 @@ void readWind() {
 	}
 	// Read wind speed.
 	float speed = windSpeed.speedInstant(_anem_Rotations, BASE_PERIOD_SEC);
-	windSpeed.addReading(dataPoint(now(), speed));
+	dataPoint dpSpeed(now(), speed);
+	windSpeed.addReading(dataPoint(dpSpeed));
+
+
+
+	// Record any gusts.
+	dataPoint dpGust = windSpeed.gust(dpSpeed);
+	windGust.addReading(dpGust);
+
+
 
 	// Read wind direction.
 	float windAngle = windAngleReading();
@@ -1105,9 +1087,15 @@ void readWind() {
 /// Adds simulate wind sensor readings.
 /// </summary>
 void readWind_Simulate() {
+
 	unsigned int rots = dummy_anemCount.sawtooth(1, 0.2, 15);
 	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);
-	windSpeed.addReading(dataPoint(now(), speed));
+	dataPoint dpSpeed(now(), speed);
+	windSpeed.addReading(dpSpeed);
+
+	// Record any gusts.
+	dataPoint dpGust = windSpeed.gust(dpSpeed);
+	windGust.addReading(dpGust);
 	
 	//// Read wind direction.
 	//float windAngle = dummy_windDir.sawtooth(90, 1, 360);
@@ -1217,7 +1205,7 @@ void readSensors_Simulate() {
 /// </summary>
 void processReadings_10_min() {
 	windSpeed.process_data_10_min();
-	windSpeed.process_gusts_10_min();
+	windGust.process_data_10_min();
 	windDir.process_data_10_min();
 	d_Temp_F.process_data_10_min();
 	d_Pres_mb.process_data_10_min();		// Just save avg_10?
@@ -1236,7 +1224,7 @@ void processReadings_10_min() {
 /// </summary>
 void processReadings_60_min() {
 	windSpeed.process_data_60_min();
-	windSpeed.process_gusts_60_min();
+	windGust.process_data_60_min();
 	windDir.process_data_60_min();
 	d_Temp_F.process_data_60_min();
 	d_Pres_seaLvl_mb.process_data_60_min();
@@ -1295,7 +1283,7 @@ void addDummyData() {
 	// RE-WRITE THIS: d_RH.addDummyData_10_min(20, .5, 12, 1765412100);
 	// RE-WRITE THIS: d_IRSky_C.addDummyData_10_min(-25, 0.5, 12, 1765412100);
 	//windSpeed.addDummySpeedData_10_min(15, 0.5, 12, 1765412100);
-	windSpeed.addDummyGustData_10_min(25, 2, 12, 1765412100);
+//////////////	windSpeed.addDummyGustData_10_min(25, 2, 12, 1765412100);
 	//	windDir.addDummyData_10_min(270, 5, 12, 1765412100);
 	d_Insol.addDummyData_10_min(2700, 25, 12, 1765412100);
 	d_UVIndex.addDummyData_10_min(0, 0.5, 12, 1765412100);

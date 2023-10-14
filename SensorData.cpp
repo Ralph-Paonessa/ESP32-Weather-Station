@@ -25,44 +25,23 @@ void SensorData::addReading(dataPoint dp) {
 	// Find min and max so far for today.
 	_min_today = (dp.value < _min_today.value) ? dp : _min_today;
 	_max_today = (dp.value > _max_today.value) ? dp : _max_today;
+	// Find min and max so far for this 10-min period.
+	_min_10_min = (dp.value < _min_10_min.value) ? dp : _min_10_min;
+	_max_10_min = (dp.value < _max_10_min.value) ? dp : _max_10_min;
 	
 }
 
 
-//// Smooth not working and must be redone with LIST!
-///// <summary>
-///// 
-///// </summary>
-///// <param name="dp"></param>
-//void SensorData::process_Smoothed_Min_Max(dataPoint dp) {
-//	_countSmoothRead++;
-//	_sumSmooth += dp.value;
-//	// After COUNT_FOR_SMOOTH cycles, get smoothed 
-//	// average and use to find min, max.
-//	if (_countSmoothRead == COUNT_FOR_SMOOTH) {
-//		// Enough values, so use average for finding min, max.
-//		float valSmoothed = _sumSmooth / _countSmoothRead;
-//		/*_min_today = (dp.value < _min_today.value) ? dp : _min_today;
-//		_max_today = (dp.value > _max_today.value) ? dp : _max_today;*/
-//		clearAverageSmooth();	// Restart smoothing.
-//	}
-//}
-
 /// <summary>
-/// Clears running average.
+/// Clears running average and min, max for 10-min period.
 /// </summary>
-void SensorData::clearAverage() {
+void SensorData::clear_10_min() {
 	_sumReadings = 0;
 	_countReadings = 0;
+	// Reset to highest possible.
+	_min_10_min = dataPoint(0, VAL_LIMIT);
+	_max_10_min = dataPoint(0, -VAL_LIMIT);
 }
-
-///// <summary>
-///// Clears smoothing average.
-///// </summary>
-//void SensorData::clearAverageSmooth() {
-//	_sumSmooth = 0;
-//	_countSmoothRead = 0;
-//}
 
 /// <summary>
 /// Clears saved minimum and maximum for the day.
@@ -71,6 +50,16 @@ void SensorData::clearMinMax_day() {
 	// Reset to highest possible.
 	_min_today = dataPoint(0, VAL_LIMIT);
 	_max_today = dataPoint(0, -VAL_LIMIT);
+}
+
+dataPoint SensorData::min_10_min()
+{
+	return _min_10_min;
+}
+
+dataPoint SensorData::max_10_min()
+{
+	return _max_10_min;
 }
 
 /// <summary>
@@ -83,7 +72,7 @@ void SensorData::process_data_10_min() {
 	addToList(_data_10_min,
 		dataPoint(_dataLastAdded.time, _avg_10_min),
 		SIZE_10_MIN_LIST);
-	clearAverage();	// start another 10-min avg
+	clear_10_min();	// Start another 10-min period.
 }
 
 /// <summary>

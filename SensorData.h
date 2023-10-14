@@ -53,10 +53,18 @@ protected:		// Protected items are accessible by inherited classes.
 	dataPoint _min_today = dataPoint(0, VAL_LIMIT);		// Today's minimum.
 	dataPoint _max_today = dataPoint(0, -VAL_LIMIT);	// Today's maximum.
 
+
+	dataPoint _min_10_min = dataPoint(0, VAL_LIMIT);	// Minimum over 10-min period.
+	dataPoint _max_10_min = dataPoint(0, -VAL_LIMIT);	// Maximum over 10-min period.
+
+
+
+
+
 	/// <summary>
-	/// Clears running average.
+	/// Clears running average and min, max for 10-min period.
 	/// </summary>
-	void clearAverage();
+	void clear_10_min();
 
 	/*/// <summary>
 	/// Clears smoothing average.
@@ -97,6 +105,10 @@ public:
 	/// Clears saved minimum and maximum for the day.
 	/// </summary>
 	void clearMinMax_day();
+
+
+	dataPoint min_10_min();	// Minimum over 10-min period.
+	dataPoint max_10_min();// Maximum over 10-min period.
 
 	/// <summary>
 	/// Returns dataPoint with today's minimum value so far.

@@ -37,10 +37,17 @@ private:
 
 	void addGust_10_min(list<dataPoint>& targetList, float max, float min);
 
-	/// <summary>
+	// Already in SensorData
+	/*/// <summary>
 	/// Reset min and max values.
 	/// </summary>
-	void clearMinMax_today();
+	void clearMinMax_today();*/
+
+
+
+	float _gustMax_now = 0;	// Highest gust measurement so far in 10-min period.
+
+
 
 	dataPoint _min_gust_today = dataPoint(0, VAL_LIMIT);	// Today's minimum.
 	dataPoint _max_gust_today = dataPoint(0, -VAL_LIMIT);	// Today's maximum.
@@ -50,8 +57,9 @@ private:
 
 	// Variables to hold windSpeed extremes for gusts.
 
-	float _speedMax_10_min = 0;					// Maximum speed in 10-min time.
-	float _speedMin_10_min = MIN_SPEED_LIMIT;	// Minimum speed in 10-min time.
+	// Already in SensorData
+	//float _speedMax_10_min = 0;					// Maximum speed in 10-min time.
+	//float _speedMin_10_min = MIN_SPEED_LIMIT;	// Minimum speed in 10-min time.
 
 	list<dataPoint> _gusts_10_min;	// List of gust data points over 10-min period.
 	list<dataPoint> _gusts_60_min;	// List of gust data points over 60-min period.
@@ -60,9 +68,6 @@ public:
 
 	// Constructor	
 	WindSpeed(float calibrationFactor);		// Overload of SensorData.
-
-	//void addReading(unsigned long time, int rotations);
-
 
 	/// <summary>
 	/// Returns wind speed from anemometer rotations.
@@ -77,17 +82,30 @@ public:
 
 	void process_gusts_day();
 
-	float gust_10_min();
-	float gust_60_min();
-
+	
 	void addDummyGustData_10_min(
 		float valueStart, 
 		float increment, 
 		int numElements, 
 		unsigned long timeStart);
 
+	// Return values -------------------------------
+
 	String gusts_10_min_string_delim(bool isConvertZeroToEmpty, int decimalPlaces);
 	String gusts_60_min_string_delim(bool isConvertZeroToEmpty, int decimalPlaces);
+
+	/// <summary>
+	/// Returns maximum gust in most recent 10-min period.
+	/// </summary>
+	/// <returns>Latest 10-min maximum gust.</returns>
+	float gust_last_10_min();
+
+	/// <summary>
+	/// Returns maximum gust in most recent 60-min period.
+	/// </summary>
+	/// <returns>Latest 60-min maximum gust.</returns>
+	float gust_last_60_min();
+
 
 	/// <summary>
 	/// Returns list of gust (time, value) data points 
