@@ -21,8 +21,6 @@ using namespace App_Settings;
 
 #include "SensorData.h"
 
-
-
 /// <summary>
 /// Exposes methods to measure and record wind speeds.
 /// </summary>

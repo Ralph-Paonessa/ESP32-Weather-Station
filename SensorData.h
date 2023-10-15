@@ -57,10 +57,6 @@ protected:		// Protected items are accessible by inherited classes.
 	dataPoint _min_10_min = dataPoint(0, VAL_LIMIT);	// Minimum over 10-min period.
 	dataPoint _max_10_min = dataPoint(0, -VAL_LIMIT);	// Maximum over 10-min period.
 
-
-
-
-
 	/// <summary>
 	/// Clears running average and min, max for 10-min period.
 	/// </summary>
