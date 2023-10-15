@@ -27,7 +27,7 @@ void SensorData::addReading(dataPoint dp) {
 	_max_today = (dp.value > _max_today.value) ? dp : _max_today;
 	// Find min and max so far for this 10-min period.
 	_min_10_min = (dp.value < _min_10_min.value) ? dp : _min_10_min;
-	_max_10_min = (dp.value < _max_10_min.value) ? dp : _max_10_min;
+	_max_10_min = (dp.value > _max_10_min.value) ? dp : _max_10_min;
 	
 }
 

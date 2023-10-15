@@ -95,8 +95,7 @@ SensorData windGust;
 WindDirection windDir(VANE_OFFSET);	// WindDirection object for wind.
 
 
-
-
+//#if defined(VM_DEBUG)
 SensorSimulate dummy_Temp_F;			// Temperature readings.
 SensorSimulate dummy_Pres_mb;			// Pressure readings.
 SensorSimulate dummy_Pres_seaLvl_mb;	// Pressure readings.
@@ -109,9 +108,9 @@ SensorSimulate dummy_Insol;				// Insolaton readings.
 SensorSimulate dummy_IRSky_C;			// IR sky temperature readings.
 SensorSimulate dummy_fanRPM;			// Fan RPM readings.
 
-SensorSimulate dummy_anemCount;			// Anemometer RPM readings.
-SensorSimulate dummy_windDir;			// Anemometer RPM readings.
-
+SensorSimulate dummy_anemCount;			// Anemometer rot count.
+SensorSimulate dummy_windDir;			// Anemometer wind direction.
+//#endif
 
 // Keep track of timer interrupts that trigger readings.
 volatile int _countInterrupts_base = 0;		// Base timer interrupt count to trigger base sensor read.
@@ -595,10 +594,10 @@ void logDebugStatus() {
 	if (_isDEBUG_BypassWebServer) {
 		sd.logStatus_indent("BYPASS WEB SERVER");
 	}
-	if (_isDEBUG_Test_setup) {
+	if (_isDEBUG_run_test_in_setup) {
 		sd.logStatus_indent("RUN TEST CODE IN SETUP");
 	}
-	if (_isDEBUG_Test_loop) {
+	if (_isDEBUG_run_test_in_loop) {
 		sd.logStatus_indent("RUN TEST CODE IN LOOP");
 	}
 	if (_isDEBUG_addDummyDataList) {
@@ -1087,8 +1086,8 @@ void readWind() {
 /// Adds simulate wind sensor readings.
 /// </summary>
 void readWind_Simulate() {
-
-	unsigned int rots = dummy_anemCount.sawtooth(1, 0.2, 15);
+//#if defined(VM_DEBUG)
+	unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);
 	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);
 	dataPoint dpSpeed(now(), speed);
 	windSpeed.addReading(dpSpeed);
@@ -1096,10 +1095,11 @@ void readWind_Simulate() {
 	// Record any gusts.
 	dataPoint dpGust = windSpeed.gust(dpSpeed);
 	windGust.addReading(dpGust);
-	
+
 	//// Read wind direction.
 	//float windAngle = dummy_windDir.sawtooth(90, 1, 360);
 	//windDir.addReading(now(), windAngle, speed);	// weighted by speed
+//#endif
 }
 
 
@@ -1252,23 +1252,35 @@ void processReadings_Day() {
 	d_IRSky_C.process_data_day();
 }
 
+
+
 /// <summary>
-/// Test code that can be inserted for debugging.
+/// Test code to insert in setup for debugging.
 /// </summary>
-void addTestCodeHere() {
-#if defined(VM_DEBUG)
-	/////////  TESTING   /////////////
+/// <param name="runTime_sec">Number of seconds to run.</param>
+void testCodeForSetup(unsigned long runTime_sec) {
+	//#if defined(VM_DEBUG)
 	Serial.println(LINE_SEPARATOR);
-	Serial.println("TEST in setup start\n");
-	/*******************************
+	Serial.print("TEST in setup to run for "); Serial.print(runTime_sec); Serial.println(" sec/n");
+	unsigned long timeStart = millis();
+	/********************************/
+	/* INSERT DEFINITIONS HERE.     */
+	SensorSimulate ls;
+	/********************************/
+	while (millis() < timeStart + runTime_sec * 1000)
+	{
+		/********************************/
+		/* INSERT TEST CODE HERE.       */
 
-		INSERT TEST CODE HERE.
+		//Serial.println(ls.linear_spike(11, 1, 100, 10, 5));
+		Serial.println(ls.sawtooth(10, 1, 20));
 
-	********************************/
+		/********************************/
+	}
 	Serial.println("TEST COMPLETE");
 	Serial.println(LINE_SEPARATOR);
 	while (true) {}	// infinite loop to halt
-#endif
+	//#endif
 }
 
 /// <summary>
@@ -1390,29 +1402,17 @@ void setup() {
 	_oldMonth = month();
 	_oldYear = year();
 
-	//#if defined(VM_DEBUG)
-		////////  TESTING   ////////
+#if defined(VM_DEBUG)
+	////////  TESTING   ////////
 	if (_isDEBUG_addDummyDataList) {
 		addDummyData();
 	}
-
-	/*if (_isDEBUG_simulateReadings) {
-		float dumVal = 0;
-		unsigned int seconds = BASE_PERIOD_SEC * SECONDS_PER_HOUR * 5;
-		dumVal = dummy_T.linear(5, 90. / seconds);
-		d_Temp_F.addReading(now(), dumVal);
-
-		d_IRSky_C.addReading(now(), dummy_IR.linear(-25, 90 / (seconds * 5)));
-
-	}*/
-
-
-	if (_isDEBUG_Test_setup) {
-		addTestCodeHere();
+	if (_isDEBUG_run_test_in_setup) {
+		testCodeForSetup(200000);
 	}
-	//#endif
+#endif
 
-		// ==========  INITIALIZE SENSORS  ========== //
+	// ==========  INITIALIZE SENSORS  ========== //
 	initializeSensors();
 
 	sd.logData(columnNames());	// Write column names to data log.
