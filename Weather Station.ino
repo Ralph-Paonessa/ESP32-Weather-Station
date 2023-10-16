@@ -1087,7 +1087,8 @@ void readWind() {
 /// </summary>
 void readWind_Simulate() {
 //#if defined(VM_DEBUG)
-	unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);
+	unsigned int rots = dummy_anemCount.linear(15, 0);
+	//unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);
 	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);
 	dataPoint dpSpeed(now(), speed);
 	windSpeed.addReading(dpSpeed);

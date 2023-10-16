@@ -14,9 +14,7 @@
 /// </summary>
 namespace App_Settings {
 
-
 	const float BASE_PERIOD_SEC = 1;	// Period to sample anemometer rotations (sec).
-
 
 	//////////////////const float BASE_PERIOD_SEC = 4;	// Period to sample anemometer rotations (sec).
 
@@ -26,13 +24,12 @@ namespace App_Settings {
 	const int	GPS_DELAY_BETWEEN_CYCLES = 15;	// Delay before getting another GPS fix, sec.
 	const float GPS_MAX_ALLOWED_HDOP = 1.5;		// Minimum HDOP precision required before syncing.
 
-
-	const int	GPS_DUMMY_HOUR = 23;
-	const int	GPS_DUMMY_MIN = 55;
-	const int	GPS_DUMMY_SEC = 0;
-	const int	GPS_DUMMY_DAY = 1;
-	const int	GPS_DUMMY_MONTH = 1;
-	const int	GPS_DUMMY_YEAR = 2099;
+	const int	GPS_DUMMY_HOUR = 23;			// Hour for dummy GPS time.
+	const int	GPS_DUMMY_MIN = 55;				// Minute for dummy GPS time.
+	const int	GPS_DUMMY_SEC = 0;				// Second for dummy GPS time.
+	const int	GPS_DUMMY_DAY = 1;				// Day for dummy GPS time.
+	const int	GPS_DUMMY_MONTH = 1;			// Month for dummy GPS time.
+	const int	GPS_DUMMY_YEAR = 2099;			// Year for dummy GPS time.
 
 	const int	UTC_OFFSET_HOURS = -8;
 	const bool	IS_DAYLIGHT_TIME = true;
@@ -45,7 +42,6 @@ namespace App_Settings {
 	const String LOGFILE_PATH_DATA = "/data.txt";
 
 	const String LOGFILE_PATH_STATUS = "/log.txt";
-
 	
 	const String LINE_SEPARATOR_LOG_BEGINS = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
 	const String LINE_SEPARATOR_MAJOR = "===========================================================";
