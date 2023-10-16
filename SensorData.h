@@ -33,18 +33,13 @@ protected:		// Protected items are accessible by inherited classes.
 	float _sumReadings;				// Accumulating sum of readings.
 	unsigned int _countReadings;		// Number of readings in average.
 
-	/*float _sumSmooth;
-	unsigned int _countSmoothRead = 0;*/
-
 	// Samples required for smoothing avg.
 	const unsigned int COUNT_FOR_SMOOTH = 10;
 
 	float _avg_10_min = 0;			// Average over 10 min.
 	float _avg_60_min = 0;			// Average over 60 min.
 
-	//void process_Smoothed_Min_Max(dataPoint dp);
-
-	float _avgSmoothed = 0;			// Avg of the last few readings (for smoothing).
+	//float _avgSmoothed = 0;			// Avg of the last few readings (for smoothing).
 
 	const float VAL_LIMIT = 999999;	// No reading absolute value will ever be greater.
 
@@ -61,11 +56,6 @@ protected:		// Protected items are accessible by inherited classes.
 	/// Clears running average and min, max for 10-min period.
 	/// </summary>
 	void clear_10_min();
-
-	/*/// <summary>
-	/// Clears smoothing average.
-	/// </summary>
-	void clearAverageSmooth();*/
 
 	list<dataPoint> _data_10_min;		// List of Data_Points at 10-min intervals.
 	list<dataPoint> _data_60_min;		// List of Data_Points at 60-min intervals.
@@ -91,10 +81,28 @@ public:
 
 	dataPoint dataLastAdded();
 
+	/// <summary>
+	/// The most-recently added data value.
+	/// </summary>
+	/// <returns>Most recent reading value.</returns>
 	float valueLastAdded();
 
+	/// <summary>
+	/// The accumulated avg now (reset every 10 minutes).
+	/// </summary>
+	/// <returns>Average now.</returns>
+	float avg_now();
+
+	/// <summary>
+	/// The last average saved to the 10-min list.
+	/// </summary>
+	/// <returns>10-min average.</returns>
 	float avg_10_min();
 
+	/// <summary>
+	/// The last average saved to the 60-min list.
+	/// </summary>
+	/// <returns>60-min average.</returns>
 	float avg_60_min();
 
 	/// <summary>

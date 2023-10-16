@@ -8,7 +8,8 @@
 /// <returns>String substituted for placeholder.</returns>
 String processor(const String& var) {
 
-	// Add CSS light style during daylight.
+	/// CSS LIGHT STYLE DURING DAY  //////////////
+
 	if (var == "CSS_LIGHT_STYLE") {
 		// Switch display theme when ambient light is,
 		// detected by normalized insolation %.
@@ -19,7 +20,9 @@ String processor(const String& var) {
 			return "";
 		}
 	}
-	///  Weather data.  ///////////////////
+
+	///  CURRENT SENSOR READINGS  ///////////////////
+
 	if (var == "LAST_READINGS_DATETIME") {
 		return gps.dateTime();
 	}
@@ -30,9 +33,9 @@ String processor(const String& var) {
 		return gps.dayString();
 	}
 	if (var == "TEMPERATURE_F")
-		return String(d_Temp_F.valueLastAdded(), 0);
+		return String(d_Temp_F.avg_now(), 0);
 	if (var == "WIND_SPEED") {
-		return String(windSpeed.valueLastAdded(), 0);	// 10-min avg
+		return String(windSpeed.avg_now(), 0);	// 10-min avg
 	}
 	if (var == "WIND_GUST") {
 		return String(windGust.max_10_min().value, 0);
@@ -47,23 +50,23 @@ String processor(const String& var) {
 		return String(gps.data.altitude(), 0);
 	}
 	if (var == "PRESSURE_MB_SL") {
-		return String(d_Pres_seaLvl_mb.valueLastAdded(), 0);
+		return String(d_Pres_seaLvl_mb.avg_now(), 0);
 	}
 	if (var == "PRESSURE_MB_ABS") {
-		return String(d_Pres_mb.valueLastAdded(), 0);
+		return String(d_Pres_mb.avg_now(), 0);
 	}
 	if (var == "WATER_BOILING_POINT") {
-		return String(waterBoilingPoint_F(d_Pres_mb.valueLastAdded()), 0);
+		return String(waterBoilingPoint_F(d_Pres_mb.avg_now()), 0);
 	}
 	if (var == "INSOLATION_PERCENT") {
-		return String(d_Insol.valueLastAdded(), 0);
+		return String(d_Insol.avg_now(), 0);
 	}
 	if (var == "REL_HUMIDITY") {
-		return String(d_RH.valueLastAdded(), 0);
+		return String(d_RH.avg_now(), 0);
 	}
 	if (var == "UV_A") {
 		if (isGood_UV) {
-			return String(d_UVA.valueLastAdded(), 0);
+			return String(d_UVA.avg_now(), 0);
 		}
 		else {
 			return String("na");
@@ -71,7 +74,7 @@ String processor(const String& var) {
 	}
 	if (var == "UV_B") {
 		if (isGood_UV) {
-			return String(d_UVB.valueLastAdded(), 0);
+			return String(d_UVB.avg_now(), 0);
 		}
 		else {
 			return String("na");
@@ -79,18 +82,17 @@ String processor(const String& var) {
 	}
 	if (var == "UV_INDEX") {
 		if (isGood_UV) {
-			return String(d_UVIndex.valueLastAdded(), 1);
+			return String(d_UVIndex.avg_now(), 1);
 		}
 		else {
 			return String("na");
 		}
 	}
 	if (var == "IR_T_SKY") {
-		return String(d_IRSky_C.valueLastAdded(), 0);
+		return String(d_IRSky_C.avg_now(), 0);
 	}
 
-
-	///  Weather data daily maxima.  ///////////////////
+	///  DAILY MAXIMA  ///////////////////
 
 	if (var == "TEMPERATURE_F_HI") {
 		return String(d_Temp_F.max_today().value, 0);
@@ -99,7 +101,7 @@ String processor(const String& var) {
 		return String(windSpeed.max_today().value, 0);
 	}
 	if (var == "WIND_GUST_HI") {
-		return String(windSpeed.max_today().value, 0);
+		return String(windGust.max_today().value, 0);
 	}
 	if (var == "WIND_ANGLE_HI") {
 		return "??";		// avg since last cleared (<= 10 min)
@@ -141,8 +143,7 @@ String processor(const String& var) {
 		return String(d_IRSky_C.max_today().value, 0);
 	}
 
-
-	///  Weather data daily minima.  ///////////////////
+	///  DAILY MINIMA  ///////////////////
 
 	if (var == "TEMPERATURE_F_LO") {
 		return String(d_Temp_F.min_today().value, 0);
@@ -151,7 +152,7 @@ String processor(const String& var) {
 		return String(windSpeed.min_today().value, 0);	// 10-min avg
 	}
 	if (var == "WIND_GUST_LO") {
-		return String(windSpeed.min_today().value, 0);
+		return String(windGust.min_today().value, 0);
 	}
 	if (var == "WIND_ANGLE_LO") {
 		return "??";		// avg since last cleared (<= 10 min)
@@ -166,9 +167,7 @@ String processor(const String& var) {
 		return String(d_IRSky_C.min_today().value, 0);
 	}
 
-
-
-	///  GPS info.   ////////////////////////
+	///  GPS DATA   ////////////////////////
 
 	if (var == "GPS_IS_SYNCED") {
 		if (gps.isSynced())
@@ -213,7 +212,9 @@ String processor(const String& var) {
 		return String(d_fanRPM.valueLastAdded());
 	}
 
-	/// CHART FIELDS  //////////////
+	/// CHART FIELDS  //////////////////////////////////////////////
+
+	/// Y-AXIS LABEL  //////////////
 
 	if (var == "TIME_OFFSET_HOURS") {
 		if (IS_DAYLIGHT_TIME) {
@@ -225,7 +226,7 @@ String processor(const String& var) {
 	}
 	if (var == "CHART_Y_AXIS_LABEL") {
 		// Based on chart requested.
-		switch (chart_request)
+		switch (_chart_request)
 		{
 		case CHART_NONE:
 			return "Chart not specified!";
@@ -246,14 +247,17 @@ String processor(const String& var) {
 		case CHART_WIND_SPEED:
 			return String(windSpeed.label() + ", " + windSpeed.units());
 		case CHART_WIND_GUST:
-			return String("Wind Gusts, " + windSpeed.units());
+			return String("Wind Gusts, " + windGust.units());
 		default:
 			return "Chart not found";
 		}
 	}
+
+	/// CHART TITLE  //////////////
+
 	if (var == "CHART_TITLE") {
 		// Based on chart requested.
-		switch (chart_request)
+		switch (_chart_request)
 		{
 		case CHART_NONE:
 			return "Chart not specified!";
@@ -277,10 +281,12 @@ String processor(const String& var) {
 			return "Wind Gusts";
 		}
 	}
-	// Y axis min.
+	
+	/// Y-AXIS MIN  //////////////
+
 	if (var == "Y_MIN") {
 		// Based on chart requested.
-		switch (chart_request)
+		switch (_chart_request)
 		{
 		case CHART_NONE:
 			return "min: -500";
@@ -306,10 +312,12 @@ String processor(const String& var) {
 			return "min: -2000";
 		}
 	}
-	// Y axis max.
+	
+	/// Y-AXIS MAX  //////////////
+
 	if (var == "Y_MAX") {
 		// Based on chart requested.
-		switch (chart_request)
+		switch (_chart_request)
 		{
 		case CHART_NONE:
 			return ", max: 500";
@@ -335,10 +343,12 @@ String processor(const String& var) {
 			return ", max: 2000";
 		}
 	}
-	// Y axis tick amount.
+	
+	/// Y-AXIS TICK AMOUNT  //////////////
+
 	if (var == "Y_TICK_AMOUNT") {
 		// Based on chart requested.
-		switch (chart_request)
+		switch (_chart_request)
 		{
 		case CHART_IR_SKY:
 			return ", tickAmount: 5";
@@ -355,11 +365,6 @@ String processor(const String& var) {
 		default:
 			return "";
 		}
-	}
-
-	///   Fan   //////////////
-	if (var == "FAN_RPM") {
-		return String(d_fanRPM.valueLastAdded());
 	}
 	return var + String(" not found");
 }

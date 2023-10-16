@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SensorData">
+    <Position X="0.75" Y="0.5" Width="3" />
+    <Members>
+      <Method Name="clear_10_min" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>UIGAiAIAAQAIVDgIADjgKAAoQECyAAAggJAAICAAxAY=</HashCode>
+      <FileName>SensorData.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindSpeed2">
+    <Position X="4.5" Y="0.5" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAgAAAABAAEAAgAAGAAAAAAABAAAAA=</HashCode>
+      <FileName>WindSpeed2.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WindDirection">
+    <Position X="4.75" Y="2.75" Width="1.75" />
+    <Members>
+      <Method Name="angleFromComponents" Hidden="true" />
+      <Method Name="directionCardinal" Hidden="true" />
+      <Method Name="e_Component" Hidden="true" />
+      <Method Name="n_Component" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AgACABAAAAAAAAAAAAAEAEASQQAAhAAAAAAMACAgAAA=</HashCode>
+      <FileName>WindDirection.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

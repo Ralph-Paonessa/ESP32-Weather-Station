@@ -139,7 +139,7 @@ SDCard sd;		// SDCard instance.
 
 // ==========   Async Web Server   ================== //
 AsyncWebServer server(80);	// Async web server object on port 80.
-chartRequested chart_request = CHART_NONE;	// Chart requested from server.
+chartRequested _chart_request = CHART_NONE;	// Chart requested from server.
 
 
 // ==========   u-blox NEO-6M GPS   ========================== //
@@ -1015,6 +1015,7 @@ void initializeSensors() {
 void sensorsAddLabels() {
 	windSpeed.addLabels("Wind Speed", "Wind", "mph");
 	windDir.addLabels("Wind direction", "Wind Dir", "", "&deg;");
+	windGust.addLabels("Wind Gust", "Gust", "mph");
 	d_Temp_F.addLabels("Temperature", "Temp", "F", "&deg;F");
 	d_Pres_mb.addLabels("Pressure (abs)", "Pres (abs)", "mb");
 	d_Pres_seaLvl_mb.addLabels("Pressure (SL)", "Pres (sl)", "mb");
@@ -1064,10 +1065,9 @@ void readWind() {
 	dataPoint dpSpeed(now(), speed);
 	windSpeed.addReading(dataPoint(dpSpeed));
 
-
-
 	// Record any gusts.
-	dataPoint dpGust = windSpeed.gust(dpSpeed);
+	float avg = windSpeed.avg_now();
+	dataPoint dpGust = windSpeed.gust(dpSpeed, avg);
 	windGust.addReading(dpGust);
 
 
@@ -1093,8 +1093,10 @@ void readWind_Simulate() {
 	windSpeed.addReading(dpSpeed);
 
 	// Record any gusts.
-	dataPoint dpGust = windSpeed.gust(dpSpeed);
+	float avg = windSpeed.avg_now();
+	dataPoint dpGust = windSpeed.gust(dpSpeed, avg);
 	windGust.addReading(dpGust);
+	
 
 	//// Read wind direction.
 	//float windAngle = dummy_windDir.sawtooth(90, 1, 360);

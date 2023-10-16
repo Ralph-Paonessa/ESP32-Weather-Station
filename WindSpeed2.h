@@ -47,14 +47,16 @@ public:
 	/// <returns>Wind speed, mph</returns>
 	float speedInstant(int rotations, float period);
 
+	
 	/// <summary>
 	/// Checks for and returns a gust datPoint if the speed satisfies 
-	/// gust criteria.Otherwise, the returned value will be zero if 
+	/// gust criteria. Otherwise, the returned value will be zero if 
 	/// the speed doesn't satisfy gust criteria.
 	/// </summary>
 	/// <param name="speed">(time, value) point to evaluate for gust.</param>
-	/// <returns>(time, value) data point.</returns>
-	dataPoint gust(dataPoint speed);
+	/// <param name="avgSpeed">Current average wind speed.</param>
+	/// <returns>Gust as (time, value) data point.</returns>
+	dataPoint gust(dataPoint speed, float avgSpeed);
 
 	/// <summary>
 	/// Returns wind speed description in Beaufort 

@@ -27,7 +27,7 @@ void SensorData::addReading(dataPoint dp) {
 	_max_today = (dp.value > _max_today.value) ? dp : _max_today;
 	// Find min and max so far for this 10-min period.
 	_min_10_min = (dp.value < _min_10_min.value) ? dp : _min_10_min;
-	_max_10_min = (dp.value > _max_10_min.value) ? dp : _max_10_min;	
+	_max_10_min = (dp.value > _max_10_min.value) ? dp : _max_10_min;
 }
 
 /// <summary>
@@ -108,16 +108,25 @@ dataPoint SensorData::dataLastAdded()
 /// <summary>
 /// The most-recently added data value.
 /// </summary>
-/// <returns></returns>
+/// <returns>Most recent reading value.</returns>
 float SensorData::valueLastAdded()
 {
 	return _dataLastAdded.value;
 }
 
 /// <summary>
+/// The accumulated avg now (reset every 10 minutes).
+/// </summary>
+/// <returns>Average now.</returns>
+float SensorData::avg_now()
+{
+	return _sumReadings / _countReadings;
+}
+
+/// <summary>
 /// The last average saved to the 10-min list.
 /// </summary>
-/// <returns></returns>
+/// <returns>10-min average.</returns>
 float SensorData::avg_10_min()
 {
 	return _avg_10_min;

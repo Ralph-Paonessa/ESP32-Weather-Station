@@ -9,6 +9,9 @@
 #include "WProgram.h"
 #endif
 
+#include "App_Settings.h"
+
+
 /// <summary>
 /// Exposes methods to generate simulated values.
 /// </summary>

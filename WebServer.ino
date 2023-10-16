@@ -121,55 +121,55 @@ void serverRouteHandler() {
 
 		// Temperature graph page.
 		server.on("/chart_T", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_TEMPERATURE_F;
+			_chart_request = CHART_TEMPERATURE_F;
 			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
 			});
 
 		// Wind speed graph page.
 		server.on("/chart_W", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_WIND_SPEED;
+			_chart_request = CHART_WIND_SPEED;
 			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
 			});
 
 		// Wind gust graph page.
 		server.on("/chart_Wgst", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_WIND_GUST;
+			_chart_request = CHART_WIND_GUST;
 			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
 			});
 
 		// Wind direction graph page.
 		server.on("/chart_Wdir", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_WIND_DIRECTION;
+			_chart_request = CHART_WIND_DIRECTION;
 			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
 			});
 
 		// Pressure (sea level) graph page.
 		server.on("/chart_P", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_PRESSURE_SEA_LEVEL;
+			_chart_request = CHART_PRESSURE_SEA_LEVEL;
 			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
 			});
 
 		// Relative Humidity graph page.
 		server.on("/chart_RH", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_RELATIVE_HUMIDITY;
+			_chart_request = CHART_RELATIVE_HUMIDITY;
 			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
 			});
 
 		// Sky Infrared graph page.
 		server.on("/chart_IR", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_IR_SKY;
+			_chart_request = CHART_IR_SKY;
 			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
 			});
 
 		// UV Index graph page.
 		server.on("/chart_UVIndex", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_UV_INDEX;
+			_chart_request = CHART_UV_INDEX;
 			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
 			});
 
 		// Insolation graph page.
 		server.on("/chart_Insol", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_INSOLATION;
+			_chart_request = CHART_INSOLATION;
 			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
 			});
 
@@ -230,17 +230,18 @@ void serverRouteHandler() {
 				request->send(LittleFS, "/js/chart.js", "text/javascript");
 			});
 
-		/*****  DATA SOURCES FOR GRAPHS  *****/
+		/*****  DATA SOURCES FOR GRAPHS  ************************************/
 		/*
-		 Send string with data asynchronously to html
+		 Asynchronously Send string with data to html
 		 page where Javascript parses and plots the data.
 		*/
 
-		// 10-min charts
+		/*****  10-MIN CHARTS  *****/
+
 		server.on("/data_10", HTTP_GET,
 			[](AsyncWebServerRequest* request) {
 				// Which chart?
-				switch (chart_request)
+				switch (_chart_request)
 				{
 				case CHART_NONE:
 					request->send_P(200, "text/plain", "");
@@ -278,54 +279,12 @@ void serverRouteHandler() {
 				}
 			});
 
-		// 60-min charts
+		/*****  60-MIN CHARTS  *****/
+
 		server.on("/data_60", HTTP_GET,
 			[](AsyncWebServerRequest* request) {
 				// Which chart?
-				switch (chart_request)
-				{
-				case CHART_NONE:
-					request->send_P(200, "text/plain", "");
-					break;
-				case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_TEMPERATURE_F:
-					request->send_P(200, "text/plain", d_Temp_F.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.data_60_min_string_delim(false, 1).c_str());
-					break;
-				case CHART_WIND_DIRECTION:
-					request->send_P(200, "text/plain", windDir.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windGust.data_60_min_string_delim(true, 0).c_str()); 
-					break;
-				default:
-					request->send_P(200, "text/plain", "");
-					break;
-				}
-			});
-
-
-		// Daily minima charts
-		server.on("/data_60", HTTP_GET,
-			[](AsyncWebServerRequest* request) {
-				// Which chart?
-				switch (chart_request)
+				switch (_chart_request)
 				{
 				case CHART_NONE:
 					request->send_P(200, "text/plain", "");
@@ -363,12 +322,12 @@ void serverRouteHandler() {
 				}
 			});
 
+		/*****  DAILY MAXIMA CHARTS  *****/
 
-		// Daily maxima charts.
 		server.on("/data_max", HTTP_GET,
 			[](AsyncWebServerRequest* request) {
 				// Which chart?
-				switch (chart_request)
+				switch (_chart_request)
 				{
 				case CHART_NONE:
 					request->send_P(200, "text/plain", "");
@@ -398,7 +357,7 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", windSpeed.maxima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windSpeed.maxima_byDay_string_delim(true, 0).c_str());
+					request->send_P(200, "text/plain", windGust.maxima_byDay_string_delim(true, 0).c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");
@@ -407,11 +366,12 @@ void serverRouteHandler() {
 			});
 
 
-		// Daily minima charts.
+		/*****  DAILY MINIMA CHARTS  *****/
+
 		server.on("/data_min", HTTP_GET,
 			[](AsyncWebServerRequest* request) {
 				// Which chart?
-				switch (chart_request)
+				switch (_chart_request)
 				{
 				case CHART_NONE:
 					request->send_P(200, "text/plain", "");
@@ -442,17 +402,13 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", windSpeed.minima_byDay_string_delim(false, 0).c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windSpeed.minima_byDay_string_delim(true, 0).c_str());
+					request->send_P(200, "text/plain", windGust.minima_byDay_string_delim(true, 0).c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");
 					break;
 				}
 			});
-
-
-
-
 
 #if defined(VM_DEBUG)
 	}
