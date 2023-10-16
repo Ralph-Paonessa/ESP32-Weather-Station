@@ -37,7 +37,20 @@ private:
 public:
 
 	// Constructor	
-	WindSpeed2(float calibrationFactor);		// Overload of SensorData.
+
+	/// <summary>
+	/// Initializes WindSpeed2 object.
+	/// </summary>
+	/// <param name="calibrationFactor">
+	/// Calibration factor for anemometer.</param>
+	/// <param name="isUseMovingAvg">
+	/// Set true to use moving avg to smooth readings (default = false).</param>
+	/// <param name="numValuesForAvg">
+	/// Number of values in moving average (default = 5).</param>
+	WindSpeed2(
+		float calibrationFactor, 
+		bool isUseMovingAvg = false, 
+		unsigned int numSmoothPoints = 5);		// Overload of SensorData.
 
 	/// <summary>
 	/// Returns wind speed from anemometer rotations.

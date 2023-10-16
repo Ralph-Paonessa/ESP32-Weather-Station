@@ -98,7 +98,7 @@ float ListFunctions::listAverage(list<float>& targetList, int numToAverage) {
 /// </summary>
 /// <param name="targetList">List of dataPoint to check.</param>
 /// <param name="numElements">Number of elements to check, starting from end.</param>
-/// <returns></returns>
+/// <returns>Largest value of a list</returns>
 float ListFunctions::listMaximum(list<dataPoint>& targetList, int numElements) {
 	// Ensure we don't iterate past the first element.
 	if (numElements > targetList.size()) {
@@ -121,10 +121,10 @@ float ListFunctions::listMaximum(list<dataPoint>& targetList, int numElements) {
 
 /// <summary>
 /// Converts a list of dataPoint to a string of "time, value" pairs 
-/// delimited by "~".
+/// each delimited by "," and pairs delimited by "~".
 /// </summary>
 /// <param name="targetList">List to parse.</param>
-/// <returns></returns>
+/// <returns>Delimited string of multiple (time, value) data points.</returns>
 String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList)
 {
 	String s = "";

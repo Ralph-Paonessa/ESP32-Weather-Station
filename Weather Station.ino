@@ -90,7 +90,7 @@ SensorData d_Insol;				// Insolaton readings.
 SensorData d_IRSky_C;			// IR sky temperature readings.
 SensorData d_fanRPM;			// Fan RPM readings.
 
-WindSpeed2 windSpeed(DAVIS_SPEED_CAL_FACTOR);	// WindSpeed2 object for wind.
+WindSpeed2 windSpeed(DAVIS_SPEED_CAL_FACTOR, true, 5);	// WindSpeed2 object for wind.
 SensorData windGust;
 WindDirection windDir(VANE_OFFSET);	// WindDirection object for wind.
 
@@ -1087,14 +1087,14 @@ void readWind() {
 /// </summary>
 void readWind_Simulate() {
 //#if defined(VM_DEBUG)
-	unsigned int rots = dummy_anemCount.linear(15, 0);
-	//unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);
-	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);
+	//unsigned int rots = dummy_anemCount.linear(15, 0);				// simulate
+	unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);		// simulate
+	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);	// Speed value
 	dataPoint dpSpeed(now(), speed);
 	windSpeed.addReading(dpSpeed);
 
-	// Record any gusts.
-	float avg = windSpeed.avg_now();
+	// Record any gusts. Use MOVING AVG of wind speed.
+	float avg = windSpeed.avgMoving();
 	dataPoint dpGust = windSpeed.gust(dpSpeed, avg);
 	windGust.addReading(dpGust);
 	

@@ -57,6 +57,11 @@ protected:		// Protected items are accessible by inherited classes.
 	/// </summary>
 	void clear_10_min();
 
+	bool _isUseMovingAvg;				// Set true to use a moving avg.
+	list<float> _avg_moving_List;		// Moving avg of latest reading values.
+	float _avgMoving = 0;				// Moving average value.
+	unsigned int _avgMoving_Num;		// Maximum number of values to average.
+
 	list<dataPoint> _data_10_min;		// List of Data_Points at 10-min intervals.
 	list<dataPoint> _data_60_min;		// List of Data_Points at 60-min intervals.
 	list<dataPoint> _minima_dayList;	// List of daily minima.
@@ -64,7 +69,13 @@ protected:		// Protected items are accessible by inherited classes.
 
 public:
 	// Constructor.
-	SensorData();
+	
+	/// <summary>
+	/// Exposes methods to read and process sensor data.
+	/// </summary>
+	/// <param name="isUseMovingAvg">Set true to smooth data.</param>
+	/// <param name="numSmoothPoints">Number of points in moving avg.</param>
+	SensorData(bool isUseMovingAvg = false, unsigned int numSmoothPoints = 5);
 
 	/// <summary>
 	/// Adds (time, value) dataPoint, accumulates average, 
@@ -92,6 +103,9 @@ public:
 	/// </summary>
 	/// <returns>Average now.</returns>
 	float avg_now();
+
+
+	float avgMoving();
 
 	/// <summary>
 	/// The last average saved to the 10-min list.

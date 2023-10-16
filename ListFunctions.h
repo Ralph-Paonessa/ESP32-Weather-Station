@@ -42,13 +42,12 @@ namespace ListFunctions {
 	/// of a dataPoint list.
 	/// </summary>
 	/// <param name="targetList">
-	/// The list of dataPoint to average.</param>
+	/// The list of dataPoints to average.</param>
 	/// <param name="numToAverage">
 	/// The number of elements at the end of the list to average.
 	/// </param>
 	/// <returns>Average value.</returns>
 	float listAverage(list<dataPoint>& targetList, int numElements);
-
 
 	/// <summary>
 	/// Returns the average of the last values of members 
@@ -62,9 +61,21 @@ namespace ListFunctions {
 	/// <returns>Average value.</returns>
 	float listAverage(list<float>& targetList, int numElements);
 
-
+	/// <summary>
+	/// Returns the largest value of a list of dataPoints 
+	/// from the last numElements.
+	/// </summary>
+	/// <param name="targetList">List of dataPoint to check.</param>
+	/// <param name="numElements">Number of elements to check, starting from end.</param>
+	/// <returns>Largest value of a list</returns>
 	float listMaximum(list<dataPoint>& targetList, int numElements);
 
+	/// <summary>
+	/// Converts a list of dataPoint to a string of "time, value" pairs 
+	/// each delimited by "," and pairs delimited by "~".
+	/// </summary>
+	/// <param name="targetList">List to parse.</param>
+	/// <returns>Delimited string of multiple (time, value) data points.</returns>
 	String listToString_dataPoints(list<dataPoint>& targetList);
 
 	/// <summary>

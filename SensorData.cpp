@@ -7,7 +7,11 @@
 /// <summary>
 /// Exposes methods to read and process sensor data.
 /// </summary>
-SensorData::SensorData() {
+/// <param name="isUseMovingAvg">Set true to smooth data.</param>
+/// <param name="numInAvg">Number of points in moving avg.</param>
+SensorData::SensorData(bool isUseMovingAvg, unsigned int numInAvg) {
+	_isUseMovingAvg = isUseMovingAvg;
+	_avgMoving_Num = numInAvg;
 }
 
 /// <summary>
@@ -20,14 +24,26 @@ void SensorData::addReading(dataPoint dp) {
 	_countReadings++;
 	_sumReadings += dp.value;
 	// Smooth the data and find min, max.
+	if (_isUseMovingAvg)
+	{
+		addToList(_avg_moving_List, dp.value, _avgMoving_Num);
+		_avgMoving = listAverage(_avg_moving_List, _avgMoving_Num);
+	}
+
+
+
+
 
 	// REPLACE process_Smoothed_Min_Max(dp) with
-	// Find min and max so far for today.
-	_min_today = (dp.value < _min_today.value) ? dp : _min_today;
-	_max_today = (dp.value > _max_today.value) ? dp : _max_today;
+	
 	// Find min and max so far for this 10-min period.
 	_min_10_min = (dp.value < _min_10_min.value) ? dp : _min_10_min;
 	_max_10_min = (dp.value > _max_10_min.value) ? dp : _max_10_min;
+
+	// Find min and max so far for today.
+	_min_today = (dp.value < _min_today.value) ? dp : _min_today;
+	_max_today = (dp.value > _max_today.value) ? dp : _max_today;
+	
 }
 
 /// <summary>
@@ -121,6 +137,15 @@ float SensorData::valueLastAdded()
 float SensorData::avg_now()
 {
 	return _sumReadings / _countReadings;
+}
+
+/// <summary>
+/// Returns moving average of last several reading values.
+/// </summary>
+/// <returns>Moving average.</returns>
+float SensorData::avgMoving()
+{
+	_avgMoving;
 }
 
 /// <summary>

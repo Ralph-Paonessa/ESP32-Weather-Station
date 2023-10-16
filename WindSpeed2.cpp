@@ -8,10 +8,20 @@
 /// Initializes WindSpeed2 object.
 /// </summary>
 /// <param name="calibrationFactor">
-/// Calibration factor for anemometer model.</param>
-WindSpeed2::WindSpeed2(float calibrationFactor)
+/// Calibration factor for anemometer.</param>
+/// <param name="isUseMovingAvg">
+/// Set true to use moving avg to smooth readings (default = false).</param>
+/// <param name="numValuesForAvg">
+/// Number of values in moving average (default = 5).</param>
+WindSpeed2::WindSpeed2(
+	float calibrationFactor, 
+	bool isUseMovingAvg, 
+	unsigned int numValuesForAvg)
 {
 	_calibrationFactor = calibrationFactor;
+
+	_isUseMovingAvg = isUseMovingAvg;
+	_avgMoving_Num - numValuesForAvg;
 }
 
 /// <summary>
@@ -48,7 +58,7 @@ dataPoint WindSpeed2::gust(dataPoint speed, float avgSpeed)
 		&&
 		// Gust exceeds minimum by GUST_SPREAD
 		/*((speed.value - _min_10_min.value) >= GUST_SPREAD)	*/
-		((speed.value - _min_10_min.value) >= GUST_SPREAD)
+		((speed.value - _avgMoving) >= GUST_SPREAD)
 		)
 	{
 		// Found a gust.
