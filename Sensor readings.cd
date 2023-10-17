@@ -13,14 +13,14 @@
       <FileName>SensorData.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="WindSpeed2">
+  <Class Name="WindSpeed">
     <Position X="4.5" Y="0.5" Width="2" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAABAAAAAAAgAAAABAAEAAgAAGAAAAAAABAAAAA=</HashCode>
-      <FileName>WindSpeed2.h</FileName>
+      <FileName>WindSpeed.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="WindDirection">

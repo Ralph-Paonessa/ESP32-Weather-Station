@@ -1,7 +1,7 @@
-// WindSpeed2.h
+// WindSpeed.h
 
-#ifndef _WINDSPEED2_h
-#define _WINDSPEED2_h
+#ifndef _WINDSPEED_h
+#define _WINDSPEED_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"
@@ -24,7 +24,7 @@ using namespace App_Settings;
 /// <summary>
 /// Exposes methods to measure and record wind speeds.
 /// </summary>
-class WindSpeed2 : public SensorData {	// Inherits SensorData.
+class WindSpeed : public SensorData {	// Inherits SensorData.
 
 private:
 
@@ -38,7 +38,7 @@ public:
 
 	// Constructor	
 
-	/// <summary> Initializes WindSpeed2 instance that exposes 
+	/// <summary> Initializes WindSpeed instance that exposes 
 	/// methods to read and process wind speed data.
 	/// </summary>
 	/// <param name="calibrationFactor">
@@ -49,7 +49,7 @@ public:
 	/// Number of values in moving average (default = 5).</param>
 	/// <param name="rejectionFactor">
 	/// Factor applied to moving avg for outlier comparison (default = 1.75).</param>
-	WindSpeed2(
+	WindSpeed(
 		float calibrationFactor,
 		bool isUseMovingAvg = false,
 		unsigned int numSmoothPoints = 5,

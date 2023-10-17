@@ -64,7 +64,7 @@
     <ClCompile Include="SensorSimulate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WindSpeed2.cpp">
+    <ClCompile Include="WindSpeed.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

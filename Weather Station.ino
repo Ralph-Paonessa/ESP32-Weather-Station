@@ -10,7 +10,7 @@ Rev. October 7, 2023
 // ========  ESP32 Libraries  ================  
 
 // ESP Async Web Server
-#include "WindSpeed2.h"
+#include "WindSpeed.h"
 #include <AsyncEventSource.h>
 #include <AsyncJson.h>
 #include <AsyncWebSocket.h>
@@ -61,7 +61,7 @@ Rev. October 7, 2023
 #include "SDCard.h"
 #include "dataPoint.h"
 #include "SensorData.h"
-#include "WindSpeed2.h"
+#include "WindSpeed.h"
 #include "WindDirection.h"
 
 //#if defined(VM_DEBUG)
@@ -74,7 +74,7 @@ using namespace Utilities;
 
 /*
 SensorData objects to average readings.
-Wind speed handled by WindSpeed2.
+Wind speed handled by WindSpeed.
 Wind direction handled by WindDirection.
 */
 
@@ -90,11 +90,11 @@ SensorData d_Insol;				// Insolaton readings.
 SensorData d_IRSky_C;			// IR sky temperature readings.
 SensorData d_fanRPM;			// Fan RPM readings.
 
-WindSpeed2 windSpeed(
+WindSpeed windSpeed(
 	DAVIS_SPEED_CAL_FACTOR, 
 	true, 
 	WIND_SPEED_NUMBER_IN_MOVING_AVG, 
-	WIND_SPEED_OUTLIER_REJECTION_FACTOR);	// WindSpeed2 object for wind.
+	WIND_SPEED_OUTLIER_REJECTION_FACTOR);	// WindSpeed object for wind.
 SensorData windGust;
 WindDirection windDir(VANE_OFFSET);	// WindDirection object for wind.
 
