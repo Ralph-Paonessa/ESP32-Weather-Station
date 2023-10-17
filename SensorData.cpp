@@ -4,19 +4,24 @@
 
 #include "SensorData.h"
 
+// Constructor.
+
 /// <summary>
-/// Exposes methods to read and process sensor data.
+/// Initializes SensorData instance that exposes 
+/// methods to read and process sensor data.
 /// </summary>
-/// <param name="isUseMovingAvg">Set true to smooth data.</param>
-/// <param name="numInAvg">Number of points in moving avg.</param>
-SensorData::SensorData(bool isUseMovingAvg, unsigned int numInAvg) {
-	_isUseMovingAvg = isUseMovingAvg;
-	_avgMoving_Num = numInAvg;
+/// <param name="isUseSmoothing">Set true to smooth data.</param>
+/// <param name="numInMovingAvg">Number of points in moving avg.</param>
+/// <param name="rejectionFactor">Factor applied to moving avg for outlier comparison.</param>
+SensorData::SensorData(bool isUseSmoothing, unsigned int numInMovingAvg, float rejectionFactor) {
+	_isUseSmoothing = isUseSmoothing;
+	_avgMoving_Num = numInMovingAvg;
+	_rejectionFactor = rejectionFactor;
 }
 
 /// <summary>
 /// Adds (time, value) dataPoint, accumulates average, 
-/// and processes min, max.
+/// and updates min and max.
 /// </summary>
 /// <param name="dp">(time, value) dataPoint.</param>
 void SensorData::addReading(dataPoint dp) {
@@ -24,26 +29,38 @@ void SensorData::addReading(dataPoint dp) {
 	_countReadings++;
 	_sumReadings += dp.value;
 	// Smooth the data and find min, max.
-	if (_isUseMovingAvg)
+	if (_isUseSmoothing)
 	{
-		addToList(_avg_moving_List, dp.value, _avgMoving_Num);
-		_avgMoving = listAverage(_avg_moving_List, _avgMoving_Num);
+		// Reject outlier from 10-min avg.
+		if (dp.value > _avgMoving * 1.75 || dp.value < _avgMoving / 1.75)
+		{
+			// Found outlier. Remove from accumulating 10-min average.
+			_countReadings--;
+			_sumReadings -= dp.value;
+			// Don't add to moving avg.
+		}
+		else {
+			// Not an outlier, so include in moving avg.
+			addToList(_avg_moving_List, dp.value, _avgMoving_Num);
+			_avgMoving = listAverage(_avg_moving_List, _avgMoving_Num);
+		}
 	}
+	updateMinMax(dp);
+}
 
-
-
-
-
-	// REPLACE process_Smoothed_Min_Max(dp) with
-	
-	// Find min and max so far for this 10-min period.
+/// <summary>
+/// Updates saved min and max values for 
+/// current 10-min period and all of today.
+/// </summary>
+/// <param name="dp">Data point with value to evaluate.</param>
+void SensorData::updateMinMax(dataPoint dp) {
+	// Update min and max so far for this 10-min period.
 	_min_10_min = (dp.value < _min_10_min.value) ? dp : _min_10_min;
 	_max_10_min = (dp.value > _max_10_min.value) ? dp : _max_10_min;
 
-	// Find min and max so far for today.
+	// Update min and max so far for all of today.
 	_min_today = (dp.value < _min_today.value) ? dp : _min_today;
 	_max_today = (dp.value > _max_today.value) ? dp : _max_today;
-	
 }
 
 /// <summary>

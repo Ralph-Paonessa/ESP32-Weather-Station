@@ -4,24 +4,30 @@
 
 #include "WindSpeed2.h"
 
-/// <summary>
-/// Initializes WindSpeed2 object.
+// Constructor.
+
+/// <summary> Initializes WindSpeed2 instance that exposes 
+/// methods to read and process wind speed data.
 /// </summary>
 /// <param name="calibrationFactor">
 /// Calibration factor for anemometer.</param>
-/// <param name="isUseMovingAvg">
-/// Set true to use moving avg to smooth readings (default = false).</param>
-/// <param name="numValuesForAvg">
+/// <param name="isUseSmoothing">
+/// Set true to smooth data (default = false).</param>
+/// <param name="numValuesForAvg">	
 /// Number of values in moving average (default = 5).</param>
+/// <param name="rejectionFactor">
+/// Factor applied to moving avg for outlier comparison (default = 1.75).</param>
 WindSpeed2::WindSpeed2(
-	float calibrationFactor, 
-	bool isUseMovingAvg, 
-	unsigned int numValuesForAvg)
+	float calibrationFactor,
+	bool isUseSmoothing,
+	unsigned int numValuesForAvg,
+	float rejectionFactor
+)
 {
 	_calibrationFactor = calibrationFactor;
-
-	_isUseMovingAvg = isUseMovingAvg;
-	_avgMoving_Num - numValuesForAvg;
+	_isUseSmoothing = isUseSmoothing;
+	_avgMoving_Num = numValuesForAvg;
+	_rejectionFactor = rejectionFactor;
 }
 
 /// <summary>
@@ -51,46 +57,21 @@ float WindSpeed2::speedInstant(int rotations, float period)
 /// <returns>Gust as (time, value) data point.</returns>
 dataPoint WindSpeed2::gust(dataPoint speed, float avgSpeed)
 {
-	// Gust must meet criteria.
 	if (
-		// Gust exceeds threshold
+		// If Gust exceeds threshold
 		speed.value >= GUST_THRESHOLD
 		&&
-		// Gust exceeds minimum by GUST_SPREAD
-		/*((speed.value - _min_10_min.value) >= GUST_SPREAD)	*/
-		((speed.value - _avgMoving) >= GUST_SPREAD)
+		// If gust exceeds moving avg by GUST_SPREAD
+		((speed.value - _avgMoving) >= GUST_SPREAD)	// Inherit moving avg from SensorData.
 		)
-	{
-		// Found a gust.
+	{		// Report this as a gust.
 		return speed;
 	}
-	else
-	{
+	else {
 		// Not a gust, so return value of zero.
 		return dataPoint(speed.time, 0);
 	}
 }
-
-///// <summary>
-///// Checks for any wind speed (over 10-min time) that meets gust
-///// criteria and adds to list. (Adds 0 if no gust found.)
-///// </summary>
-///// <param name="targetList">List to add gust to.</param>
-///// <param name="max">Maximum speed so far.</param>
-///// <param name="min">Minimum speed so far.</param>
-//void WindSpeed2::addGust_10_min(list<dataPoint>& targetList, float max, float min) {
-//	float gust = 0;
-//	// Gust must meet criteria.
-//	if (
-//		max >= GUST_THRESHOLD				// must exceed threshold, and
-//		&& ((max - min) >= GUST_SPREAD)		// must exceed minimum by by GUST_SPREAD
-//		) {
-//		gust = max;							// New gust.
-//	}
-//	// Add gust to 10-min gust list.
-//	_gust_last_10_min = gust;
-//	addToList(targetList, dataPoint(_dataLastAdded.time, gust), SIZE_10_MIN_LIST);
-//}
 
 /// <summary>
 /// Returns wind speed description in Beaufort 

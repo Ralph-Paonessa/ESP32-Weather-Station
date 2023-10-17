@@ -43,6 +43,12 @@ protected:		// Protected items are accessible by inherited classes.
 
 	const float VAL_LIMIT = 999999;	// No reading absolute value will ever be greater.
 
+	/// <summary>
+	/// Updates saved min and max values for 10-min period and today.
+	/// </summary>
+	/// <param name="dp">Data point with value to evaluate.</param>
+	void updateMinMax(dataPoint dp);
+
 	// Initialize at impossible extremes.
 
 	dataPoint _min_today = dataPoint(0, VAL_LIMIT);		// Today's minimum.
@@ -57,7 +63,8 @@ protected:		// Protected items are accessible by inherited classes.
 	/// </summary>
 	void clear_10_min();
 
-	bool _isUseMovingAvg;				// Set true to use a moving avg.
+	bool _isUseSmoothing;				// Set true to smooth data with moving avg and reject outliers.
+	float _rejectionFactor;		// Factor to determine if reading is an outlier.
 	list<float> _avg_moving_List;		// Moving avg of latest reading values.
 	float _avgMoving = 0;				// Moving average value.
 	unsigned int _avgMoving_Num;		// Maximum number of values to average.
@@ -68,14 +75,24 @@ protected:		// Protected items are accessible by inherited classes.
 	list<dataPoint> _maxima_dayList;	// List of daily maxima.
 
 public:
+
 	// Constructor.
 	
 	/// <summary>
-	/// Exposes methods to read and process sensor data.
+	/// Initializes SensorData instance that exposes 
+	/// methods to read and process sensor data.
 	/// </summary>
-	/// <param name="isUseMovingAvg">Set true to smooth data.</param>
-	/// <param name="numSmoothPoints">Number of points in moving avg.</param>
-	SensorData(bool isUseMovingAvg = false, unsigned int numSmoothPoints = 5);
+	/// <param name="isUseMovingAvg">
+	/// Set true to smooth data.</param>
+	/// <param name="numSmoothPoints">
+	/// Number of points in moving avg.</param>
+	/// <param name="rejectionFactor">
+	/// Factor applied to moving avg for outlier comparison.</param>
+	SensorData(
+		bool isUseMovingAvg = false, 
+		unsigned int numSmoothPoints = 5, 
+		float rejectionFactor = 1.75
+	);
 
 	/// <summary>
 	/// Adds (time, value) dataPoint, accumulates average, 

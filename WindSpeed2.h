@@ -28,29 +28,32 @@ class WindSpeed2 : public SensorData {	// Inherits SensorData.
 
 private:
 
-	float _calibrationFactor;		// Wind speed calibration factor for anemometer.
+	float _calibrationFactor;			// Anemometer calibration factor to convert rotations to speed.
 
+	// For identification of gusts.
 	const float GUST_THRESHOLD = 18.41;	// WindSpeed must exceed this to be a gust.
 	const float GUST_SPREAD = 10.36;	// WindSpeed must exceed low by this amount to be a gust.
-	const float MIN_SPEED_LIMIT = 9999;	// Real minimum will always be lower than this.
 
 public:
 
 	// Constructor	
 
-	/// <summary>
-	/// Initializes WindSpeed2 object.
+	/// <summary> Initializes WindSpeed2 instance that exposes 
+	/// methods to read and process wind speed data.
 	/// </summary>
 	/// <param name="calibrationFactor">
 	/// Calibration factor for anemometer.</param>
-	/// <param name="isUseMovingAvg">
-	/// Set true to use moving avg to smooth readings (default = false).</param>
-	/// <param name="numValuesForAvg">
+	/// <param name="isUseSmoothing">
+	/// Set true to smooth data (default = false).</param>
+	/// <param name="numValuesForAvg">	
 	/// Number of values in moving average (default = 5).</param>
+	/// <param name="rejectionFactor">
+	/// Factor applied to moving avg for outlier comparison (default = 1.75).</param>
 	WindSpeed2(
-		float calibrationFactor, 
-		bool isUseMovingAvg = false, 
-		unsigned int numSmoothPoints = 5);		// Overload of SensorData.
+		float calibrationFactor,
+		bool isUseMovingAvg = false,
+		unsigned int numSmoothPoints = 5,
+		float rejectionFactor = 1.75);		// Overload of SensorData.
 
 	/// <summary>
 	/// Returns wind speed from anemometer rotations.
@@ -59,8 +62,7 @@ public:
 	/// <param name="period">Time period of rotations, sec.</param>
 	/// <returns>Wind speed, mph</returns>
 	float speedInstant(int rotations, float period);
-
-	
+		
 	/// <summary>
 	/// Checks for and returns a gust datPoint if the speed satisfies 
 	/// gust criteria. Otherwise, the returned value will be zero if 

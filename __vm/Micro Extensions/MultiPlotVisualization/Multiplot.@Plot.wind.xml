@@ -8,15 +8,36 @@
       <CurveColor>#800000</CurveColor>
       <ChartAssignment2>0</ChartAssignment2>
     </CurveSettings>
+    <CurveSettings>
+      <CurveId>gust</CurveId>
+      <CurveDisplayName>gust</CurveDisplayName>
+      <CurveLineTicks>None</CurveLineTicks>
+      <CurveColor>#008000</CurveColor>
+      <ChartAssignment2>0</ChartAssignment2>
+    </CurveSettings>
+    <CurveSettings>
+      <CurveId>rots</CurveId>
+      <CurveDisplayName>rots</CurveDisplayName>
+      <CurveLineTicks>None</CurveLineTicks>
+      <CurveColor>#000080</CurveColor>
+      <ChartAssignment2>0</ChartAssignment2>
+    </CurveSettings>
+    <CurveSettings>
+      <CurveId>speedSrc</CurveId>
+      <CurveDisplayName>speedSrc</CurveDisplayName>
+      <CurveLineTicks>None</CurveLineTicks>
+      <CurveColor>#808000</CurveColor>
+      <ChartAssignment2>0</ChartAssignment2>
+    </CurveSettings>
   </CurveSettingCollection>
   <XSweepTime>10 min</XSweepTime>
   <XTimeFormat>Auto</XTimeFormat>
-  <DisplayRefreshRate>Rate1000ms</DisplayRefreshRate>
+  <DisplayRefreshRate>AsDataComesIn</DisplayRefreshRate>
   <ChartType>LineChart</ChartType>
-  <OptimizeBinaryCurves>On</OptimizeBinaryCurves>
-  <CurveDistribution>MultipleCharts</CurveDistribution>
+  <OptimizeBinaryCurves>Off</OptimizeBinaryCurves>
+  <CurveDistribution>SingeChart</CurveDistribution>
   <TriggerEnabled>false</TriggerEnabled>
   <TriggerCondition>None</TriggerCondition>
   <TriggerMode>Continuous</TriggerMode>
-  <LineWidths2>Auto</LineWidths2>
+  <LineWidths2>Thick</LineWidths2>
 </PlotSettings>
