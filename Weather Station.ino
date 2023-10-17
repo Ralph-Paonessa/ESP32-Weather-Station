@@ -1094,6 +1094,7 @@ void readWind_Simulate() {
 	windSpeed.addReading(dpSpeed);
 
 	// Record any gusts. Use MOVING AVG of wind speed.
+	//float avg = 99;
 	float avg = windSpeed.avgMoving();
 	dataPoint dpGust = windSpeed.gust(dpSpeed, avg);
 	windGust.addReading(dpGust);

@@ -89,7 +89,7 @@ namespace ListFunctions {
 	/// <returns>
 	/// Comma-separated "time,value" pairs delimited by "~"</returns>
 	String listToString_dataPoints(
-		list<dataPoint> targetList,
+		list<dataPoint>& targetList,
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
 };

@@ -151,7 +151,7 @@ String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList)
 /// <returns>
 /// Comma-separated "time,value" pairs delimited by "~"</returns>
 String ListFunctions::listToString_dataPoints(
-	list<dataPoint> targetList,
+	list<dataPoint>& targetList,
 	bool isConvertZeroToEmpty,
 	unsigned int decimalPlaces)
 {

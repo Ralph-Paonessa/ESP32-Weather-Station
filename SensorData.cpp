@@ -145,7 +145,7 @@ float SensorData::avg_now()
 /// <returns>Moving average.</returns>
 float SensorData::avgMoving()
 {
-	_avgMoving;
+	return _avgMoving;
 }
 
 /// <summary>
