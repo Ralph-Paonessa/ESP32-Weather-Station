@@ -10,7 +10,6 @@ Rev. October 7, 2023
 // ========  ESP32 Libraries  ================  
 
 // ESP Async Web Server
-#include "WindSpeed.h"
 #include <AsyncEventSource.h>
 #include <AsyncJson.h>
 #include <AsyncWebSocket.h>
@@ -61,7 +60,7 @@ Rev. October 7, 2023
 #include "SDCard.h"
 #include "dataPoint.h"
 #include "SensorData.h"
-#include "WindSpeed.h"
+#include "WindSpeed2.h"
 #include "WindDirection.h"
 
 //#if defined(VM_DEBUG)

@@ -1,7 +1,7 @@
-// WindSpeed.h
+// WindSpeed2.h
 
-#ifndef _WINDSPEED_h
-#define _WINDSPEED_h
+#ifndef _WINDSPEED2_h
+#define _WINDSPEED2_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"

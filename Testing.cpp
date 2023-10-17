@@ -81,9 +81,9 @@ void Testing::haltWithInfiniteLoop()
 	}
 }
 
-// Tests WindSpeed.h wind directionCardinal handling.
+// Tests WindSpeed2.h wind directionCardinal handling.
 void Testing::windDirection(float angleStart, float angleIncrement, int cycles, float VANE_OFFSET) {
-	Serial.println("WindSpeed.h windDirection test. Add deg readings and average.");
+	Serial.println("WindSpeed2.h windDirection test. Add deg readings and average.");
 	WindDirection windDirect(VANE_OFFSET);
 	windDirect.begin();
 	for (int i = 0; i < cycles; i++)
