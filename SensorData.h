@@ -64,10 +64,15 @@ protected:		// Protected items are accessible by inherited classes.
 	void clear_10_min();
 
 	bool _isUseSmoothing;				// Set true to smooth data with moving avg and reject outliers.
-	float _rejectionFactor;		// Factor to determine if reading is an outlier.
+	float _rejectFactor;				// Factor to determine if reading is an outlier.
 	list<float> _avg_moving_List;		// Moving avg of latest reading values.
 	float _avgMoving = 0;				// Moving average value.
 	unsigned int _avgMoving_Num;		// Maximum number of values to average.
+
+	bool _isMovingAvgHasValue = false;	// Flag to indicate first cycle.
+
+	
+	bool isOutlier(dataPoint dp);
 
 	list<dataPoint> _data_10_min;		// List of Data_Points at 10-min intervals.
 	list<dataPoint> _data_60_min;		// List of Data_Points at 60-min intervals.
@@ -89,7 +94,7 @@ public:
 	/// <param name="rejectionFactor">
 	/// Factor applied to moving avg for outlier comparison.</param>
 	SensorData(
-		bool isUseMovingAvg = false, 
+		bool isUseMovingAvg = true, 
 		unsigned int numSmoothPoints = 5, 
 		float rejectionFactor = 1.75
 	);

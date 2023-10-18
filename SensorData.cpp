@@ -12,11 +12,11 @@
 /// </summary>
 /// <param name="isUseSmoothing">Set true to smooth data.</param>
 /// <param name="numInMovingAvg">Number of points in moving avg.</param>
-/// <param name="rejectionFactor">Factor applied to moving avg for outlier comparison.</param>
-SensorData::SensorData(bool isUseSmoothing, unsigned int numInMovingAvg, float rejectionFactor) {
+/// <param name="rejectFactor">Factor applied to moving avg for outlier comparison.</param>
+SensorData::SensorData(bool isUseSmoothing, unsigned int numInMovingAvg, float rejectFactor) {
 	_isUseSmoothing = isUseSmoothing;
 	_avgMoving_Num = numInMovingAvg;
-	_rejectionFactor = rejectionFactor;
+	_rejectFactor = rejectFactor;
 }
 
 /// <summary>
@@ -26,26 +26,66 @@ SensorData::SensorData(bool isUseSmoothing, unsigned int numInMovingAvg, float r
 /// <param name="dp">(time, value) dataPoint.</param>
 void SensorData::addReading(dataPoint dp) {
 	_dataLastAdded = dp;	// save most recent
-	_countReadings++;
-	_sumReadings += dp.value;
-	// Smooth the data and find min, max.
-	if (_isUseSmoothing)
-	{
-		// Reject outlier from 10-min avg.
-		if (dp.value > _avgMoving * 1.75 || dp.value < _avgMoving / 1.75)
-		{
-			// Found outlier. Remove from accumulating 10-min average.
-			_countReadings--;
-			_sumReadings -= dp.value;
-			// Don't add to moving avg.
-		}
-		else {
+
+	/*
+	Want outlier detection so that a large wind gust won't "pollute"
+	the moving avg wind speed. Outlier will still be reported as the last
+	value read and it will still be compared by windGust to the moving
+	avg to decide if it's a wind gust.
+	*/
+
+	/*
+	DANGER:
+	On the first pass, _avgMoving = 0, and so the high and low outlier 
+	comparisons will all be zero! That means that any reading value will 
+	be ouside the range (0, 0) and will be declared an outlier, and won't 
+	be added to the moving avg. Thus, the moving avg will always be zero, 
+	and all values will be outliers!
+
+	Have to do something to break out of this cycle when starting.
+
+	Can skip outlier check the first time through.
+
+		- This will fail if the first value happens to be 0!
+	*/
+
+	if (!_isUseSmoothing) {
+		// No smoothing. No moving avg.
+		_countReadings++;
+		_sumReadings += dp.value;
+	}
+	else {
+		// SMOOTHING and OUTLIER REJECTION
+		if (!isOutlier(dp)) {
+			// Not an outlier, so include in 10-min avg.
+			_countReadings++;
+			_sumReadings += dp.value;
 			// Not an outlier, so include in moving avg.
 			addToList(_avg_moving_List, dp.value, _avgMoving_Num);
 			_avgMoving = listAverage(_avg_moving_List, _avgMoving_Num);
 		}
+		else {
+			// OUTLIER!!!
+			// If first time through ...
+			// There's no moving avg or moving avg list yet!!
+			//		So, NO VALUE will be saved!!!
+			if (!_isMovingAvgHasValue)
+			{
+				_avgMoving = dp.value;
+				_isMovingAvgHasValue = true;
+			}
+		}
 	}
-	updateMinMax(dp);
+	updateMinMax(dp);	// Regardless of outlier status.
+}
+
+bool SensorData::isOutlier(dataPoint dp) {
+	if (dp.value == 0)
+	{
+		return false;
+	}
+	bool isOut = (dp.value > _avgMoving * _rejectFactor) || (dp.value < _avgMoving / _rejectFactor);
+	return isOut;
 }
 
 /// <summary>

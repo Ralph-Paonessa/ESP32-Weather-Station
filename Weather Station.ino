@@ -90,9 +90,9 @@ SensorData d_IRSky_C;			// IR sky temperature readings.
 SensorData d_fanRPM;			// Fan RPM readings.
 
 WindSpeed windSpeed(
-	DAVIS_SPEED_CAL_FACTOR, 
-	true, 
-	WIND_SPEED_NUMBER_IN_MOVING_AVG, 
+	DAVIS_SPEED_CAL_FACTOR,
+	true,
+	WIND_SPEED_NUMBER_IN_MOVING_AVG,
 	WIND_SPEED_OUTLIER_REJECTION_FACTOR);	// WindSpeed object for wind.
 SensorData windGust;
 WindDirection windDir(VANE_OFFSET);	// WindDirection object for wind.
@@ -1098,20 +1098,21 @@ float rotsFromSpeed(float speed) {
 /// Adds simulate wind sensor readings.
 /// </summary>
 void readWind_Simulate() {
-//#if defined(VM_DEBUG)
-	//unsigned int rots = dummy_anemCount.linear(15, 0);				// simulate
-	//unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);		// simulate
+	//#if defined(VM_DEBUG)
+		//unsigned int rots = dummy_anemCount.linear(15, 0);				// simulate
+		//unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);		// simulate
 	unsigned int rots = dummy_anemCount.linear_spike(rotsFromSpeed(10), 0, rotsFromSpeed(15), 50, 4);
 	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);	// Speed value
 	dataPoint dpSpeed(now(), speed);
 	windSpeed.addReading(dpSpeed);
+	
 
 	// Record any gusts. Use MOVING AVG of wind speed.
 	//float avg = 99;
-	float avg = windSpeed.avgMoving();
-	dataPoint dpGust = windSpeed.gust(dpSpeed, avg);
+	float avg_moving = windSpeed.avgMoving();
+	dataPoint dpGust = windSpeed.gust(dpSpeed, avg_moving);
 	windGust.addReading(dpGust);
-	
+
 
 	//// Read wind direction.
 	//float windAngle = dummy_windDir.sawtooth(90, 1, 360);
@@ -1282,15 +1283,24 @@ void testCodeForSetup(unsigned long runTime_sec) {
 	unsigned long timeStart = millis();
 	/********************************/
 	/* INSERT DEFINITIONS HERE.     */
-	SensorSimulate ls;
+#include "ListFunctions.h"
+
 	/********************************/
 	while (millis() < timeStart + runTime_sec * 1000)
 	{
 		/********************************/
 		/* INSERT TEST CODE HERE.       */
 
-		//Serial.println(ls.linear_spike(11, 1, 100, 10, 5));
-		Serial.println(ls.sawtooth(10, 1, 20));
+		list<float> testList; 
+		float val = 10;
+		for (size_t i = 0; i < 5; i++)
+		{
+			val += i;
+			addToList(testList, val, 5);
+		}
+		float avg = listAverage(testList, 5);
+		Serial.printf("list avg = %f", avg);
+
 
 		/********************************/
 	}

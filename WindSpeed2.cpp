@@ -27,7 +27,7 @@ WindSpeed::WindSpeed(
 	_calibrationFactor = calibrationFactor;
 	_isUseSmoothing = isUseSmoothing;
 	_avgMoving_Num = numValuesForAvg;
-	_rejectionFactor = rejectionFactor;
+	_rejectFactor = rejectionFactor;
 }
 
 /// <summary>

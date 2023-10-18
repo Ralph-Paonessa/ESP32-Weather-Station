@@ -29,13 +29,41 @@
       <CurveColor>#808000</CurveColor>
       <ChartAssignment2>0</ChartAssignment2>
     </CurveSettings>
+    <CurveSettings>
+      <CurveId>avg</CurveId>
+      <CurveDisplayName>avg</CurveDisplayName>
+      <CurveLineTicks>None</CurveLineTicks>
+      <CurveColor>#800080</CurveColor>
+      <ChartAssignment2>0</ChartAssignment2>
+    </CurveSettings>
+    <CurveSettings>
+      <CurveId>avg_moving</CurveId>
+      <CurveDisplayName>avg_moving</CurveDisplayName>
+      <CurveLineTicks>None</CurveLineTicks>
+      <CurveColor>#008080</CurveColor>
+      <ChartAssignment2>1</ChartAssignment2>
+    </CurveSettings>
+    <CurveSettings>
+      <CurveId>speedAdded</CurveId>
+      <CurveDisplayName>speedAdded</CurveDisplayName>
+      <CurveLineTicks>None</CurveLineTicks>
+      <CurveColor>#808080</CurveColor>
+      <ChartAssignment2>2</ChartAssignment2>
+    </CurveSettings>
+    <CurveSettings>
+      <CurveId>speed_avgNow</CurveId>
+      <CurveDisplayName>speed_avgNow</CurveDisplayName>
+      <CurveLineTicks>None</CurveLineTicks>
+      <CurveColor>#C00000</CurveColor>
+      <ChartAssignment2>3</ChartAssignment2>
+    </CurveSettings>
   </CurveSettingCollection>
-  <XSweepTime>10 min</XSweepTime>
+  <XSweepTime>5 min</XSweepTime>
   <XTimeFormat>Auto</XTimeFormat>
   <DisplayRefreshRate>AsDataComesIn</DisplayRefreshRate>
   <ChartType>LineChart</ChartType>
   <OptimizeBinaryCurves>Off</OptimizeBinaryCurves>
-  <CurveDistribution>SingeChart</CurveDistribution>
+  <CurveDistribution>MultipleCharts</CurveDistribution>
   <TriggerEnabled>false</TriggerEnabled>
   <TriggerCondition>None</TriggerCondition>
   <TriggerMode>Continuous</TriggerMode>
