@@ -43,7 +43,7 @@ public:
 	////void testList();
 	void testStructList(long time);
 
-	// Add a list of rotations to a WindSpeed object, and return elapsed seconds.
+	// Add a list of rotations to a WindSpeed instance, and return elapsed seconds.
 	float addDummyRotations(list<float> srcList, WindSpeed& speedObj, float rawPeriod);
 
 	//void test();

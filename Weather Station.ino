@@ -93,9 +93,9 @@ WindSpeed windSpeed(
 	DAVIS_SPEED_CAL_FACTOR,
 	true,
 	WIND_SPEED_NUMBER_IN_MOVING_AVG,
-	WIND_SPEED_OUTLIER_REJECTION_FACTOR);	// WindSpeed object for wind.
+	WIND_SPEED_OUTLIER_REJECTION_FACTOR);	// WindSpeed instance for wind.
 SensorData windGust;
-WindDirection windDir(VANE_OFFSET);	// WindDirection object for wind.
+WindDirection windDir(VANE_OFFSET);	// WindDirection instance for wind.
 
 
 //#if defined(VM_DEBUG)
@@ -141,13 +141,13 @@ SDCard sd;		// SDCard instance.
 
 
 // ==========   Async Web Server   ================== //
-AsyncWebServer server(80);	// Async web server object on port 80.
+AsyncWebServer server(80);	// Async web server instance on port 80.
 chartRequested _chart_request = CHART_NONE;	// Chart requested from server.
 
 
 // ==========   u-blox NEO-6M GPS   ========================== //
 
-// GPS module object. 
+// GPS module instance. 
 GPSModule gps;
 
 int _oldMonth = 0;		// Month of previous day.
@@ -173,7 +173,7 @@ VEML6075 sensor_UV;    // VEML6075 UV sensor.
 
 // ==========   BME280 T/P/RH sensor   =================== //
 // Requires <Adafruit_Sensor.h>, <Adafruit_BME280.h>
-// Create BME280 object. I2C address 0x77.
+// Create BME280 instance. I2C address 0x77.
 Adafruit_BME280 sensor_PRH; // BME280 temperature sensor.
 
 // ==========   DS18B20 digital temperature sensor   ================== //
@@ -326,7 +326,7 @@ int countOneWireDevices() {
 
 // ==========   WIFI CONNECTIVITY   ================ //
 
-WiFiMulti wifiMulti;	// WiFiMulti object to connect to wifi.
+WiFiMulti wifiMulti;	// WiFiMulti instance to connect to wifi.
 
 /// <summary>
 /// Connect to strongest WiFi access point. 
@@ -1100,12 +1100,13 @@ float rotsFromSpeed(float speed) {
 void readWind_Simulate() {
 	//#if defined(VM_DEBUG)
 		//unsigned int rots = dummy_anemCount.linear(15, 0);				// simulate
-		//unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);		// simulate
-	unsigned int rots = dummy_anemCount.linear_spike(rotsFromSpeed(10), 0, rotsFromSpeed(15), 50, 4);
+	//unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);		// simulate
+	unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15, 10, 20, 30);
+	//unsigned int rots = dummy_anemCount.linear(rotsFromSpeed(10), 0, rotsFromSpeed(15), 50, 4);
 	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);	// Speed value
 	dataPoint dpSpeed(now(), speed);
 	windSpeed.addReading(dpSpeed);
-	
+
 
 	// Record any gusts. Use MOVING AVG of wind speed.
 	//float avg = 99;
@@ -1291,7 +1292,7 @@ void testCodeForSetup(unsigned long runTime_sec) {
 		/********************************/
 		/* INSERT TEST CODE HERE.       */
 
-		list<float> testList; 
+		list<float> testList;
 		float val = 10;
 		for (size_t i = 0; i < 5; i++)
 		{
@@ -1311,7 +1312,7 @@ void testCodeForSetup(unsigned long runTime_sec) {
 }
 
 /// <summary>
-/// Adds dummy data to SensorData object lists.
+/// Adds dummy data to SensorData instance lists.
 /// </summary>
 void addDummyData() {
 	//#if defined(VM_DEBUG)

@@ -8,13 +8,13 @@ Uses TinyGPS++ library to communicate with GPS module, and TimeLib
 
 #include "GPSModule.h"
 
-TinyGPSPlus _tinyGPS;				// TinyGPS++ object.
+TinyGPSPlus _tinyGPS;				// TinyGPS++ instance.
 HardwareSerial _serialGPS(2);		// Allowed values 0, 1, 2?
 
-SDCard _sdCard;		// SDCard object for data logging.
+SDCard _sdCard;		// SDCard instance for data logging.
 
 /// <summary>
-/// Initialize GPSModule object that interacts with a GPS module.
+/// Initialize GPSModule instance that interacts with a GPS module.
 /// </summary>
 GPSModule::GPSModule() {}
 
@@ -54,7 +54,7 @@ void GPSModule::begin(
 /// </param>
 void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 	unsigned long timeStart = millis();
-	_sdCard = sdCard;		// SDCard object for data logging.
+	_sdCard = sdCard;		// SDCard instance for data logging.
 	_isSimulate = isSimulate;
 
 	// Allow gps to be bypassed when flag  is set.
@@ -248,7 +248,7 @@ bool GPSModule::isGpsDataValid() {
 /// </summary>
 /// <param name="millisStart">Mills when the sync operation started.</param>
 /// <param name="countGpsCycles">Total number of GPS cycles.</param>
-/// <param name="sdCard">SDCard object for logging.</param>
+/// <param name="sdCard">SDCard instance for logging.</param>
 void GPSModule::syncSystemWithCurrentGpsData(unsigned long millisStart, int countGpsCycles) {
 	String msg = "GPS valid data criteria met after ";
 	msg += String(countGpsCycles) + " cycles.";
@@ -261,7 +261,7 @@ void GPSModule::syncSystemWithCurrentGpsData(unsigned long millisStart, int coun
 
 /// <summary>
 /// This custom version of delay() ensures that the
-/// gps object is being "fed".
+/// gps instance is being "fed".
 /// </summary>
 /// <param name="delay">Delay, sec.</param>
 void GPSModule::gpsSmartDelay(unsigned long delay) {

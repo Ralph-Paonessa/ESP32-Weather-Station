@@ -42,7 +42,7 @@ public:
 	float linear(float initialVal, float increment);
 
 	/// <summary>
-	/// Returns linearly-increasing value, but 
+	/// Returns linearly-increasing value and periodically
 	/// adds one or more spikes to the value.
 	/// </summary>
 	/// <param name="initialVal">Initial value.</param>
@@ -54,15 +54,40 @@ public:
 	/// <param name="numSpikes">
 	/// Number of spikes (must be greater than zero; default = 1).</param>
 	/// <returns>Simulated value.</returns>
-	float linear_spike(
+	float linear(
 		float initialVal, 
 		float increment, 
 		float spikeIncrement, 
 		unsigned long spikeStartCycle, 
-		int numSpikes = 1);
+		unsigned int numSpikes = 1);
 
-
+	/// <summary>
+	/// Returns sawtooth value and periodically adds
+	/// one or more spikes to the value.
+	/// </summary>
+	/// <param name="initialVal">Initial value.</param>
+	/// <param name="increment">Amount of change on each iteration.</param>
+	/// <param name="max">Maximum value.</param>
+	/// <returns>Value from a sawtooth pattern.</returns>
 	float sawtooth(float initialVal, float increment, float max);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="initialVal"></param>
+	/// <param name="increment"></param>
+	/// <param name="max"></param>
+	/// <param name="spikeIncrement"></param>
+	/// <param name="spikeStartCycle"></param>
+	/// <param name="numSpikes"></param>
+	/// <returns></returns>
+	float sawtooth(
+		float initialVal, 
+		float increment, 
+		float max,
+		float spikeIncrement,
+		unsigned long spikeStartCycle,
+		unsigned int numSpikes = 1);
 };
 
 #endif
