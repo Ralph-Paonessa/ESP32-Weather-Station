@@ -35,11 +35,17 @@ void SensorData::addReading(dataPoint dp) {
 	*/
 
 	/*
+	* XXX
+	* 
+	USING A FACTOR TO DEFINE THE OUTLIER RANGE *SUCKS* 
+	FOR READINGS NEAR ZERO!!!
+	*
+	/*
 	DANGER:
-	On the first pass, _avgMoving = 0, and so the high and low outlier 
-	comparisons will all be zero! That means that any reading value will 
-	be ouside the range (0, 0) and will be declared an outlier, and won't 
-	be added to the moving avg. Thus, the moving avg will always be zero, 
+	On the first pass, _avgMoving = 0, and so the high and low outlier
+	comparisons will all be zero! That means that any reading value will
+	be ouside the range [0, 0] and will be declared an outlier, and won't
+	be added to the moving avg. Thus, the moving avg will always be zero,
 	and all values will be outliers!
 
 	Have to do something to break out of this cycle when starting.
@@ -49,13 +55,28 @@ void SensorData::addReading(dataPoint dp) {
 		- This will fail if the first value happens to be 0!
 	*/
 
+
+	/*
+	NOTE: If this is the first cycle, there's not yet
+	a value assigned to _avgMoving nor any data points
+	in _avg_moving_List.
+
+		_avgMoving = 0 (as initialized).
+
+	When _avgMoving is zero, the multiples used for the
+	outlier range will be [0, 0]. Therefore, any nonzero
+	value will be outside this range and marked as an outlier!
+	
+	So, NO VALUE will be saved!!!
+	*/
+
 	if (!_isUseSmoothing) {
 		// No smoothing. No moving avg.
 		_countReadings++;
 		_sumReadings += dp.value;
 	}
 	else {
-		// SMOOTHING and OUTLIER REJECTION
+		// Apply SMOOTHING and OUTLIER REJECTION.
 		if (!isOutlier(dp)) {
 			// Not an outlier, so include in 10-min avg.
 			_countReadings++;
@@ -65,10 +86,9 @@ void SensorData::addReading(dataPoint dp) {
 			_avgMoving = listAverage(_avg_moving_List, _avgMoving_Num);
 		}
 		else {
-			// OUTLIER!!!
-			// If first time through ...
-			// There's no moving avg or moving avg list yet!!
-			//		So, NO VALUE will be saved!!!
+			// OUTLIER. Exclude this reading from the moving avg.
+
+
 			if (!_isMovingAvgHasValue)
 			{
 				_avgMoving = dp.value;
@@ -79,12 +99,20 @@ void SensorData::addReading(dataPoint dp) {
 	updateMinMax(dp);	// Regardless of outlier status.
 }
 
+/// <summary>
+/// Returns true if the data value is outside the limits set 
+/// by [_avgMoving / _avgMoving, _avgMoving * _avgMoving].
+/// </summary>
+/// <param name="dp">Data point with value to evaluate.</param>
+/// <returns>True if this is an outlier.</returns>
 bool SensorData::isOutlier(dataPoint dp) {
-	if (dp.value == 0)
-	{
+	// NEEDED?? XXX //////////////
+	if (_avgMoving == 0) {
 		return false;
 	}
-	bool isOut = (dp.value > _avgMoving * _rejectFactor) || (dp.value < _avgMoving / _rejectFactor);
+	///////////////////////////////
+	bool isOut = (dp.value > _avgMoving * _avgMoving)	// upper bound
+		|| (dp.value < _avgMoving / _rejectFactor);		// lower bound
 	return isOut;
 }
 
@@ -188,7 +216,7 @@ float SensorData::valueLastAdded()
 }
 
 /// <summary>
-/// The accumulated avg now (reset every 10 minutes).
+/// The accumulated avg now (reset every 10 minutes) when data smoothing is enabled, outlier values are not included in this average.
 /// </summary>
 /// <returns>Average now.</returns>
 float SensorData::avg_now()

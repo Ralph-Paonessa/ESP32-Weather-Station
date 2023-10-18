@@ -1104,7 +1104,7 @@ void readWind_Simulate() {
 	//#if defined(VM_DEBUG)
 		//unsigned int rots = dummy_anemCount.linear(15, 0);				// simulate
 	//unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);		// simulate
-	unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15, 10, 20, 30);
+	unsigned int rots = dummy_anemCount.sawtooth(rotsFromSpeed(10), rotsFromSpeed(0.2), rotsFromSpeed(15), rotsFromSpeed(2), 20, 1000);
 	//unsigned int rots = dummy_anemCount.linear(rotsFromSpeed(10), 0, rotsFromSpeed(15), 50, 4);
 	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);	// Speed value
 	dataPoint dpSpeed(now(), speed);
@@ -1118,9 +1118,9 @@ void readWind_Simulate() {
 	windGust.addReading(dpGust);
 
 
-	//// Read wind direction.
-	//float windAngle = dummy_windDir.sawtooth(90, 1, 360);
-	//windDir.addReading(now(), windAngle, speed);	// weighted by speed
+	// Read wind direction.
+	float windAngle = dummy_windDir.sawtooth(90, 1, 360);
+	windDir.addReading(now(), windAngle, dpSpeed.value);	// weighted by speed
 //#endif
 }
 
