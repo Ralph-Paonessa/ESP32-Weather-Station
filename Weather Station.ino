@@ -606,9 +606,12 @@ void logDebugStatus() {
 	if (_isDEBUG_addDummyDataList) {
 		sd.logStatus_indent("ADD DUMMY DATA");
 	}
-	if (_isDEBUG_simulateReadings) {
+	if (_isDEBUG_simulateSensorReadings) {
 		sd.logStatus_indent("USE DUMMY DATA FOR SENSOR READINGS");
 	}
+	if (_isDEBUG_simulateWindReadings) {
+		sd.logStatus_indent("USE DUMMY DATA FOR WIND READINGS");
+	}	
 	if (_isDEBUG_AddDelayInLoop) {
 		String msg = String(_LOOP_DELAY_DEBUG_ms);
 		msg += " ms DELAY ADDED IN LOOP";
@@ -1059,7 +1062,7 @@ void catchUnhandledBaseTimerInterrupts() {
 /// Reads and saves wind speed, gusts, and direction.
 /// </summary>
 void readWind() {
-	if (_isDEBUG_simulateReadings) {
+	if (_isDEBUG_simulateWindReadings) {
 		readWind_Simulate();
 		return;
 	}
@@ -1139,12 +1142,12 @@ void readFan() {
 /// </summary>
 void readSensors() {
 	unsigned long timeStart = millis();
-	if (_isDEBUG_simulateReadings) {
+	if (_isDEBUG_simulateSensorReadings) {
 		// Simulate sensor readings.
 		readSensors_Simulate();
 		return;
 	}
-	dataPoint dp;	// holds reading
+	dataPoint dp;	// holds successive readings
 	// Temperature.
 	dp = dataPoint(now(), reading_Temp_F_DS18B20());
 	d_Temp_F.addReading(dp);
@@ -1181,41 +1184,42 @@ void readSensors() {
 }
 
 /// <summary>
-/// Adds simulated values to sensor readings.
+/// Adds simulated values to sensor readings 
+/// (doesn't include wind readings).
 /// </summary>
 void readSensors_Simulate() {
-	//dataPoint dp;	// holds reading
-	//// Temperature.
-	//dp = dataPoint(now(), dummy_Temp_F.sawtooth(10, 0.02, 20));
-	//d_Temp_F.addReading(dp);
-	//// UV readings.
-	//dp = dataPoint(now(), dummy_UVA.linear(3, 0.1));
-	//d_UVA.addReading(dp);
-	//dp = dataPoint(now(), dummy_UVB.linear(3, 0.1));
-	//d_UVB.addReading(dp);
-	//dp = dataPoint(now(), dummy_UVIndex.sawtooth(0, 0.05, 10));
-	//d_UVIndex.addReading(dp);
-	//// P, RH
-	//dp = dataPoint(now(), dummy_RH.sawtooth(0, 0.05, 50));
-	//d_RH.addReading(dp);
-	//dp = dataPoint(now(), dummy_Pres_mb.linear(3, 0.1) / 100);
-	//d_Pres_mb.addReading(dp);			// Raw pressure in mb (hectopascals)
-	//dp = dataPoint(now(), dummy_RH.linear(10, 0.02));
-	//d_Temp_for_RH_C.addReading(dp);		// Temp (C) of P, RH sensor.
-	//// P adjusted to sea level.
-	//float psl = pressureAtSeaLevel(
-	//	dummy_Pres_seaLvl_mb.linear(3, 0.1),
-	//	gps.data.altitude(),
-	//	d_Temp_for_RH_C.valueLastAdded());
-	//dp = dataPoint(now(), psl);
-	//d_Pres_seaLvl_mb.addReading(dp);
-	//// IR sky
-	//dp = dataPoint(now(), dummy_IRSky_C.sawtooth(0, 0.02, 10));
-	//d_IRSky_C.addReading(dp);
-	//// Insolation/
-	//float insol_norm = insol_norm_pct(dummy_Insol.linear(3, 0.1), INSOL_REFERENCE_MAX);
-	//dp = dataPoint(now(), insol_norm);
-	//d_Insol.addReading(dp);	// % Insolation
+	dataPoint dp;	// holds reading
+	// Temperature.
+	dp = dataPoint(now(), dummy_Temp_F.sawtooth(10, 0.02, 20));
+	d_Temp_F.addReading(dp);
+	// UV readings.
+	dp = dataPoint(now(), dummy_UVA.linear(3, 0.1));
+	d_UVA.addReading(dp);
+	dp = dataPoint(now(), dummy_UVB.linear(3, 0.1));
+	d_UVB.addReading(dp);
+	dp = dataPoint(now(), dummy_UVIndex.sawtooth(0, 0.05, 10));
+	d_UVIndex.addReading(dp);
+	// P, RH
+	dp = dataPoint(now(), dummy_RH.sawtooth(0, 0.05, 50));
+	d_RH.addReading(dp);
+	dp = dataPoint(now(), dummy_Pres_mb.linear(3, 0.1) / 100);
+	d_Pres_mb.addReading(dp);			// Raw pressure in mb (hectopascals)
+	dp = dataPoint(now(), dummy_RH.linear(10, 0.02));
+	d_Temp_for_RH_C.addReading(dp);		// Temp (C) of P, RH sensor.
+	// P adjusted to sea level.
+	float psl = pressureAtSeaLevel(
+		dummy_Pres_seaLvl_mb.linear(3, 0.1),
+		gps.data.altitude(),
+		d_Temp_for_RH_C.valueLastAdded());
+	dp = dataPoint(now(), psl);
+	d_Pres_seaLvl_mb.addReading(dp);
+	// IR sky
+	dp = dataPoint(now(), dummy_IRSky_C.sawtooth(0, 0.02, 10));
+	d_IRSky_C.addReading(dp);
+	// Insolation/
+	float insol_norm = insol_norm_pct(dummy_Insol.linear(3, 0.1), INSOL_REFERENCE_MAX);
+	dp = dataPoint(now(), insol_norm);
+	d_Insol.addReading(dp);	// % Insolation
 }
 
 /// <summary>
