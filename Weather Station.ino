@@ -93,7 +93,7 @@ WindSpeed windSpeed(
 	DAVIS_SPEED_CAL_FACTOR,
 	true,
 	WIND_SPEED_NUMBER_IN_MOVING_AVG,
-	WIND_SPEED_OUTLIER_REJECTION_FACTOR);	// WindSpeed instance for wind.
+	WIND_SPEED_OUTLIER_DELTA);	// WindSpeed instance for wind.
 SensorData windGust;
 WindDirection windDir(VANE_OFFSET);	// WindDirection instance for wind.
 
@@ -611,7 +611,7 @@ void logDebugStatus() {
 	}
 	if (_isDEBUG_simulateWindReadings) {
 		sd.logStatus_indent("USE DUMMY DATA FOR WIND READINGS");
-	}	
+	}
 	if (_isDEBUG_AddDelayInLoop) {
 		String msg = String(_LOOP_DELAY_DEBUG_ms);
 		msg += " ms DELAY ADDED IN LOOP";
@@ -1104,8 +1104,11 @@ void readWind_Simulate() {
 	//#if defined(VM_DEBUG)
 		//unsigned int rots = dummy_anemCount.linear(15, 0);				// simulate
 	//unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);		// simulate
-	unsigned int rots = dummy_anemCount.sawtooth(rotsFromSpeed(10), rotsFromSpeed(0.2), rotsFromSpeed(15), rotsFromSpeed(2), 20, 1000);
-	//unsigned int rots = dummy_anemCount.linear(rotsFromSpeed(10), 0, rotsFromSpeed(15), 50, 4);
+	//unsigned int rots = dummy_anemCount.sawtooth(rotsFromSpeed(10), rotsFromSpeed(0.2), rotsFromSpeed(15), rotsFromSpeed(12), 20, 1000);
+	float target_speed = 15;
+	float target_spikeSpeed = 15;
+	float target_incSpeed = 0.1;
+	unsigned int rots = dummy_anemCount.linear(rotsFromSpeed(target_speed), rotsFromSpeed(target_incSpeed), rotsFromSpeed(target_spikeSpeed), 50, 6);
 	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);	// Speed value
 	dataPoint dpSpeed(now(), speed);
 	windSpeed.addReading(dpSpeed);
@@ -1121,7 +1124,7 @@ void readWind_Simulate() {
 	// Read wind direction.
 	float windAngle = dummy_windDir.sawtooth(90, 1, 360);
 	windDir.addReading(now(), windAngle, dpSpeed.value);	// weighted by speed
-//#endif
+	//#endif
 }
 
 
@@ -1606,7 +1609,7 @@ void loop() {
 		String msg = "WARNING: Loop " + String(_timeEnd_Loop) + "ms";
 		sd.logStatus(msg, gps.dateTime());
 	}
-}
+		}
 /******************************        END LOOP        **********************************/
 /****************************************************************************************/
 /****************************************************************************************/

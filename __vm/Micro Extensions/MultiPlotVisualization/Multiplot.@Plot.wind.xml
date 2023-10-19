@@ -58,9 +58,9 @@
       <ChartAssignment2>3</ChartAssignment2>
     </CurveSettings>
   </CurveSettingCollection>
-  <XSweepTime>5 min</XSweepTime>
+  <XSweepTime>10 min</XSweepTime>
   <XTimeFormat>Auto</XTimeFormat>
-  <DisplayRefreshRate>AsDataComesIn</DisplayRefreshRate>
+  <DisplayRefreshRate>Rate50ms</DisplayRefreshRate>
   <ChartType>LineChart</ChartType>
   <OptimizeBinaryCurves>Off</OptimizeBinaryCurves>
   <CurveDistribution>MultipleCharts</CurveDistribution>

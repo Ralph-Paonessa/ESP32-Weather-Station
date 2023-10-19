@@ -12,11 +12,12 @@
 /// </summary>
 /// <param name="isUseSmoothing">Set true to smooth data.</param>
 /// <param name="numInMovingAvg">Number of points in moving avg.</param>
-/// <param name="rejectFactor">Factor applied to moving avg for outlier comparison.</param>
-SensorData::SensorData(bool isUseSmoothing, unsigned int numInMovingAvg, float rejectFactor) {
+/// <param name="outlierDelta">
+/// Range applied to moving avg for outlier rejection.</param>
+SensorData::SensorData(bool isUseSmoothing, unsigned int numInMovingAvg, float outlierDelta) {
 	_isUseSmoothing = isUseSmoothing;
 	_avgMoving_Num = numInMovingAvg;
-	_rejectFactor = rejectFactor;
+	_outlierDelta = outlierDelta;
 }
 
 /// <summary>
@@ -36,8 +37,8 @@ void SensorData::addReading(dataPoint dp) {
 
 	/*
 	* XXX
-	* 
-	USING A FACTOR TO DEFINE THE OUTLIER RANGE *SUCKS* 
+	*
+	USING A FACTOR TO DEFINE THE OUTLIER RANGE *SUCKS*
 	FOR READINGS NEAR ZERO!!!
 	*
 	/*
@@ -66,36 +67,45 @@ void SensorData::addReading(dataPoint dp) {
 	When _avgMoving is zero, the multiples used for the
 	outlier range will be [0, 0]. Therefore, any nonzero
 	value will be outside this range and marked as an outlier!
-	
+
 	So, NO VALUE will be saved!!!
 	*/
+
+
+	//// First value begins moving avg. (First value CAN'T BE AN OUTLIER!!)
+	//if (!_isMovingAvgStarted) {
+	//	_avgMoving = dp.value;
+	//	_isMovingAvgStarted = true;
+	//}
 
 	if (!_isUseSmoothing) {
 		// No smoothing. No moving avg.
 		_countReadings++;
 		_sumReadings += dp.value;
 	}
-	else {
+	else
+	{
 		// Apply SMOOTHING and OUTLIER REJECTION.
-		if (!isOutlier(dp)) {
+
+		// First value begins moving avg. (First value CAN'T BE AN OUTLIER!!)
+		if (!_isMovingAvgStarted) {
+			_avgMoving = dp.value;
+			_isMovingAvgStarted = true;
+		}
+
+		if (!isOutlier(dp))
+		{
 			// Not an outlier, so include in 10-min avg.
 			_countReadings++;
 			_sumReadings += dp.value;
+
 			// Not an outlier, so include in moving avg.
 			addToList(_avg_moving_List, dp.value, _avgMoving_Num);
 			_avgMoving = listAverage(_avg_moving_List, _avgMoving_Num);
-		}
-		else {
-			// OUTLIER. Exclude this reading from the moving avg.
-
-
-			if (!_isMovingAvgHasValue)
-			{
-				_avgMoving = dp.value;
-				_isMovingAvgHasValue = true;
-			}
+			_isMovingAvgStarted = true;
 		}
 	}
+
 	updateMinMax(dp);	// Regardless of outlier status.
 }
 
@@ -111,8 +121,7 @@ bool SensorData::isOutlier(dataPoint dp) {
 		return false;
 	}
 	///////////////////////////////
-	bool isOut = (dp.value > _avgMoving * _avgMoving)	// upper bound
-		|| (dp.value < _avgMoving / _rejectFactor);		// lower bound
+	bool isOut = (dp.value > _avgMoving + _avgMoving) || (dp.value < _avgMoving - _outlierDelta);		// lower bound
 	return isOut;
 }
 

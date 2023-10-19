@@ -47,13 +47,13 @@ public:
 	/// Set true to smooth data (default = false).</param>
 	/// <param name="numValuesForAvg">	
 	/// Number of values in moving average (default = 5).</param>
-	/// <param name="rejectionFactor">
+	/// <param name="outlierDelta">
 	/// Factor applied to moving avg for outlier comparison (default = 1.75).</param>
 	WindSpeed(
 		float calibrationFactor,
 		bool isUseMovingAvg = false,
 		unsigned int numSmoothPoints = 5,
-		float rejectionFactor = 1.75);		// Overload of SensorData.
+		float outlierDelta = 1.75);		// Overload of SensorData.
 
 	/// <summary>
 	/// Returns wind speed from anemometer rotations.

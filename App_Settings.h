@@ -59,7 +59,7 @@ namespace App_Settings {
 	const float DAVIS_SPEED_CAL_FACTOR = 2.25;	// WindSpeed calibration factor for Davis anemometer.
 	const float VANE_OFFSET = 0;	// Degrees that wind direction reading exceeds true North.
 	const float WIND_DIRECTION_SPEED_THRESHOLD = 1;	// WindSpeed below which wind direction is not reported.
-	const float WIND_SPEED_OUTLIER_REJECTION_FACTOR = 1.75;
+	const float WIND_SPEED_OUTLIER_DELTA = 10;
 	const unsigned int WIND_SPEED_NUMBER_IN_MOVING_AVG = 5;
 
 

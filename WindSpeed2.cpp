@@ -15,19 +15,19 @@
 /// Set true to smooth data (default = false).</param>
 /// <param name="numValuesForAvg">	
 /// Number of values in moving average (default = 5).</param>
-/// <param name="rejectionFactor">
+/// <param name="outlierDelta">
 /// Factor applied to moving avg for outlier comparison (default = 1.75).</param>
 WindSpeed::WindSpeed(
 	float calibrationFactor,
 	bool isUseSmoothing,
 	unsigned int numValuesForAvg,
-	float rejectionFactor
+	float outlierDelta
 )
 {
 	_calibrationFactor = calibrationFactor;
 	_isUseSmoothing = isUseSmoothing;
 	_avgMoving_Num = numValuesForAvg;
-	_rejectFactor = rejectionFactor;
+	_outlierDelta = outlierDelta;
 }
 
 /// <summary>
