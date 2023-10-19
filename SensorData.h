@@ -54,9 +54,15 @@ protected:		// Protected items are accessible by inherited classes.
 	dataPoint _min_today = dataPoint(0, VAL_LIMIT);		// Today's minimum.
 	dataPoint _max_today = dataPoint(0, -VAL_LIMIT);	// Today's maximum.
 
+	/// <summary>
+	/// Minimum sensor reading in the current 10-min period.
+	/// </summary>
+	dataPoint _min_10_min = dataPoint(0, VAL_LIMIT);	// Initialize at high extreme.
 
-	dataPoint _min_10_min = dataPoint(0, VAL_LIMIT);	// Minimum over 10-min period.
-	dataPoint _max_10_min = dataPoint(0, -VAL_LIMIT);	// Maximum over 10-min period.
+	/// <summary>
+	/// Maximum sensor reading in the current 10-min period.
+	/// </summary>
+	dataPoint _max_10_min = dataPoint(0, -VAL_LIMIT);	// Initialize at low extreme.
 
 	/// <summary>
 	/// Clears running average and min, max for 10-min period.
@@ -132,34 +138,58 @@ public:
 	/// <summary>
 	/// The last average saved to the 10-min list.
 	/// </summary>
-	/// <returns>10-min average.</returns>
+	/// <returns>The last average saved to the 10-min list.
+	/// </returns>
 	float avg_10_min();
 
 	/// <summary>
 	/// The last average saved to the 60-min list.
 	/// </summary>
-	/// <returns>60-min average.</returns>
+	/// <returns>The last average saved to the 60-min list.
+	/// </returns>
 	float avg_60_min();
 
 	/// <summary>
-	/// Clears saved minimum and maximum for the day.
+	/// Clears saved minimum and maximum for today.
 	/// </summary>
 	void clearMinMax_day();
 
-
+	/// <summary>
+	/// Returns a (time, value) data point containing the 
+	/// minimum sensor reading in the current 10-min 
+	/// period. Updates at every reading and resets when new 
+	/// 10-min period starts.
+	/// </summary>
+	/// <returns>Data point with (time, value) minimum 
+	/// reading in current 10-min period.</returns>
 	dataPoint min_10_min();	// Minimum over 10-min period.
+
+	/// <summary>
+	/// Returns a (time, value) data point containing the 
+	/// maximum sensor reading in the current 10-min 
+	/// period. Updates at every reading and resets when new 
+	/// 10-min period starts.
+	/// </summary>
+	/// <returns>Data point with (time, value) maximum 
+	/// reading in current 10-min period.</returns>
 	dataPoint max_10_min();// Maximum over 10-min period.
 
 	/// <summary>
-	/// Returns dataPoint with today's minimum value so far.
+	/// Returns a (time, value) data point containing the 
+	/// minimum sensor reading today. Updates at 
+	/// every reading and resets when day rolls over.
 	/// </summary>
-	/// <returns>dataPoint (time, min_value)</returns>
+	/// <returns>Data point with (time, value) of today's 
+	/// minimum reading.</returns>
 	dataPoint min_today();
 
 	/// <summary>
-	/// Returns dataPoint with today's maximum value so far.
+	/// Returns a (time, value) data point containing the 
+	/// maximum sensor reading today. Updates at 
+	/// every reading and resets when day rolls over.
 	/// </summary>
-	/// <returns>dataPoint (time, max_value)</returns>
+	/// <returns>Data point with (time, value) of today's 
+	/// maximum reading.</returns>
 	dataPoint max_today();
 
 	/// <summary>

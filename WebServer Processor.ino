@@ -22,6 +22,9 @@ String processor(const String& var) {
 	}
 
 	///  CURRENT SENSOR READINGS  ///////////////////
+	
+	// Returns running avg of current 10-min 
+	// period (except for gust and wind dir).
 
 	if (var == "LAST_READINGS_DATETIME") {
 		return gps.dateTime();
@@ -38,7 +41,7 @@ String processor(const String& var) {
 		return String(windSpeed.avg_now(), 0);	// 10-min avg
 	}
 	if (var == "WIND_GUST") {
-		return String(windGust.max_10_min().value, 0);
+		return String(windGust.max_10_min().value, 0);	// 10-min max for gusts
 	}
 	if (var == "WIND_DIRECTION") {
 		return String(windDir.directionCardinal());		// avg since last cleared (<= 10 min)

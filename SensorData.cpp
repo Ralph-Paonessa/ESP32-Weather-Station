@@ -152,7 +152,7 @@ void SensorData::clear_10_min() {
 }
 
 /// <summary>
-/// Clears saved minimum and maximum for the day.
+/// Clears saved minimum and maximum for today.
 /// </summary>
 void SensorData::clearMinMax_day() {
 	// Reset to highest possible.
@@ -160,11 +160,27 @@ void SensorData::clearMinMax_day() {
 	_max_today = dataPoint(0, -VAL_LIMIT);
 }
 
+/// <summary>
+/// Returns a (time, value) data point containing the 
+/// minimum sensor reading in the current 10-min 
+/// period. Updates at every reading and resets when new 
+/// 10-min period starts.
+/// </summary>
+/// <returns>Data point with (time, value) minimum 
+/// reading in current 10-min period.</returns>
 dataPoint SensorData::min_10_min()
 {
 	return _min_10_min;
 }
 
+/// <summary>
+/// Returns a (time, value) data point containing the 
+/// maximum sensor reading in the current 10-min 
+/// period. Updates at every reading and resets when new 
+/// 10-min period starts.
+/// </summary>
+/// <returns>Data point with (time, value) maximum 
+/// reading in current 10-min period.</returns>
 dataPoint SensorData::max_10_min()
 {
 	return _max_10_min;
@@ -261,18 +277,24 @@ float SensorData::avg_60_min()
 }
 
 /// <summary>
-/// Minimum so far today.
+/// Returns a (time, value) data point containing the 
+/// minimum sensor reading today. Updates at 
+/// every reading and resets when day rolls over.
 /// </summary>
-/// <returns>Today's minimum.</returns>
+/// <returns>Data point with (time, value) of today's 
+/// minimum reading.</returns>
 dataPoint SensorData::min_today()
 {
 	return _min_today;
 }
 
 /// <summary>
-/// Maximum so far today.
+/// Returns a (time, value) data point containing the 
+/// maximum sensor reading today. Updates at 
+/// every reading and resets when day rolls over.
 /// </summary>
-/// <returns>Today's maximum.</returns>
+/// <returns>Data point with (time, value) of today's 
+/// maximum reading.</returns>
 dataPoint SensorData::max_today()
 {
 	return _max_today;
