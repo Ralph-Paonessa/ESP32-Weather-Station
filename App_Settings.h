@@ -14,9 +14,9 @@
 /// </summary>
 namespace App_Settings {
 
-	const float BASE_PERIOD_SEC = 1;	// Period to sample anemometer rotations (sec).
+	///////const float BASE_PERIOD_SEC = 1;	// Period to sample anemometer rotations (sec).
 
-	//////////////////const float BASE_PERIOD_SEC = 4;	// Period to sample anemometer rotations (sec).
+	const float BASE_PERIOD_SEC = 4;	// Period to sample anemometer rotations (sec).
 
 	/* GPS sync parameters */
 	const int	GPS_SATELLITES_REQUIRED = 6;
