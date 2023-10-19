@@ -19,17 +19,17 @@ namespace App_Settings {
 	const float BASE_PERIOD_SEC = 4;	// Period to sample anemometer rotations (sec).
 
 	/* GPS sync parameters */
-	const int	GPS_SATELLITES_REQUIRED = 6;
-	const int	GPS_CYCLES_FOR_SYNC = 5;		// Minimum GPS cycles before saving data.
-	const int	GPS_DELAY_BETWEEN_CYCLES = 15;	// Delay before getting another GPS fix, sec.
-	const float GPS_MAX_ALLOWED_HDOP = 1.5;		// Minimum HDOP precision required before syncing.
+	const unsigned int	GPS_SATELLITES_REQUIRED = 6;
+	const unsigned int	GPS_CYCLES_FOR_SYNC = 5;	// Minimum GPS cycles before syncing.
+	const unsigned int	GPS_DELAY_BETWEEN_CYCLES = 15;// Delay before getting another GPS fix, sec.
+	const float GPS_MAX_ALLOWED_HDOP = 1.5;			// Minimum HDOP precision for syncing.
 
-	const int	GPS_DUMMY_HOUR = 23;			// Hour for dummy GPS time.
-	const int	GPS_DUMMY_MIN = 55;				// Minute for dummy GPS time.
-	const int	GPS_DUMMY_SEC = 0;				// Second for dummy GPS time.
-	const int	GPS_DUMMY_DAY = 1;				// Day for dummy GPS time.
-	const int	GPS_DUMMY_MONTH = 1;			// Month for dummy GPS time.
-	const int	GPS_DUMMY_YEAR = 2099;			// Year for dummy GPS time.
+	const unsigned int	GPS_DUMMY_HOUR = 23;		// Hour for dummy GPS time.
+	const unsigned int	GPS_DUMMY_MIN = 55;			// Minute for dummy GPS time.
+	const unsigned int	GPS_DUMMY_SEC = 0;			// Second for dummy GPS time.
+	const unsigned int	GPS_DUMMY_DAY = 1;			// Day for dummy GPS time.
+	const unsigned int	GPS_DUMMY_MONTH = 1;		// Month for dummy GPS time.
+	const unsigned int	GPS_DUMMY_YEAR = 2099;		// Year for dummy GPS time.
 
 	const int	UTC_OFFSET_HOURS = -8;
 	const bool	IS_DAYLIGHT_TIME = true;
@@ -37,12 +37,12 @@ namespace App_Settings {
 	const float WIFI_CONNECT_TIMEOUT_SEC = 5;		// Timeout for connecting to WiFi SSID, sec.
 	const float WIFI_CONNECT_TIMEOUT_LOST_SEC = 60;	// Timeout for connecting to WiFi SSID, sec.
 
-	const int FAN_DUTY_PERCENT = 30;			// PWM duty cycle for fan speed.
+	const unsigned int FAN_DUTY_PERCENT = 30;		// PWM duty cycle for fan speed.
 
 	const String LOGFILE_PATH_DATA = "/data.txt";
 
 	const String LOGFILE_PATH_STATUS = "/log.txt";
-	
+
 	const String LINE_SEPARATOR_LOG_BEGINS = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
 	const String LINE_SEPARATOR_MAJOR = "===========================================================";
 	const String LINE_SEPARATOR = "------------------------------------------------------";
@@ -63,7 +63,7 @@ namespace App_Settings {
 	const unsigned int WIND_SPEED_NUMBER_IN_MOVING_AVG = 5;
 
 
-	const int LOOP_TIME_WARNING_THRESHOLD_MS = 2000;
+	const unsigned int LOOP_TIME_WARNING_THRESHOLD_MS = 2000;
 
 	const unsigned int SECONDS_PER_MINUTE = 60;
 	const unsigned int MINUTES_PER_HOUR = 60;
