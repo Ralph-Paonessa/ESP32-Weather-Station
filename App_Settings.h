@@ -43,9 +43,9 @@ namespace App_Settings {
 
 	const String LOGFILE_PATH_STATUS = "/log.txt";
 
-	const String LINE_SEPARATOR_LOG_BEGINS = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
-	const String LINE_SEPARATOR_MAJOR = "===========================================================";
-	const String LINE_SEPARATOR = "------------------------------------------------------";
+	const String LINE_SEPARATOR_LOG_BEGINS = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+	const String LINE_SEPARATOR_MAJOR = "=====================================================";
+	const String LINE_SEPARATOR = "-------------------------------------------------";
 
 	/*
 	ESTIMATE of max. achievable insolation, for
