@@ -347,7 +347,7 @@ bool wifiConnect(unsigned int timeout_sec) {
 		) {
 		// Trying to connect ...
 	}
-	String msg = "WiFi connection required ";
+	String msg = "WiFi connection duration ";
 	msg += String((millis() - timeStart) / 1000.) + "s";
 	sd.logStatus(msg);
 	return  WiFi.isConnected();
