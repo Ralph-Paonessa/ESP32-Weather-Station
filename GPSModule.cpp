@@ -104,8 +104,7 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 					// Data is valid, but ...
 					// Do we have enough consecutive cycles of valid data?
 					if (countValidCycles == GPS_CYCLES_FOR_SYNC) {
-
-						/***************   SUCCESS!!   **************/
+						// SUCCESS!!
 						// Sync system time and location with the GPS. 
 						syncSystemWithCurrentGpsData(timeStart, _countGpsCycles);
 						_isGpsSynced = true;	// flag GPS synced and we're finished.
@@ -117,116 +116,23 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 						// Not enough valid cycles yet.
 						logData_Valid_NotEnoughCycles(countValidCycles);
 					}
-				}	// (isGpsDataValid())
+				}
 				else
 				{
 					// INVALID DATA.
 					logData_NotValid();
 					countValidCycles = 0;	// Reset valid cycles.
-				}	// if (isGpsDataValid())
-				/////////////////////////////////////////////////////
-
+				}
 
 				// If not synced, wait between cycles.
 				if (!_isGpsSynced) {
 					// Wait but keep receiving GPS data.
 					gpsSmartDelay(GPS_CYCLE_DELAY_SEC);
 				}
-
-			}	// while (_tinyGPS.encode(_serialGPS.read()))
-		} // while (_serialGPS.available() > 0)
-	}	// while (!_isGpsSynced)
-	// Serial.println("Finished while (!_isGpsSynced)");
+			}
+		}
+	}
 }
-
-///// <summary>
-///// Syncs gps time to the application once the gps is  
-///// providing sufficiently accurate time and location 
-///// data.
-///// </summary>
-///// <param name="sdCard">SDCard instance (for logging).</param>
-///// <param name="isSimulate">
-///// True to simulate gps sync and add dummy data 
-///// (default is false)
-///// </param>
-//void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
-//	unsigned long timeStart = millis();
-//	_sdCard = sdCard;		// SDCard instance for data logging.
-//	_isSimulate = isSimulate;
-//
-//	// Allow gps to be bypassed when flag  is set.
-//	if (_isSimulate) {
-//		// Pretend gps is synced.
-//		_isGpsSynced = true;
-//		addDummyGpsData();
-//		_sdCard.logStatus("BYPASSING GPS WITH DUMMY DATA.", millis());
-//		return;		// Bypass sync.
-//	}
-//
-//	// Sync system to GPS.
-//	// Output progress in syncing.
-//	_sdCard.logStatus("Begin search for GPS signal.", millis());
-//	bool isFirstTime = false;	// Flag for logging status on first pass.
-//	int countValidCycles = 0;
-//	String msg;
-//
-//	// Loop while data is in the serial buffer and until GPS syncs.
-//	while (_serialGPS.available() > 0 && !_isGpsSynced) {
-//		// Log this message the first time in the loop.
-//		if (!isFirstTime) {
-//			isFirstTime = true;
-//			_sdCard.logStatus("First receiving GPS data.", millis());
-//		}
-//		// Sync require GPS_CYCLES_FOR_SYNC cycles of valid gps data.		 
-//		// Loop while GPS is not synced and GPS is encoding data.
-//		while (!_isGpsSynced && _tinyGPS.encode(_serialGPS.read()))
-//		{
-//			// A new GPS sentence was encoded.
-//			_countGpsCycles++;
-//			logCurrentCycle();
-//			// Does the data pass our validity tests?
-//			if (isGpsDataValid())
-//			{
-//				// VALID DATA.
-//				// Must have valid data for GPS_CYCLES_FOR_SYNC
-//				// *consecutive* cycles.
-//				countValidCycles++;
-//				logData_Valid(countValidCycles);
-//				// Error check.
-//				if (countValidCycles > GPS_CYCLES_FOR_SYNC) {
-//					logCountError(countValidCycles);
-//				}
-//				// Data is valid, but ...
-//				// Do we have enough consecutive cycles of valid data?
-//				if (countValidCycles == GPS_CYCLES_FOR_SYNC) {
-//					/***************   SUCCESS!!   **************/
-//					// Sync system time and location with the GPS. 
-//					syncSystemWithCurrentGpsData(timeStart, _countGpsCycles);
-//					_isGpsSynced = true;	// flag GPS synced and we're finished.
-//				}
-//				else
-//				{
-//					// Not enough valid cycles yet.
-//					logData_Valid_NotEnoughCycles(countValidCycles);
-//				}
-//			}	// (isGpsDataValid())
-//			else
-//			{
-//				// INVALID DATA.
-//				logData_NotValid();
-//				countValidCycles = 0;	// Reset valid cycles.
-//			}	// (isGpsDataValid())
-//
-//			// If not synced, wait between cycles.
-//			if (!_isGpsSynced) {
-//				// Wait but keep receiving GPS data.
-//				gpsSmartDelay(GPS_CYCLE_DELAY_SEC);
-//			}
-//		}	// while (!_isGpsSynced && _tinyGPS.encode(_serialGPS.read()))
-//	}		// while (_serialGPS.available() > 0 && !_isGpsSynced)
-//	// GPS sync successful, so wrap up and return.
-//	logSyncIsComplete();
-//}
 
 /// <summary>
 /// Uses dummy data as current time and altitude.
@@ -276,11 +182,10 @@ void GPSModule::logData_NotValid() {
 	_sdCard.logStatus(msg, millis());
 }
 
-
 /// <summary>
 /// Logs number of GPS sentences that failed checksum.
 /// </summary>
-void GPSModule::logData_checksum() {
+void GPSModule::logData_checksumFailures() {
 	if (_tinyGPS.failedChecksum() > 0)
 	{
 		String msg = String(_tinyGPS.failedChecksum());
@@ -288,9 +193,6 @@ void GPSModule::logData_checksum() {
 		_sdCard.logStatus(msg, millis());
 	}
 }
-
-
-
 
 /// <summary>
 /// Logs that the GPS data fails our validity tests.
@@ -346,16 +248,11 @@ bool GPSModule::isGpsDataValid() {
 		&& _tinyGPS.date.isValid()
 		&& _tinyGPS.location.isValid()
 		&& _tinyGPS.altitude.isValid()
-		&& _tinyGPS.hdop.value() / 100. <= GPS_MAX_ALLOWED_HDOP
-		)
-	{
+		&& _tinyGPS.hdop.value() / 100. <= GPS_MAX_ALLOWED_HDOP) {
+
 		isValid = true;
 	}
-
-
-	logData_checksum();
-
-
+	logData_checksumFailures();
 	return isValid;
 }
 
@@ -641,7 +538,6 @@ unsigned int GPSData::satellites() {
 	return _satellites;
 }
 
-unsigned long GPSData::timeToSync_sec()
-{
+unsigned long GPSData::timeToSync_sec() {
 	return _timeForSyncProcess_sec;
 }

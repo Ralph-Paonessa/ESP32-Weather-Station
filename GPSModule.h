@@ -126,7 +126,7 @@ private:
 	/// <summary>
 	/// Logs number of sentences that failed or passed checksum.
 	/// </summary>
-	void logData_checksum();
+	void logData_checksumFailures();
 
 	void logData_Valid_NotEnoughCycles(int countValidCycles);
 
