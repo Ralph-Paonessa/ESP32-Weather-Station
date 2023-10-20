@@ -688,7 +688,7 @@ void logApp_Settings() {
 	sd.logStatus_indent(msg);
 	msg = "GPS_CYCLES_FOR_SYNC: " + String(GPS_CYCLES_FOR_SYNC);
 	sd.logStatus_indent(msg);
-	msg = "GPS_DELAY_BETWEEN_CYCLES: " + String(GPS_DELAY_BETWEEN_CYCLES_SEC);
+	msg = "GPS_DELAY_BETWEEN_CYCLES: " + String(GPS_CYCLE_DELAY_SEC);
 	sd.logStatus_indent(msg);
 	msg = "GPS_MAX_ALLOWED_HDOP: " + String(GPS_MAX_ALLOWED_HDOP);
 	sd.logStatus_indent(msg);

@@ -69,27 +69,20 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 	bool isFirstTime = false;	// Flag for logging status on first pass.
 	int countValidCycles = 0;
 
-	// Loop while data is in the serial buffer and until GPS syncs.
-
+	// Loop until GPS syncs.
 	while (!_isGpsSynced)
 	{
-
+		// Loop while data is in the serial buffer.
 		while (_serialGPS.available() > 0) {
-
-			Serial.println("available");
-
 			// Log this message the first time in the loop.
 			if (!isFirstTime) {
 				isFirstTime = true;
 				_sdCard.logStatus("First receiving GPS data.", millis());
 			}
-			// Sync require GPS_CYCLES_FOR_SYNC cycles of valid gps data.		 
-			// Loop while GPS is not synced and GPS is encoding data.
+			// We require GPS_CYCLES_FOR_SYNC consecutive
+			// cycles of valid gps data.		 
 
-			/*while (!_isGpsSynced && _tinyGPS.encode(_serialGPS.read()))*/
-
-			while (_tinyGPS.encode(_serialGPS.read()))
-				Serial.println("encoded");
+			while (_tinyGPS.encode(_serialGPS.read()))	// while GPS is encoding data
 			{
 				// A new GPS sentence was encoded.
 				_countGpsCycles++;
@@ -117,10 +110,7 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 						syncSystemWithCurrentGpsData(timeStart, _countGpsCycles);
 						_isGpsSynced = true;	// flag GPS synced and we're finished.
 						logSyncIsComplete();
-
 						return;
-						//break;
-
 					}
 					else
 					{
@@ -140,27 +130,13 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 				// If not synced, wait between cycles.
 				if (!_isGpsSynced) {
 					// Wait but keep receiving GPS data.
-					gpsSmartDelay(GPS_DELAY_BETWEEN_CYCLES_SEC);
+					gpsSmartDelay(GPS_CYCLE_DELAY_SEC);
 				}
-			}	// while (!_isGpsSynced && _tinyGPS.encode(_serialGPS.read()))
 
-
-			String msg = "Completed while (_tinyGPS.encode(_serialGPS.read())) loop before sync!";
-			_sdCard.logStatus(msg, millis());
-
-			if (_isGpsSynced)
-			{
-				return;
-			}
-
-
+			}	// while (_tinyGPS.encode(_serialGPS.read()))
 		} // while (_serialGPS.available() > 0)
-
-		// GPS sync successful, so wrap up and return.
-		Serial.println("Finished while (_serialGPS.available() > 0)");
 	}	// while (!_isGpsSynced)
-	Serial.println("Finished while (!_isGpsSynced)");
-	//logSyncIsComplete();
+	// Serial.println("Finished while (!_isGpsSynced)");
 }
 
 ///// <summary>
@@ -244,7 +220,7 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 //			// If not synced, wait between cycles.
 //			if (!_isGpsSynced) {
 //				// Wait but keep receiving GPS data.
-//				gpsSmartDelay(GPS_DELAY_BETWEEN_CYCLES_SEC);
+//				gpsSmartDelay(GPS_CYCLE_DELAY_SEC);
 //			}
 //		}	// while (!_isGpsSynced && _tinyGPS.encode(_serialGPS.read()))
 //	}		// while (_serialGPS.available() > 0 && !_isGpsSynced)
@@ -302,13 +278,15 @@ void GPSModule::logData_NotValid() {
 
 
 /// <summary>
-/// Logs number of sentences that failed or passed checksum.
+/// Logs number of GPS sentences that failed checksum.
 /// </summary>
 void GPSModule::logData_checksum() {
-	String msg = String(_tinyGPS.failedChecksum());
-	msg += " GPS sentences failed checksum. ";
-	msg += String(_tinyGPS.passedChecksum()) + " sentences passed.";
-	_sdCard.logStatus(msg, millis());
+	if (_tinyGPS.failedChecksum() > 0)
+	{
+		String msg = String(_tinyGPS.failedChecksum());
+		msg += " GPS sentences FAILED CHECKSUM.";
+		_sdCard.logStatus(msg, millis());
+	}
 }
 
 

@@ -21,7 +21,7 @@ namespace App_Settings {
 	/* GPS sync parameters */
 	const unsigned int	GPS_SATELLITES_REQUIRED = 3;
 	const unsigned int	GPS_CYCLES_FOR_SYNC = 3;	// Minimum GPS cycles before syncing.
-	const unsigned int	GPS_DELAY_BETWEEN_CYCLES_SEC = 5;// Delay before getting another GPS fix, sec.
+	const unsigned int	GPS_CYCLE_DELAY_SEC = 5;	// Delay before getting another GPS fix, sec.
 	const float GPS_MAX_ALLOWED_HDOP = 4;			// Minimum HDOP precision for syncing.
 
 	const unsigned int	GPS_DUMMY_HOUR = 23;		// Hour for dummy GPS time.
