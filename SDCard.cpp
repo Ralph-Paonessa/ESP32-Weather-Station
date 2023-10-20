@@ -5,25 +5,17 @@
 #include "SDCard.h"
 
 /// <summary>
-/// Initialize SD card. 
+/// Creates SD card instance. 
 /// </summary>
-SDCard::SDCard() {
-	
-}
-
-///// <summary>
-///// Initialize SD card. 
-///// </summary>
-///// <param name="SPI_CS_pin">GPIO pin number.</param>
-//SDCard::SDCard(int SPI_CS_pin) {
-//	_SPI_CS_pin = SPI_CS_pin;
-//}
+SDCard::SDCard() {}
 
 /// <summary>
 /// Initializes SD card module.
 /// </summary>
 /// <param name="SPI_CS_pin">GPIO pin number.</param>
-/// <param name="isBypass">Set true to bypass SD card operations.</param>
+/// <param name="isBypass">
+/// Set true to bypass SD card operations and add 
+/// dummy data.</param>
 /// <returns>True if successful SD card initialization.</returns>
 bool SDCard::initialize(int SPI_CS_pin, bool isBypass) {
 

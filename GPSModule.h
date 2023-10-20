@@ -24,7 +24,7 @@ logged to the SD card.
 #include "WProgram.h"
 #endif
 
-#include <TinyGPS++.h>
+#include <TinyGPSPlus.h>	// Mikal Hart - includes TinyGPS++.h
 #include <TimeLib.h>		// Paul Stoffregen - Time
 
 #include "App_Settings.h"
@@ -122,6 +122,11 @@ private:
 	void logData_Valid(int validCyclesCount);
 
 	void logData_NotValid();
+
+	/// <summary>
+	/// Logs number of sentences that failed or passed checksum.
+	/// </summary>
+	void logData_checksum();
 
 	void logData_Valid_NotEnoughCycles(int countValidCycles);
 

@@ -688,7 +688,7 @@ void logApp_Settings() {
 	sd.logStatus_indent(msg);
 	msg = "GPS_CYCLES_FOR_SYNC: " + String(GPS_CYCLES_FOR_SYNC);
 	sd.logStatus_indent(msg);
-	msg = "GPS_DELAY_BETWEEN_CYCLES: " + String(GPS_DELAY_BETWEEN_CYCLES);
+	msg = "GPS_DELAY_BETWEEN_CYCLES: " + String(GPS_DELAY_BETWEEN_CYCLES_SEC);
 	sd.logStatus_indent(msg);
 	msg = "GPS_MAX_ALLOWED_HDOP: " + String(GPS_MAX_ALLOWED_HDOP);
 	sd.logStatus_indent(msg);
@@ -1491,7 +1491,7 @@ void setup() {
 	msg = "CURRENT LOCAL TIME is " + gps.dateTime();
 	(IS_DAYLIGHT_TIME) ? msg = " Daylight time." : msg = " Standard time.";
 	sd.logStatus(msg);
-	sd.logStatus("SETUP END", millis());
+	sd.logStatus("SETUP END " + gps.dateTime(), millis());
 }
 /****************************************************************************/
 /************************        END SETUP       ****************************/
@@ -1554,6 +1554,8 @@ void loop() {
 	//    60-MIN INTERVAL.
 	if (_countInterrupts_60_min >= BASE_PERIODS_IN_60_MIN) {
 		processReadings_60_min();
+		sd.logData(sensorsDataString_10_min());	// Save readings to SD card.
+		sd.logStatus("Logged 60-min avgs.", gps.dateTime());
 		// Check for unhandled.
 		if (_countInterrupts_60_min > BASE_PERIODS_IN_60_MIN) {
 			String msg = "WARNING: 10-min interrupt count exceeded threshold by ";
