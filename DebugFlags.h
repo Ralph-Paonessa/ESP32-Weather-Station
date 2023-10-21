@@ -11,7 +11,7 @@
 
 /*****************      DEBUGGING FLAGS      ******************/
 
-bool _isDEBUG_BypassGPS = false;					// Bypass gps syncing.
+bool _isDEBUG_BypassGPS = false;				// Bypass gps syncing.
 bool _isDEBUG_BypassWifi = false;				// Bypass WiFi connect.
 bool _isDEBUG_BypassSDCard = false;				// Bypass SD card.
 bool _isDEBUG_ListLittleFS = false;				// List contents of LittleFS.

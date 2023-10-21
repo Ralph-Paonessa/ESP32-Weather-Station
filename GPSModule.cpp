@@ -14,7 +14,7 @@ HardwareSerial _serialGPS(2);		// Allowed values 0, 1, 2?
 SDCard _sdCard;		// SDCard instance for data logging.
 
 /// <summary>
-/// Initialize GPSModule instance that interacts with a GPS module.
+/// Exposes methods to interact with a GPS module.
 /// </summary>
 GPSModule::GPSModule() {}
 
@@ -54,6 +54,8 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 	_sdCard = sdCard;		// SDCard instance for data logging.
 	_isSimulate = isSimulate;
 
+
+
 	// Allow gps to be bypassed when flag is set.
 	if (_isSimulate) {
 		// Pretend gps is synced.
@@ -64,8 +66,8 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 	}
 
 	// Sync system to GPS.
-	// Output progress in syncing.
-	_sdCard.logStatus("Begin search for GPS signal.", millis());
+	_sdCard.logStatus("Beginning search for GPS signal.", millis());
+	logSoftwareVersion();
 	bool isFirstTime = false;	// Flag for logging status on first pass.
 	int countValidCycles = 0;
 
@@ -80,15 +82,13 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 				_sdCard.logStatus("First receiving GPS data.", millis());
 			}
 			// We require GPS_CYCLES_FOR_SYNC consecutive
-			// cycles of valid gps data.		 
-
+			// cycles of valid gps data.
 			while (_tinyGPS.encode(_serialGPS.read()))	// while GPS is encoding data
 			{
 				// A new GPS sentence was encoded.
 				_countGpsCycles++;
 				logCurrentCycle();
-
-				/////////////////////////////////////////////////////
+				logData_checksumFailures();
 				// Does the data pass our validity tests?
 				if (isGpsDataValid())
 				{
@@ -111,19 +111,16 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 						logSyncIsComplete();
 						return;
 					}
-					else
-					{
+					else {
 						// Not enough valid cycles yet.
 						logData_Valid_NotEnoughCycles(countValidCycles);
 					}
 				}
-				else
-				{
+				else {
 					// INVALID DATA.
 					logData_NotValid();
 					countValidCycles = 0;	// Reset valid cycles.
 				}
-
 				// If not synced, wait between cycles.
 				if (!_isGpsSynced) {
 					// Wait but keep receiving GPS data.
@@ -145,6 +142,12 @@ void GPSModule::addDummyGpsData() {
 		GPS_DUMMY_DAY,
 		GPS_DUMMY_MONTH,
 		GPS_DUMMY_YEAR);
+}
+
+void GPSModule::logSoftwareVersion() {
+	String msg = "TinyGpsPlus library version ";
+	msg += _tinyGPS.libraryVersion();
+	_sdCard.logStatus(msg);
 }
 
 /// <summary>
@@ -195,7 +198,7 @@ void GPSModule::logData_checksumFailures() {
 }
 
 /// <summary>
-/// Logs that the GPS data fails our validity tests.
+/// Logs failure of GPS data validity tests.
 /// </summary>
 /// <param name="countValidCycles">Number of valid cycles.</param>
 void GPSModule::logData_Valid_NotEnoughCycles(int countValidCycles) {
@@ -206,7 +209,7 @@ void GPSModule::logData_Valid_NotEnoughCycles(int countValidCycles) {
 }
 
 /// <summary>
-/// Logs this cyle of gps data retrieval.
+/// Logs one cyle of gps data retrieval.
 /// </summary>
 void GPSModule::logCurrentCycle() {
 	_sdCard.logStatus(LINE_SEPARATOR);
@@ -217,7 +220,7 @@ void GPSModule::logCurrentCycle() {
 }
 
 /// <summary>
-/// GPS sync successful, so wraps up and returns.
+/// Logs GPS sync success.
 /// </summary>
 void GPSModule::logSyncIsComplete() {
 	_sdCard.logStatus(LINE_SEPARATOR);
@@ -226,7 +229,7 @@ void GPSModule::logSyncIsComplete() {
 	_sdCard.logStatus("GPS sync complete.", millis());
 	String msg = "Local date and time " + dateTime();
 	_sdCard.logStatus(msg);
-	msg = " Using offset from UTC = " + String(UTC_OFFSET_HOURS) + " hr.";
+	msg = "Using offset from UTC = " + String(UTC_OFFSET_HOURS) + " hr.";
 	if (IS_DAYLIGHT_TIME) {
 		msg += " Adjusted + 1 hr for Daylight Time.";
 	}
@@ -248,11 +251,11 @@ bool GPSModule::isGpsDataValid() {
 		&& _tinyGPS.date.isValid()
 		&& _tinyGPS.location.isValid()
 		&& _tinyGPS.altitude.isValid()
-		&& _tinyGPS.hdop.value() / 100. <= GPS_MAX_ALLOWED_HDOP) {
-
+		&& _tinyGPS.hdop.value() / 100. <= GPS_MAX_ALLOWED_HDOP
+		)
+	{
 		isValid = true;
-	}
-	logData_checksumFailures();
+	}	
 	return isValid;
 }
 

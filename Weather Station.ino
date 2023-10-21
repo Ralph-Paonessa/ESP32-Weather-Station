@@ -347,7 +347,7 @@ bool wifiConnect(unsigned int timeout_sec) {
 		) {
 		// Trying to connect ...
 	}
-	String msg = "WiFi connection duration ";
+	String msg = "Connecting to WiFi required ";
 	msg += String((millis() - timeStart) / 1000.) + "s";
 	sd.logStatus(msg);
 	return  WiFi.isConnected();
@@ -530,42 +530,42 @@ void PrintHeader() {
 void logDeviceStatus() {
 	String msg = "DEVICE STATUS REPORT:";
 	sd.logStatus(msg, gps.dateTime());
-	msg = "WiFi connected - ";
+	msg = "WiFi connected: ";
 	msg += bool_OK_Error(WiFi.isConnected());
 	sd.logStatus_indent(msg);
-	msg = "SD card - ";
+	msg = "SD card: ";
 	msg += bool_OK_Error(isGood_SDCard);
 	sd.logStatus_indent(msg);
-	msg = "LittleFS flash file system - ";
+	msg = "LittleFS flash file system: ";
 	msg += bool_OK_Error(isGood_LITTLEFS);
 	sd.logStatus_indent(msg);
 	msg = "GPS module - ???";
 	sd.logStatus_indent(msg);
-	msg = "Dallas temperature sensor - ";
+	msg = "Dallas temperature sensor: ";
 	msg += bool_OK_Error(isGood_Temp);
 	sd.logStatus_indent(msg);
-	msg = "Radiation shield fan - ";
+	msg = "Radiation shield fan: ";
 	msg += bool_OK_Error(isGood_fan);
 	sd.logStatus_indent(msg);
-	msg = "Pressure & RH sensor - ";
+	msg = "Pressure & RH sensor: ";
 	msg += bool_OK_Error(isGood_PRH);
 	sd.logStatus_indent(msg);
-	msg = "Insolation sensor - ";
+	msg = "Insolation sensor: ";
 	msg += "???";
 	sd.logStatus_indent(msg);
-	msg = "UV sensor - ";
+	msg = "UV sensor: ";
 	msg += bool_OK_Error(isGood_UV);
 	sd.logStatus_indent(msg);
-	msg = "Wind direction sensor - ";
+	msg = "Wind direction sensor: ";
 	msg += "???";
 	sd.logStatus_indent(msg);
-	msg = "Wind speed sensor - ";
+	msg = "Wind speed sensor: ";
 	msg += "???";
 	sd.logStatus_indent(msg);
-	msg = "Time zone offset from GMT - ";
+	msg = "Time zone offset from UTC: ";
 	msg += gps.timeZoneOffset();
 	sd.logStatus_indent(msg);
-	msg = "Is Daylight Time:  - ";
+	msg = "Is Daylight Time: : ";
 	msg += bool_true_false(gps.isDaylightTime());
 	sd.logStatus_indent(msg);
 }

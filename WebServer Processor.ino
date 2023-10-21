@@ -157,9 +157,6 @@ String processor(const String& var) {
 	if (var == "WIND_GUST_LO") {
 		return String(windGust.min_today().value, 0);
 	}
-	if (var == "WIND_ANGLE_LO") {
-		return "??";		// avg since last cleared (<= 10 min)
-	}
 	if (var == "PRESSURE_MB_SL_LO") {
 		return String(d_Pres_seaLvl_mb.min_today().value, 0);
 	}
@@ -196,7 +193,7 @@ String processor(const String& var) {
 	if (var == "GPS_TIME") {
 		return String(gps.time_UTC_GPS());
 	}
-	if (var == "GPS_TIME_ZONE") {
+	if (var == "GPS_UTC_OFFSET") {
 		return String(UTC_OFFSET_HOURS);
 	}
 	if (var == "GPS_DAYLIGHT_TIME_USED") {

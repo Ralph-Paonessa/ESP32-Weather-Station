@@ -86,7 +86,7 @@ public:
 };
 
 /// <summary>
-/// Object that interacts with a GPS module.
+/// Exposes methods to interact with a GPS module.
 /// </summary>
 class GPSModule {
 
@@ -137,6 +137,8 @@ private:
 	static void gpsSmartDelay(unsigned long ms);
 
 	void addDummyGpsData();
+
+	void logSoftwareVersion();
 
 	void logCountError(int countValidCycles);
 

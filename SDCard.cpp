@@ -232,20 +232,20 @@ bool SDCard::createFile(const String& path) {
 	{
 		// If the file doesn't exist, create it.
 		if (SD.exists(path)) {
-			String msg = "[SDCard.createFile] " + path + " file created.";
+			String msg = "[SDCard.createFile] " + path + " file found.";
 			logStatus(msg, millis());
 			return true;
 		}
 		// File does not exist, so create empty file.
 		File file = SD.open(path, FILE_WRITE);
 		if (!file) {
-			String msg = "[SDCard.createFile] " + path + " could not be created.";
+			String msg = "[SDCard.createFile] " + path + " file could not be created.";
 			logStatus(msg, millis());
 			return false;
 			return false;
 		}
 		else {
-			String msg = "[SDCard.createFile] " + path + " created.";
+			String msg = "[SDCard.createFile] " + path + " file created.";
 			logStatus(msg, millis());
 			file.close();
 			return true;
