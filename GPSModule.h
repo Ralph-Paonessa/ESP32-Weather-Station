@@ -47,7 +47,7 @@ private:
 	unsigned long  _timeForSyncProcess_sec;		// Seconds elapsed while gps syncs.
 
 public:
-		
+
 	/// <summary>
 	/// GPS latitude at sync, degrees.
 	/// </summary>
@@ -217,9 +217,9 @@ public:
 	String time_UTC_GPS();
 
 	/// <summary>
-	/// Returns current day of the week as string.
+	/// Returns current day of the week as string (using TimeLib).
 	/// </summary>
-	/// <returns>Day of the week.</returns>
+	/// <returns>Current day of the week.</returns>
 	String dayString();
 
 	/// <summary>

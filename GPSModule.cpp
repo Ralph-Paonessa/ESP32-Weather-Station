@@ -495,9 +495,9 @@ String GPSModule::time() {
 }
 
 /// <summary>
-/// Returns current day of the week as string.
+/// Returns current day of the week as string (using TimeLib).
 /// </summary>
-/// <returns></returns>
+/// <returns>Current day of the week.</returns>
 String GPSModule::dayString() {
 	return dayStr(day());
 }
