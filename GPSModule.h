@@ -189,7 +189,8 @@ public:
 	/// True to simulate gps sync and add dummy data 
 	/// (default is false)
 	/// </param>
-	void syncToGPS(SDCard& sdCard, bool isSimulate);
+	/// <returns>True if GPS sync success.</returns>
+	bool syncToGPS(SDCard& sdCard, bool isSimulate);
 
 	/// <summary>
 	/// Returns current date and time string.

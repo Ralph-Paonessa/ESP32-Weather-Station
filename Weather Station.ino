@@ -1429,8 +1429,16 @@ void setup() {
 	sd.logStatus("Trying to connect to GPS.", millis());
 	// Get time and location from GPS.
 	// This code is BLOCKING until gps syncs.
+	bool isGpsSuccess = false;
 	if (!gps.isSynced()) {
-		gps.syncToGPS(sd, _isDEBUG_BypassGPS);
+		isGpsSuccess = gps.syncToGPS(sd, _isDEBUG_BypassGPS);
+	}
+
+	if (!isGpsSuccess)
+	{
+		String msg = "ERROR: GPS did not sync after ";
+		msg += GPS_CYCLES_COUNT_MAX + " cycles.";
+		sd.logStatus(msg, millis());
 	}
 	// Hold to determine when new day begins.
 	_oldDay = day();
@@ -1611,7 +1619,7 @@ void loop() {
 		String msg = "WARNING: Loop " + String(_timeEnd_Loop) + "ms";
 		sd.logStatus(msg, gps.dateTime());
 	}
-		}
+}
 /******************************        END LOOP        **********************************/
 /****************************************************************************************/
 /****************************************************************************************/

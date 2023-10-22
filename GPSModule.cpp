@@ -49,7 +49,8 @@ void GPSModule::begin(
 /// True to simulate gps sync and add dummy data 
 /// (default is false)
 /// </param>
-void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
+/// <returns>True if GPS sync success.</returns>
+bool GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 	unsigned long timeStart = millis();
 	_sdCard = sdCard;		// SDCard instance for data logging.
 	_isSimulate = isSimulate;
@@ -89,6 +90,11 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 				_countGpsCycles++;
 				logCurrentCycle();
 				logData_checksumFailures();
+
+				if (_countGpsCycles > GPS_CYCLES_COUNT_MAX)
+				{
+					return false;
+				}
 				// Does the data pass our validity tests?
 				if (isGpsDataValid())
 				{
@@ -109,7 +115,7 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 						syncSystemWithCurrentGpsData(timeStart, _countGpsCycles);
 						_isGpsSynced = true;	// flag GPS synced and we're finished.
 						logSyncIsComplete();
-						return;
+						return true;
 					}
 					else {
 						// Not enough valid cycles yet.
