@@ -55,15 +55,13 @@ bool GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 	_sdCard = sdCard;		// SDCard instance for data logging.
 	_isSimulate = isSimulate;
 
-
-
 	// Allow gps to be bypassed when flag is set.
 	if (_isSimulate) {
 		// Pretend gps is synced.
 		_isGpsSynced = true;
 		addDummyGpsData();
 		_sdCard.logStatus("BYPASSING GPS WITH DUMMY DATA.", millis());
-		return;		// Bypass sync.
+		return true;	// Bypass sync.
 	}
 
 	// Sync system to GPS.
@@ -90,13 +88,17 @@ bool GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 				_countGpsCycles++;
 				logCurrentCycle();
 				logData_checksumFailures();
-
-				if (_countGpsCycles > GPS_CYCLES_COUNT_MAX)
-				{
-					return false;
+				// Limit number of attempt cycles.
+				if (_countGpsCycles > GPS_CYCLES_COUNT_MAX
+					&& countValidCycles < 1) {
+					// Use gps time if valid.
+					if (isGpsDateTimeValid())					{
+						syncSystemTimeToGPS();
+						return false;
+					}
 				}
 				// Does the data pass our validity tests?
-				if (isGpsDataValid())
+				if (isGpsLocationValid() && isGpsDateTimeValid())
 				{
 					// VALID DATA.
 					// Must have valid data for GPS_CYCLES_FOR_SYNC
@@ -247,22 +249,25 @@ void GPSModule::logSyncIsComplete() {
 }
 
 /// <summary>
-/// Returns true if the GPS data passes all validity tests.
+/// Returns true if the GPS location data passes all validity tests.
 /// </summary>
-/// <returns>True if valid GPS data.</returns>
-bool GPSModule::isGpsDataValid() {
-	bool isValid = false;
-	if (
+/// <returns>True if valid GPS location data.</returns>
+bool GPSModule::isGpsLocationValid() {
+	return
 		_tinyGPS.satellites.value() >= GPS_SATELLITES_REQUIRED
 		&& _tinyGPS.date.isValid()
+		&& _tinyGPS.time.isValid()
 		&& _tinyGPS.location.isValid()
 		&& _tinyGPS.altitude.isValid()
-		&& _tinyGPS.hdop.value() / 100. <= GPS_MAX_ALLOWED_HDOP
-		)
-	{
-		isValid = true;
-	}	
-	return isValid;
+		&& _tinyGPS.hdop.value() / 100. <= GPS_MAX_ALLOWED_HDOP;
+}
+
+/// <summary>
+/// Returns true if the GPS date and time pass all validity tests.
+/// </summary>
+/// <returns>True if valid GPS date and time.</returns>
+bool GPSModule::isGpsDateTimeValid() {
+	return _tinyGPS.date.isValid() && _tinyGPS.time.isValid();
 }
 
 /// <summary>
@@ -360,7 +365,7 @@ void GPSModule::logGpsData() {
 }
 
 /// <summary>
-/// Sync time and date to GPS.
+/// Set system time and date to GPS values.
 /// </summary>
 void GPSModule::syncSystemTimeToGPS() {
 	// Use TimLib setTime:

@@ -1433,7 +1433,6 @@ void setup() {
 	if (!gps.isSynced()) {
 		isGpsSuccess = gps.syncToGPS(sd, _isDEBUG_BypassGPS);
 	}
-
 	if (!isGpsSuccess)
 	{
 		String msg = "ERROR: GPS did not sync after ";

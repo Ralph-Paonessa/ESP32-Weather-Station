@@ -96,7 +96,7 @@ private:
 	int _countGpsCycles = 0;	// keep track of GPS cycles
 
 	/// <summary>
-	/// Sync time and date to GPS.
+	/// Set system time and date to GPS values.
 	/// </summary>
 	void syncSystemTimeToGPS();
 
@@ -106,10 +106,16 @@ private:
 	void syncLocationToGPS();
 
 	/// <summary>
-	/// Returns true if the GPS data passes all validity tests.
+	/// Returns true if the GPS date and time pass all validity tests.
 	/// </summary>
-	/// <returns>True if GPS data is valid </returns>
-	bool isGpsDataValid();
+	/// <returns>True if valid GPS date and time.</returns>
+	bool isGpsDateTimeValid();
+
+	/// <summary>
+	/// Returns true if the GPS location data passes all validity tests.
+	/// </summary>
+	/// <returns>True if valid GPS location data.</returns>
+	bool isGpsLocationValid();
 
 	void syncSystemWithCurrentGpsData(unsigned long millisStart, int countGpsCycles);
 
