@@ -40,6 +40,15 @@ void GPSModule::begin(
 }
 
 /// <summary>
+/// Returns true if GPS has received data.
+/// </summary>
+/// <returns>True if GPS has received data.</returns>
+bool GPSModule::isGpsReceiving()
+{
+	return _isGpsReceiving;
+}
+
+/// <summary>
 /// Syncs gps time to the application once the gps is  
 /// providing sufficiently accurate time and location 
 /// data.
@@ -74,11 +83,13 @@ bool GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 	while (!_isGpsSynced)
 	{
 		// Loop while data is in the serial buffer.
-		while (_serialGPS.available() > 0) {
+		while (_serialGPS.available() > 0)
+		{
 			// Log this message the first time in the loop.
 			if (!isFirstTime) {
 				isFirstTime = true;
 				_sdCard.logStatus("First receiving GPS data.", millis());
+				_isGpsReceiving = true;
 			}
 			// We require GPS_CYCLES_FOR_SYNC consecutive
 			// cycles of valid gps data.
@@ -89,10 +100,11 @@ bool GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 				logCurrentCycle();
 				logData_checksumFailures();
 				// Limit number of attempt cycles.
-				if (_countGpsCycles > GPS_CYCLES_COUNT_MAX
+				if (_countGpsCycles >= GPS_CYCLES_COUNT_MAX
 					&& countValidCycles < 1) {
 					// Use gps time if valid.
-					if (isGpsDateTimeValid())					{
+					if (isGpsDateTimeValid()) 
+					{
 						syncSystemTimeToGPS();
 						return false;
 					}
@@ -119,18 +131,21 @@ bool GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 						logSyncIsComplete();
 						return true;
 					}
-					else {
+					else 
+					{
 						// Not enough valid cycles yet.
 						logData_Valid_NotEnoughCycles(countValidCycles);
 					}
 				}
-				else {
+				else
+				{
 					// INVALID DATA.
 					logData_NotValid();
 					countValidCycles = 0;	// Reset valid cycles.
 				}
 				// If not synced, wait between cycles.
-				if (!_isGpsSynced) {
+				if (!_isGpsSynced)
+				{
 					// Wait but keep receiving GPS data.
 					gpsSmartDelay(GPS_CYCLE_DELAY_SEC);
 				}
@@ -253,13 +268,11 @@ void GPSModule::logSyncIsComplete() {
 /// </summary>
 /// <returns>True if valid GPS location data.</returns>
 bool GPSModule::isGpsLocationValid() {
-	return
+	return		(
 		_tinyGPS.satellites.value() >= GPS_SATELLITES_REQUIRED
-		&& _tinyGPS.date.isValid()
-		&& _tinyGPS.time.isValid()
 		&& _tinyGPS.location.isValid()
 		&& _tinyGPS.altitude.isValid()
-		&& _tinyGPS.hdop.value() / 100. <= GPS_MAX_ALLOWED_HDOP;
+		&& _tinyGPS.hdop.value() / 100. <= GPS_MAX_ALLOWED_HDOP);
 }
 
 /// <summary>
@@ -267,7 +280,7 @@ bool GPSModule::isGpsLocationValid() {
 /// </summary>
 /// <returns>True if valid GPS date and time.</returns>
 bool GPSModule::isGpsDateTimeValid() {
-	return _tinyGPS.date.isValid() && _tinyGPS.time.isValid();
+	return (_tinyGPS.date.isValid() && _tinyGPS.time.isValid());
 }
 
 /// <summary>
@@ -458,9 +471,9 @@ bool GPSModule::isDaylightTime() {
 /// </summary>
 /// <returns></returns>
 String GPSModule::dateTime() {
-	if (!_isGpsSynced) {
-		return String(millis() / 1000., 2) + "s";	// Date not yet known.
-	}
+	//if (!_isGpsSynced) {
+	//	return String(millis() / 1000., 2) + "s";	// Date not yet known.
+	//}
 	time_t t = now(); // Hold current time.
 	String s = String(year(t)) + "-";
 	// Month.
@@ -484,9 +497,9 @@ String GPSModule::dateTime() {
 /// </summary>
 /// <returns>Current time "hh:mm"</returns>
 String GPSModule::time() {
-	if (!_isGpsSynced) {
-		return String(now()) + "s";
-	}
+	//if (!_isGpsSynced) {
+	//	return String(now()) + "s";
+	//}
 	String s = "";
 	time_t t = now(); // Save current time.
 	// Time
@@ -506,11 +519,30 @@ String GPSModule::time() {
 }
 
 /// <summary>
-/// Returns current day of the week as string (using TimeLib).
+/// Returns the name of the current day of the week ("Sunday", etc.).
 /// </summary>
-/// <returns>Current day of the week.</returns>
-String GPSModule::dayString() {
-	return dayStr(day());
+/// <returns>Current day of the week ("Sunday", etc.).</returns>
+String GPSModule::dayName() {
+	// (NOTE: The TimeLib function dayStr(day()) kept causing crashes!)
+	switch (weekday())	// TimeLib function.
+	{
+	case 1:
+		return "Sunday";
+	case 2:
+		return "Monday";
+	case 3:
+		return "Tuesday";
+	case 4:
+		return "Wednesday";
+	case 5:
+		return "Thursday";
+	case 6:
+		return "Friday";
+	case 7:
+		return "Saturday";
+	default:
+		return "day error!";
+	}
 }
 
 /// <summary>

@@ -33,7 +33,7 @@ String processor(const String& var) {
 		return gps.time();
 	}
 	if (var == "WEEKDAY") {
-		return gps.dayString();
+		return String(gps.dayName());
 	}
 	if (var == "TEMPERATURE_F")
 		return String(d_Temp_F.avg_now(), 0);
@@ -68,7 +68,7 @@ String processor(const String& var) {
 		return String(d_RH.avg_now(), 0);
 	}
 	if (var == "UV_A") {
-		if (isGood_UV) {
+		if (_isGood_UV) {
 			return String(d_UVA.avg_now(), 0);
 		}
 		else {
@@ -76,7 +76,7 @@ String processor(const String& var) {
 		}
 	}
 	if (var == "UV_B") {
-		if (isGood_UV) {
+		if (_isGood_UV) {
 			return String(d_UVB.avg_now(), 0);
 		}
 		else {
@@ -84,7 +84,7 @@ String processor(const String& var) {
 		}
 	}
 	if (var == "UV_INDEX") {
-		if (isGood_UV) {
+		if (_isGood_UV) {
 			return String(d_UVIndex.avg_now(), 1);
 		}
 		else {
@@ -119,7 +119,7 @@ String processor(const String& var) {
 		return String(d_RH.max_today().value, 0);
 	}
 	if (var == "UV_A_HI") {
-		if (isGood_UV) {
+		if (_isGood_UV) {
 			return String(d_UVA.max_today().value, 0);
 		}
 		else {
@@ -127,7 +127,7 @@ String processor(const String& var) {
 		}
 	}
 	if (var == "UV_B_HI") {
-		if (isGood_UV) {
+		if (_isGood_UV) {
 			return String(d_UVB.max_today().value, 0);
 		}
 		else {
@@ -135,7 +135,7 @@ String processor(const String& var) {
 		}
 	}
 	if (var == "UV_INDEX_HI") {
-		if (isGood_UV) {
+		if (_isGood_UV) {
 			return String(d_UVIndex.max_today().value, 1);
 		}
 		else {

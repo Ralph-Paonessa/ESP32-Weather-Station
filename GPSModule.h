@@ -95,6 +95,8 @@ private:
 	bool _isGpsSynced = false;	// flag when GPS data is synced to app
 	int _countGpsCycles = 0;	// keep track of GPS cycles
 
+	bool _isGpsReceiving = false;
+
 	/// <summary>
 	/// Set system time and date to GPS values.
 	/// </summary>
@@ -173,6 +175,12 @@ public:
 		int8_t txPin);
 
 	/// <summary>
+	/// Returns true if GPS has received data.
+	/// </summary>
+	/// <returns>True if GPS has received data.</returns>
+	bool isGpsReceiving();
+
+	/// <summary>
 	/// Returns true if adequate GPS time and 
 	/// location data has been received and saved.
 	/// </summary>
@@ -227,7 +235,7 @@ public:
 	/// Returns current day of the week as string (using TimeLib).
 	/// </summary>
 	/// <returns>Current day of the week.</returns>
-	String dayString();
+	String dayName();
 
 	/// <summary>
 	/// Time zone offset in hours from UTC.

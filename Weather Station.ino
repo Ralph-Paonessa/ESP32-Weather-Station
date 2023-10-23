@@ -121,18 +121,18 @@ volatile int _countInterrupts_10_min = 0;	// Base timer interrupt count to trigg
 volatile int _countInterrupts_60_min = 0;	// Base timer interrupt count to trigger 60-min averages.
 
 // %%%%%%%%%%   STATUS FLAGS FOR DEVICES   %%%%%%%%%%%%%%%%
-bool isGood_Temp = false;
-bool isGood_PRH = false;
-bool isGood_UV = false;
-bool isGood_IR = false;
-bool isGood_WindDir = false;
-bool isGood_WindSpeed = false;
-bool isGood_GPS = false;
-bool isGood_PMS = false;
-bool isGood_SDCard = false;
-bool isGood_Solar = false;
-bool isGood_LITTLEFS = false;
-bool isGood_fan = false;
+bool _isGood_Temp = false;
+bool _isGood_PRH = false;
+bool _isGood_UV = false;
+bool _isGood_IR = false;
+bool _isGood_WindDir = false;
+bool _isGood_WindSpeed = false;
+bool _isGood_GPS = false;
+bool _isGood_PMS = false;
+bool _isGood_SDCard = false;
+bool _isGood_Solar = false;
+bool _isGood_LITTLEFS = false;
+bool _isGood_fan = false;
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 // ==========   SD card module   ==================== //
@@ -530,41 +530,56 @@ void PrintHeader() {
 void logDeviceStatus() {
 	String msg = "DEVICE STATUS REPORT:";
 	sd.logStatus(msg, gps.dateTime());
+	
 	msg = "WiFi connected: ";
 	msg += bool_OK_Error(WiFi.isConnected());
 	sd.logStatus_indent(msg);
+	
 	msg = "SD card: ";
-	msg += bool_OK_Error(isGood_SDCard);
+	msg += bool_OK_Error(_isGood_SDCard);
 	sd.logStatus_indent(msg);
+	
 	msg = "LittleFS flash file system: ";
-	msg += bool_OK_Error(isGood_LITTLEFS);
+	msg += bool_OK_Error(_isGood_LITTLEFS);
 	sd.logStatus_indent(msg);
-	msg = "GPS module - ???";
+	
+	msg = "GPS module - ";
+	msg += bool_OK_Error(_isGood_GPS);	
 	sd.logStatus_indent(msg);
+
 	msg = "Dallas temperature sensor: ";
-	msg += bool_OK_Error(isGood_Temp);
+	msg += bool_OK_Error(_isGood_Temp);
 	sd.logStatus_indent(msg);
+
 	msg = "Radiation shield fan: ";
-	msg += bool_OK_Error(isGood_fan);
+	msg += "???";
+	//msg += bool_OK_Error(_isGood_fan);
 	sd.logStatus_indent(msg);
+
 	msg = "Pressure & RH sensor: ";
-	msg += bool_OK_Error(isGood_PRH);
+	msg += bool_OK_Error(_isGood_PRH);
 	sd.logStatus_indent(msg);
+
 	msg = "Insolation sensor: ";
 	msg += "???";
 	sd.logStatus_indent(msg);
+
 	msg = "UV sensor: ";
-	msg += bool_OK_Error(isGood_UV);
+	msg += bool_OK_Error(_isGood_UV);
 	sd.logStatus_indent(msg);
+
 	msg = "Wind direction sensor: ";
 	msg += "???";
 	sd.logStatus_indent(msg);
+
 	msg = "Wind speed sensor: ";
 	msg += "???";
 	sd.logStatus_indent(msg);
+
 	msg = "Time zone offset from UTC: ";
 	msg += gps.timeZoneOffset();
 	sd.logStatus_indent(msg);
+
 	msg = "Is Daylight Time: : ";
 	msg += bool_true_false(gps.isDaylightTime());
 	sd.logStatus_indent(msg);
@@ -688,6 +703,8 @@ void logApp_Settings() {
 	sd.logStatus_indent(msg);
 	msg = "GPS_CYCLES_FOR_SYNC: " + String(GPS_CYCLES_FOR_SYNC);
 	sd.logStatus_indent(msg);
+	msg = "GPS_CYCLES_COUNT_MAX: " + String(GPS_CYCLES_COUNT_MAX);
+	sd.logStatus_indent(msg);
 	msg = "GPS_DELAY_BETWEEN_CYCLES: " + String(GPS_CYCLE_DELAY_SEC);
 	sd.logStatus_indent(msg);
 	msg = "GPS_MAX_ALLOWED_HDOP: " + String(GPS_MAX_ALLOWED_HDOP);
@@ -777,7 +794,7 @@ String sensorsDataString_current() {
 	// Solar (1)
 	s += "\t" + String(d_Insol.valueLastAdded());			// PV solar cell %
 	// UV (3)
-	if (isGood_UV) {
+	if (_isGood_UV) {
 		s += "\t" + String(d_UVA.valueLastAdded());
 		s += "\t" + String(d_UVB.valueLastAdded());
 		s += "\t" + String(d_UVIndex.valueLastAdded());		// Scale 0-10+
@@ -826,7 +843,7 @@ String sensorsDataString_10_min() {
 	// Solar (1)
 	s += "\t" + String(d_Insol.avg_10_min());			// PV solar cell mV
 	// UV (3)
-	if (isGood_UV) {
+	if (_isGood_UV) {
 		s += "\t" + String(d_UVA.avg_10_min());
 		s += "\t" + String(d_UVB.avg_10_min());
 		s += "\t" + String(d_UVIndex.avg_10_min());		// Scale 0-10+
@@ -900,7 +917,7 @@ void PrintSensorOutputs() {
 	// Use the uva, uvb, and index functions to
 	// read calibrated UVA and UVB values and a
 	// calculated UV index value between 0-11.
-	if (isGood_UV) {
+	if (_isGood_UV) {
 		Serial.print(d_UVA.valueLastAdded()); Serial.print(F("\t"));
 		Serial.print(d_UVB.valueLastAdded()); Serial.print(F("\t"));
 		Serial.print(d_UVIndex.valueLastAdded()); Serial.print(F("\t\t"));
@@ -940,9 +957,10 @@ void initializeSensors() {
 	if (!sensor_PRH.begin(0x77)) {
 		String msg = "WARNING: BME280 P/RH sensor not found.";
 		sd.logStatus(msg, millis());
+		_isGood_PRH = false;
 	}
 	else {
-		isGood_PRH = true;
+		_isGood_PRH = true;
 		String msg = "BME280 P/RH sensor found.";
 		sd.logStatus(msg, millis());
 	}
@@ -950,12 +968,12 @@ void initializeSensors() {
 	sensor_T.begin();
 	// Find DS18B20 temperature.
 	if (countOneWireDevices() < 1) {
-		isGood_Temp = false;
+		_isGood_Temp = false;
 		String msg = "WARNING: DS18B20 T sensor not found.";
 		sd.logStatus(msg, millis());
 	}
 	else {
-		isGood_Temp = true;
+		_isGood_Temp = true;
 		String msg = "DS18B20 T sensor found.";
 		sd.logStatus(msg, millis());
 	}
@@ -963,7 +981,7 @@ void initializeSensors() {
 	// The VEML6075 begin returns true on success
 	// or false on failure to communicate.
 	if (sensor_UV.begin() == true) {
-		isGood_UV = true;
+		_isGood_UV = true;
 		String msg = "VEML6075 UV sensor found.";
 		sd.logStatus(msg, millis());
 	}
@@ -978,12 +996,12 @@ void initializeSensors() {
 		Missing sensor gives T > 1000.
 		Implies IR sensor was not found.
 		*/
-		isGood_IR = false;
+		_isGood_IR = false;
 		String msg = "WARNING: MLX90614 IR sensor not found.";
 		sd.logStatus(msg, millis());
 	}
 	else {
-		isGood_IR = true;
+		_isGood_IR = true;
 		String msg = "MLX90614 IR sensor found.";
 		sd.logStatus(msg, millis());
 	}
@@ -991,8 +1009,8 @@ void initializeSensors() {
 	windDir.begin();	// Initialize WindDirection.
 	String msg = "[ No connection test implemented for Davis anemometer. ]";
 	sd.logStatus(msg, millis());
-	isGood_WindDir = true;      // How can this be tested?? XXX
-	isGood_WindSpeed = true;
+	_isGood_WindDir = true;      // How can this be tested?? XXX
+	_isGood_WindSpeed = true;
 
 	//  ---------------  Initialize LittleFS   ---------------
 	if (!LittleFS.begin()) {
@@ -1000,7 +1018,7 @@ void initializeSensors() {
 		sd.logStatus(msg, millis());
 	}
 	else {
-		isGood_LITTLEFS = true;
+		_isGood_LITTLEFS = true;
 		String msg = "LittleFS mounted.";
 		sd.logStatus(msg, millis());
 	}
@@ -1394,7 +1412,7 @@ void setup() {
 
 	//  ==========  INITIALIZE SD CARD   ========== //
 	// (Do this first - need SD card for logging.)
-	sd.initialize(SPI_CS_PIN, _isDEBUG_BypassSDCard);
+	_isGood_SDCard = sd.initialize(SPI_CS_PIN, _isDEBUG_BypassSDCard);
 	// Begin status log entries to SD card.
 	sd.logStatus();	// Empty line
 	sd.logStatus(LINE_SEPARATOR_MAJOR);
@@ -1430,8 +1448,10 @@ void setup() {
 	// Get time and location from GPS.
 	// This code is BLOCKING until gps syncs.
 	bool isGpsSuccess = false;
-	if (!gps.isSynced()) {
+	if (!gps.isSynced()) 
+	{
 		isGpsSuccess = gps.syncToGPS(sd, _isDEBUG_BypassGPS);
+		_isGood_GPS = true;
 	}
 	if (!isGpsSuccess)
 	{
