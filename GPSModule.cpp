@@ -79,16 +79,20 @@ bool GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 	bool isFirstTime = false;	// Flag for logging status on first pass.
 	int countValidCycles = 0;
 
+	long int countAvailable = 0;
+
 	// Loop until GPS syncs.
 	while (!_isGpsSynced)
 	{
 		// Loop while data is in the serial buffer.
 		while (_serialGPS.available() > 0)
 		{
+			countAvailable++;
+
 			// Log this message the first time in the loop.
 			if (!isFirstTime) {
 				isFirstTime = true;
-				_sdCard.logStatus("First receiving GPS data.", millis());
+				_sdCard.logStatus("First receipt of GPS data.", millis());
 				_isGpsReceiving = true;
 			}
 			// We require GPS_CYCLES_FOR_SYNC consecutive
@@ -103,7 +107,7 @@ bool GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 				if (_countGpsCycles >= GPS_CYCLES_COUNT_MAX
 					&& countValidCycles < 1) {
 					// Use gps time if valid.
-					if (isGpsDateTimeValid()) 
+					if (isGpsDateTimeValid())
 					{
 						syncSystemTimeToGPS();
 						return false;
@@ -131,7 +135,7 @@ bool GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 						logSyncIsComplete();
 						return true;
 					}
-					else 
+					else
 					{
 						// Not enough valid cycles yet.
 						logData_Valid_NotEnoughCycles(countValidCycles);
@@ -168,9 +172,9 @@ void GPSModule::addDummyGpsData() {
 }
 
 void GPSModule::logSoftwareVersion() {
-	String msg = "TinyGpsPlus library version ";
+	String msg = "TinyGpsPlus library ver. ";
 	msg += _tinyGPS.libraryVersion();
-	_sdCard.logStatus(msg);
+	_sdCard.logStatus_indent(msg);
 }
 
 /// <summary>

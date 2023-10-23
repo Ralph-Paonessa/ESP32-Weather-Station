@@ -1444,7 +1444,7 @@ void setup() {
 	*/
 	// Connect to GPS
 	gps.begin(GPS_BAUD_RATE, SERIAL_CONFIGURATION, RX2_PIN, TX2_PIN);
-	sd.logStatus("Trying to connect to GPS.", millis());
+	sd.logStatus("Begin connecting to GPS.", millis());
 	// Get time and location from GPS.
 	// This code is BLOCKING until gps syncs.
 	bool isGpsSuccess = false;
@@ -1456,7 +1456,7 @@ void setup() {
 	if (!isGpsSuccess)
 	{
 		String msg = "ERROR: GPS did not sync after ";
-		msg += GPS_CYCLES_COUNT_MAX + " cycles.";
+		msg += String(GPS_CYCLES_COUNT_MAX) + " cycles.";
 		sd.logStatus(msg, millis());
 	}
 	// Hold to determine when new day begins.
