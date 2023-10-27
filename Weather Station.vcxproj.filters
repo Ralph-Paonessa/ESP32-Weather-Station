@@ -35,6 +35,8 @@
     <None Include="Sensor readings.cd">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="data\html\chart_2.html" />
+    <None Include="data\html\README_charts.md" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Weather Station.ino" />

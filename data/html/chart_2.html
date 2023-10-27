@@ -1,6 +1,6 @@
-﻿<html>
+<html>
 <head>
-    <title>WMA Wx* Chart</title>
+    <title>WMA Wx* Chart Multi</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <link href="style.min.css" rel="stylesheet" media="all" type="text/css" />
@@ -29,8 +29,8 @@
             </div>
             <div class="nav"><a onclick="getChartData('/data_10', 10, %TIME_OFFSET_HOURS%)">Recent</a></div>
             <div class="nav"><a onclick="getChartData('/data_60', 60, %TIME_OFFSET_HOURS%)">Hourly</a></div>
-            <div class="nav"><a href="/chart_2">Daily</a></div>
-            <!--<div class="nav"><a onclick="getChartData('/data_min', 720, %TIME_OFFSET_HOURS%)">Daily Lows</a></div>-->
+            <!--<div class="nav"><a onclick="getChartData('/data_max', 720, %TIME_OFFSET_HOURS%)">Daily Highs</a></div>
+            <div class="nav"><a onclick="getChartData('/data_min', 720, %TIME_OFFSET_HOURS%)">Daily Lows</a></div>-->
         </div>
         <div class="chart-container">
             <div id="chart_1" class="container"></div>
@@ -50,7 +50,11 @@
         series:
             [
                 {
-                    showInLegend: false,
+                    showInLegend: true,
+                    data: []
+                },
+                {
+                    showInLegend: true,
                     data: []
                 }
             ],
@@ -71,5 +75,5 @@
         },
         credits: { enabled: false }
     });
-    getChartData('/data_10', 10, %TIME_OFFSET_HOURS%);  
+    getChartData('/data_min_max', 10, %TIME_OFFSET_HOURS%);
 </script>

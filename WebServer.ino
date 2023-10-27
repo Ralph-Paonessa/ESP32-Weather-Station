@@ -81,7 +81,7 @@ void serverRouteHandler() {
 		server.serveStatic("/favicon-32.png", LittleFS, "/img/favicon-32.png").setCacheControl("max-age=864000");
 		server.serveStatic("/favicon-32.180", LittleFS, "/img/favicon-32.180").setCacheControl("max-age=864000");
 		// html 
-		// html pages are dynamic and can't be cached.
+		// Our html pages are dynamic and can't be cached.
 
 		/*****  WEB PAGES.  *****/
 
@@ -118,6 +118,18 @@ void serverRouteHandler() {
 		/*****  GRAPH PAGES.  *****/
 
 		// Pages use javascript to get data asynchronously.
+
+
+
+
+		server.on("/chart_2", HTTP_GET, [](AsyncWebServerRequest* request) {
+			_chart_request = CHART_TEMPERATURE_F;
+			request->send(LittleFS, "/html/chart_2.html", "text/html", false, processor);
+			});
+
+
+
+
 
 		// Temperature graph page.
 		server.on("/chart_T", HTTP_GET, [](AsyncWebServerRequest* request) {
@@ -235,6 +247,53 @@ void serverRouteHandler() {
 		 Asynchronously Send string with data to html
 		 page where Javascript parses and plots the data.
 		*/
+
+
+
+		/*****  DAILY MIN MAX CHARTS  *****/
+
+		server.on("/data_min_max", HTTP_GET,
+			[](AsyncWebServerRequest* request) {
+				// Which chart?
+				switch (_chart_request)
+				{
+				case CHART_NONE:
+					request->send_P(200, "text/plain", "");
+					break;
+				case CHART_INSOLATION:
+					request->send_P(200, "text/plain", d_Insol.data_10_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_IR_SKY:
+					request->send_P(200, "text/plain", d_IRSky_C.data_10_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_TEMPERATURE_F:
+					request->send_P(200, "text/plain", d_Temp_F.data_10_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_PRESSURE_SEA_LEVEL:
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_10_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_RELATIVE_HUMIDITY:
+					request->send_P(200, "text/plain", d_RH.data_10_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_UV_INDEX:
+					request->send_P(200, "text/plain", d_UVIndex.data_10_min_string_delim(false, 1).c_str());
+					break;
+				case CHART_WIND_DIRECTION:
+					request->send_P(200, "text/plain", windDir.data_10_min_string_delim(true, 0).c_str());
+					break;
+				case CHART_WIND_SPEED:
+					request->send_P(200, "text/plain", windSpeed.data_10_min_string_delim(false, 0).c_str());
+					break;
+				case CHART_WIND_GUST:
+					request->send_P(200, "text/plain", windGust.data_10_min_string_delim(true, 0).c_str());
+					break;
+				default:
+					request->send_P(200, "text/plain", "");
+					break;
+				}
+			});
+
+
 
 		/*****  10-MIN CHARTS  *****/
 

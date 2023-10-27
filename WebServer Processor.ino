@@ -214,7 +214,7 @@ String processor(const String& var) {
 
 	/// CHART FIELDS  //////////////////////////////////////////////
 
-	/// Y-AXIS LABEL  //////////////
+	
 
 	if (var == "TIME_OFFSET_HOURS") {
 		if (IS_DAYLIGHT_TIME) {
@@ -224,6 +224,10 @@ String processor(const String& var) {
 			return  String(UTC_OFFSET_HOURS);
 		}
 	}
+
+
+	/// Y-AXIS LABEL  //////////////
+
 	if (var == "CHART_Y_AXIS_LABEL") {
 		// Based on chart requested.
 		switch (_chart_request)
