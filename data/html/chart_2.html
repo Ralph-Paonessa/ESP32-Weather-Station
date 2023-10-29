@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" sizes="180x180" target="_blank" href="/favicon-180.png">
     %CSS_LIGHT_STYLE%
     <script type="text/javascript" src="highcharts.js"></script>
-    <script type="text/javascript" src="chart.js"></script>
+    <script type="text/javascript" src="chart_2.js"></script>
     <style>
         body {
             min-width: 310px;
@@ -46,15 +46,17 @@
             backgroundColor: null,
             styledMode: true
         },
-        title: { text: '%CHART_TITLE%' },
+        title: { text: 'Daily %CHART_TITLE%' },
         series:
             [
                 {
                     showInLegend: true,
+                    name: 'Daily highs',
                     data: []
                 },
                 {
                     showInLegend: true,
+                    name: 'Daily lows',
                     data: []
                 }
             ],

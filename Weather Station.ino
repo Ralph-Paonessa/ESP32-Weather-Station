@@ -530,21 +530,21 @@ void PrintHeader() {
 void logDeviceStatus() {
 	String msg = "DEVICE STATUS REPORT:";
 	sd.logStatus(msg, gps.dateTime());
-	
+
 	msg = "WiFi connected: ";
 	msg += bool_OK_Error(WiFi.isConnected());
 	sd.logStatus_indent(msg);
-	
+
 	msg = "SD card: ";
 	msg += bool_OK_Error(_isGood_SDCard);
 	sd.logStatus_indent(msg);
-	
+
 	msg = "LittleFS flash file system: ";
 	msg += bool_OK_Error(_isGood_LITTLEFS);
 	sd.logStatus_indent(msg);
-	
+
 	msg = "GPS module - ";
-	msg += bool_OK_Error(_isGood_GPS);	
+	msg += bool_OK_Error(_isGood_GPS);
 	sd.logStatus_indent(msg);
 
 	msg = "Dallas temperature sensor: ";
@@ -1235,7 +1235,7 @@ void readSensors_Simulate() {
 	dp = dataPoint(now(), psl);
 	d_Pres_seaLvl_mb.addReading(dp);
 	// IR sky
-	dp = dataPoint(now(), dummy_IRSky_C.sawtooth(0, 0.02, 10));
+	dp = dataPoint(now(), dummy_IRSky_C.sawtooth(10, 0.02, 20));	// .sawtooth(0, 0.02, 10));
 	d_IRSky_C.addReading(dp);
 	// Insolation/
 	float insol_norm = insol_norm_pct(dummy_Insol.linear(3, 0.1), INSOL_REFERENCE_MAX);
@@ -1342,29 +1342,55 @@ void testCodeForSetup(unsigned long runTime_sec) {
 void addDummyData() {
 	//#if defined(VM_DEBUG)
 	Serial.printf("\naddDummyData now() = %li\n", now());
+
+	// 10-min
 	d_Temp_F.addDummyData_10_min(65, -0.75, 12, 1765412100);
 	d_Pres_mb.addDummyData_10_min(991, 1, 12, 1765412100);
 	d_Pres_seaLvl_mb.addDummyData_10_min(991, 1, 12, 1765412100);
-	// RE-WRITE THIS: d_RH.addDummyData_10_min(20, .5, 12, 1765412100);
-	// RE-WRITE THIS: d_IRSky_C.addDummyData_10_min(-25, 0.5, 12, 1765412100);
-	//windSpeed.addDummySpeedData_10_min(15, 0.5, 12, 1765412100);
-//////////////	windSpeed.addDummyGustData_10_min(25, 2, 12, 1765412100);
-	//	windDir.addDummyData_10_min(270, 5, 12, 1765412100);
+	d_RH.addDummyData_10_min(20, .5, 12, 1765412100);
+	d_IRSky_C.addDummyData_10_min(-25, 0.5, 12, 1765412100);
+	windSpeed.addDummyData_10_min(15, 0.5, 12, 1765412100);
+	windGust.addDummyData_10_min(25, 2, 12, 1765412100);
+	windDir.addDummyData_10_min(270, 5, 12, 1765412100);
 	d_Insol.addDummyData_10_min(2700, 25, 12, 1765412100);
 	d_UVIndex.addDummyData_10_min(0, 0.5, 12, 1765412100);
 
+	// 60-min
 	d_Temp_F.addDummyData_60_min(65, 0.1, 12, 1765412100);
 	d_Pres_mb.addDummyData_60_min(989, 1.5, 12, 1765412100);
 	d_Pres_seaLvl_mb.addDummyData_60_min(991, 2, 12, 1765412100);
 	d_RH.addDummyData_60_min(20, .5, 12, 1765412100);
 	d_IRSky_C.addDummyData_60_min(-25, 0.5, 12, 1765412100);
-	//windSpeed.addDummySpeedDataToAvg_60_min(15, 0.5, 12, 1765412100);
-	//windSpeed.addDummyGustDataToAvg_60_min(25, 2, 12, 1765412100);
-	//	windDir.addDummyData_60_min(270, 5, 12, 1765412100);
+	windSpeed.addDummyData_60_min(15, 0.5, 12, 1765412100);
+	windGust.addDummyData_60_min(25, 2, 12, 1765412100);
+	windDir.addDummyData_60_min(270, 5, 12, 1765412100);
 	d_Insol.addDummyData_60_min(2700, 25, 12, 1765412100);
 	d_UVIndex.addDummyData_60_min(0, 0.5, 12, 1765412100);
 
-	d_Temp_F.addDummyData_maxima(65, 0.1, 12, 1765412100);
+	// daily maxima
+	d_Temp_F.addDummyData_maxima_daily(65, 0.1, 12, 1765412100);
+	d_Pres_mb.addDummyData_maxima_daily(989, 1.5, 12, 1765412100);
+	d_Pres_seaLvl_mb.addDummyData_maxima_daily(991, 2, 12, 1765412100);
+	d_RH.addDummyData_maxima_daily(20, .5, 12, 1765412100);
+	d_IRSky_C.addDummyData_maxima_daily(-25, 0.5, 12, 1765412100);
+	windSpeed.addDummyData_maxima_daily(15, 0.5, 12, 1765412100);
+	windGust.addDummyData_maxima_daily(25, 2, 12, 1765412100);
+	windDir.addDummyData_maxima_daily(270, 5, 12, 1765412100);
+	d_Insol.addDummyData_maxima_daily(2700, 25, 12, 1765412100);
+	d_UVIndex.addDummyData_maxima_daily(0, 0.5, 12, 1765412100);
+
+	// daily minima
+	d_Temp_F.addDummyData_minima_daily(65, 0.1, 12, 1765412100);
+	d_Pres_mb.addDummyData_minima_daily(989, 1.5, 12, 1765412100);
+	d_Pres_seaLvl_mb.addDummyData_minima_daily(991, 2, 12, 1765412100);
+	d_RH.addDummyData_minima_daily(20, .5, 12, 1765412100);
+	d_IRSky_C.addDummyData_minima_daily(-25, 0.5, 12, 1765412100);
+	windSpeed.addDummyData_minima_daily(15, 0.5, 12, 1765412100);
+	windGust.addDummyData_minima_daily(25, 2, 12, 1765412100);
+	windDir.addDummyData_minima_daily(270, 5, 12, 1765412100);
+	d_Insol.addDummyData_minima_daily(2700, 25, 12, 1765412100);
+	d_UVIndex.addDummyData_minima_daily(0, 0.5, 12, 1765412100);
+
 	//#endif
 }
 
@@ -1448,7 +1474,7 @@ void setup() {
 	// Get time and location from GPS.
 	// This code is BLOCKING until gps syncs.
 	bool isGpsSuccess = false;
-	if (!gps.isSynced()) 
+	if (!gps.isSynced())
 	{
 		isGpsSuccess = gps.syncToGPS(sd, _isDEBUG_BypassGPS);
 		_isGood_GPS = true;

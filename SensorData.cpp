@@ -354,7 +354,7 @@ void SensorData::addDummyData_10_min(float valueStart,
 		dataPoint dp{ timeStart, valueStart };
 		addToList(_data_10_min, dp, SIZE_10_MIN_LIST);
 		valueStart += increment;	// increment value each time.
-		timeStart += SECONDS_PER_MINUTE * 10;
+		timeStart += SECONDS_PER_MINUTE * 10;	// 10-min interval
 	}
 	_dataLastAdded = dataPoint(timeStart, valueStart);
 	_avg_10_min = valueStart;
@@ -362,7 +362,7 @@ void SensorData::addDummyData_10_min(float valueStart,
 
 /// <summary>
 /// Adds the specified number of elements of dummy data to the 
-/// 10-min incrementing the value each time.
+/// 10-min list, incrementing the value each time.
 /// </summary>
 /// <param name="valueStart">Initial value.</param>
 /// <param name="increment">Amount to increment the value each time.</param>
@@ -377,21 +377,22 @@ void SensorData::addDummyData_60_min(float valueStart,
 	{
 		dataPoint dp{ timeStart, valueStart };
 		addToList(_data_60_min, dp, SIZE_60_MIN_LIST);
-		valueStart += increment;	// increment value each time.
-		timeStart += SECONDS_PER_HOUR;
+		valueStart += increment;		// increment value each time.
+		timeStart += SECONDS_PER_HOUR;	// 1-hr interval
 	}
 	_avg_60_min = valueStart;
 }
 
 /// <summary>
 /// Adds the specified number of elements of dummy data to the 
-/// 10-min incrementing the value each time.
+/// daily maxima list, incrementing the value each time.
 /// </summary>
 /// <param name="valueStart">Initial value.</param>
 /// <param name="increment">Amount to increment the value each time.</param>
 /// <param name="numElements">Number of elements to add.</param>
 /// <param name="_timeStartLoop">Time assigned to first data point.</param>
-void SensorData::addDummyData_maxima(float valueStart,
+void SensorData::addDummyData_maxima_daily(
+	float valueStart,
 	float increment,
 	int numElements,
 	unsigned long timeStart) {
@@ -400,11 +401,36 @@ void SensorData::addDummyData_maxima(float valueStart,
 	{
 		dataPoint dp{ timeStart, valueStart };
 		addToList(_maxima_dayList, dp, SIZE_60_MIN_LIST);
-		valueStart += increment;	// increment value each time.
-		timeStart += SECONDS_PER_HOUR;
+		valueStart += increment;		// increment value each time.
+		timeStart += SECONDS_PER_DAY;	// 1-day interval
 	}
 	dataPoint dpMax{ timeStart, valueStart };
 	_max_today = dpMax;
+}
+
+/// <summary>
+/// Adds the specified number of elements of dummy data to the 
+/// daily minima list, incrementing the value each time.
+/// </summary>
+/// <param name="valueStart">Initial value.</param>
+/// <param name="increment">Amount to increment the value each time.</param>
+/// <param name="numElements">Number of elements to add.</param>
+/// <param name="_timeStartLoop">Time assigned to first data point.</param>
+void SensorData::addDummyData_minima_daily(
+	float valueStart,
+	float increment,
+	int numElements,
+	unsigned long timeStart) {
+	// Add artificial data to a 60-min list.	
+	for (int elem = 0; elem < numElements; elem++)
+	{
+		dataPoint dp{ timeStart, valueStart };
+		addToList(_minima_dayList, dp, SIZE_60_MIN_LIST);
+		valueStart += increment;		// increment value each time.
+		timeStart += SECONDS_PER_DAY;	// 1-day interval
+	}
+	dataPoint dpMax{ timeStart, valueStart };
+	_min_today = dpMax;
 }
 
 /// <summary>
@@ -520,6 +546,25 @@ String SensorData::data_60_min_string_delim(
 		isConvertZeroToEmpty,
 		decimalPlaces);
 }
+
+
+/// <summary>
+/// Returns list of 60-min dataPoints as delimited string.
+/// </summary>
+/// <param name="isConvertZeroToEmpty">Set to true to convert zero to empty string.</param>
+/// <param name="decimalPlaces">Decimal places in numbers.</param>
+/// <returns>Delimited string of two (time, value) lists, separated by "|".</returns>
+String SensorData::data_max_min_string_delim(
+	bool isConvertZeroToEmpty,
+	unsigned int decimalPlaces)
+{
+	return 	listToString_dataPoints(_maxima_dayList, _minima_dayList, isConvertZeroToEmpty, decimalPlaces);
+}
+
+
+
+
+
 
 /// <summary>
 /// Returns list of maxima dataPoints as delimited string.

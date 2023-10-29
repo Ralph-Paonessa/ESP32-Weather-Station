@@ -74,6 +74,7 @@ void serverRouteHandler() {
 		// js
 		server.serveStatic("/highcharts.js", LittleFS, "/js/highcharts.js").setCacheControl("max-age=864000");
 		server.serveStatic("/chart.js", LittleFS, "/js/chart.js").setCacheControl("max-age=864000");
+		server.serveStatic("/chart_2.js", LittleFS, "/js/chart_2.js").setCacheControl("max-age=864000");
 		// img
 		server.serveStatic("/chart-icon.png", LittleFS, "/img/chart-icon-red-150px.png").setCacheControl("max-age=864000");
 		server.serveStatic("/home-icon.png", LittleFS, "/img/home-icon-red-150px.png").setCacheControl("max-age=864000");
@@ -241,6 +242,12 @@ void serverRouteHandler() {
 			[](AsyncWebServerRequest* request) {
 				request->send(LittleFS, "/js/chart.js", "text/javascript");
 			});
+		// highcharts custom javascript file 2.
+		server.on("/chart_2.js",
+			HTTP_GET,
+			[](AsyncWebServerRequest* request) {
+				request->send(LittleFS, "/js/chart_2.js", "text/javascript");
+			});
 
 		/*****  DATA SOURCES FOR GRAPHS  ************************************/
 		/*
@@ -260,32 +267,32 @@ void serverRouteHandler() {
 				case CHART_NONE:
 					request->send_P(200, "text/plain", "");
 					break;
-				case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.data_10_min_string_delim(false, 0).c_str());
-					break;
+				/*case CHART_INSOLATION:
+					request->send_P(200, "text/plain", d_Insol.data_max_min_string_delim(false, 0).c_str());
+					break;*/
 				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.data_10_min_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_IRSky_C.data_max_min_string_delim(false, 0).c_str());
 					break;
 				case CHART_TEMPERATURE_F:
-					request->send_P(200, "text/plain", d_Temp_F.data_10_min_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_Temp_F.data_max_min_string_delim(false, 0).c_str());
 					break;
 				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_10_min_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_max_min_string_delim(false, 0).c_str());
 					break;
 				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.data_10_min_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", d_RH.data_max_min_string_delim(false, 0).c_str());
 					break;
 				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.data_10_min_string_delim(false, 1).c_str());
+					request->send_P(200, "text/plain", d_UVIndex.data_max_min_string_delim(false, 1).c_str());
 					break;
-				case CHART_WIND_DIRECTION:
-					request->send_P(200, "text/plain", windDir.data_10_min_string_delim(true, 0).c_str());
-					break;
+				/*case CHART_WIND_DIRECTION:
+					request->send_P(200, "text/plain", windDir.data_max_min_string_delim(true, 0).c_str());
+					break;*/
 				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.data_10_min_string_delim(false, 0).c_str());
+					request->send_P(200, "text/plain", windSpeed.data_max_min_string_delim(false, 0).c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windGust.data_10_min_string_delim(true, 0).c_str());
+					request->send_P(200, "text/plain", windGust.data_max_min_string_delim(true, 0).c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");

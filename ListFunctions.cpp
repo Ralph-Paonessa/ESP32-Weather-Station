@@ -83,7 +83,7 @@ float ListFunctions::listAverage(list<float>& targetList, int numToAverage) {
 	auto it = targetList.rbegin();	// Reverse iterator to last element.
 	float total = 0;
 	for (int i = 0; i < numToAverage; i++)
-	{		
+	{
 		total += *it;
 		it++;
 	}
@@ -171,4 +171,44 @@ String ListFunctions::listToString_dataPoints(
 		}
 	}
 	return s.substring(0, s.length() - 1);	// remove final delimiter
+}
+
+/// <summary>
+/// Converts two lists of dataPoints to strings of 
+/// comma-separated "time,value" pairs delimited by "~".
+/// Then combines both lists, delimited by "|".
+/// </summary>
+/// <param name="targetList_hi">First list of dataPoints.</param>
+/// <param name="targetList_lo">Second list of dataPoints.</param>
+/// <param name="isConvertZeroToEmpty">
+/// Set true to convert zero values to empty strings.
+/// </param>
+/// <param name="decimalPlaces">
+/// Decimal places to display.</param>
+/// <returns>Two lists delimited by "|".</returns>
+String ListFunctions::listToString_dataPoints(
+	list<dataPoint>& targetList_hi,
+	list<dataPoint>& targetList_lo,
+	bool isConvertZeroToEmpty,
+	unsigned int decimalPlaces)
+{
+	String s = "";
+	if (!targetList_hi.size() == 0)
+	{
+		s += listToString_dataPoints(targetList_hi, isConvertZeroToEmpty, decimalPlaces);
+	}
+	else
+	{
+		s += "[-EMPTY HI-]";
+	}
+	s += "|";	// delimiter between lists
+	if ((!targetList_lo.size() == 0))
+	{
+		s += listToString_dataPoints(targetList_lo, isConvertZeroToEmpty, decimalPlaces);
+	}
+	else
+	{
+		s += "[-EMPTY LO-]";
+	}
+	return s;
 }

@@ -92,6 +92,21 @@ namespace ListFunctions {
 		list<dataPoint>& targetList,
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
+
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="targetList_hi"></param>
+	/// <param name="targetList_lo"></param>
+	/// <param name="isConvertZeroToEmpty"></param>
+	/// <param name="decimalPlaces"></param>
+	/// <returns></returns>
+	String listToString_dataPoints(
+		list<dataPoint>& targetList_hi,
+		list<dataPoint>& targetList_lo,
+		bool isConvertZeroToEmpty,
+		unsigned int decimalPlaces);
 };
 
 #endif

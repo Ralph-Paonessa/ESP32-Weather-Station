@@ -107,6 +107,7 @@
     <None Include="data\html\sensors.html" />
     <None Include="data\html\summary.html" />
     <None Include="data\js\chart.js" />
+    <None Include="data\js\chart_2.js" />
     <None Include="data\js\highcharts.js" />
     <None Include="README.md" />
     <None Include="ReadMe_Weather_Measurements.md" />

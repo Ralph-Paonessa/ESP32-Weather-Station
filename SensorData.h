@@ -247,6 +247,16 @@ public:
 	/// <returns>List of 60-min dataPoints as delimited string.</returns>
 	String data_60_min_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
 
+
+	/// <summary>
+	/// Returns list of 60-min dataPoints as delimited string.
+	/// </summary>
+	/// <param name="isConvertZeroToEmpty">Set to true to convert zero to empty string.</param>
+	/// <param name="decimalPlaces">Decimal places in numbers.</param>
+	/// <returns>Delimited string of two (time, value) lists, separated by "|".</returns>
+	String data_max_min_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
+
+
 	/// <summary>
 	/// Returns list of maxima dataPoints as delimited string.
 	/// </summary>
@@ -268,11 +278,35 @@ public:
 
 	void addDummyData_60_min(float valueStart, float increment, int numElements, unsigned long timeStart);
 
-	void addDummyData_maxima(
+
+	/// <summary>
+	/// Adds the specified number of elements of dummy data to the 
+	/// daily maxima list, incrementing the value each time.
+	/// </summary>
+	/// <param name="valueStart">Initial value.</param>
+	/// <param name="increment">Amount to increment the value each time.</param>
+	/// <param name="numElements">Number of elements to add.</param>
+	/// <param name="_timeStartLoop">Time assigned to first data point.</param>
+	void addDummyData_maxima_daily(
 		float valueStart,
 		float increment,
 		int numElements,
 		unsigned long timeStart);	
+
+	/// <summary>
+	/// Adds the specified number of elements of dummy data to the 
+	/// daily minima list, incrementing the value each time.
+	/// </summary>
+	/// <param name="valueStart">Initial value.</param>
+	/// <param name="increment">Amount to increment the value each time.</param>
+	/// <param name="numElements">Number of elements to add.</param>
+	/// <param name="_timeStartLoop">Time assigned to first data point.</param>
+	void addDummyData_minima_daily(
+		float valueStart,
+		float increment,
+		int numElements,
+		unsigned long timeStart);
+
 };
 
 #endif

@@ -37,6 +37,7 @@
     </None>
     <None Include="data\html\chart_2.html" />
     <None Include="data\html\README_charts.md" />
+    <None Include="data\js\chart_2.js" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Weather Station.ino" />

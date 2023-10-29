@@ -22,7 +22,7 @@ String processor(const String& var) {
 	}
 
 	///  CURRENT SENSOR READINGS  ///////////////////
-	
+
 	// Returns running avg of current 10-min 
 	// period (except for gust and wind dir).
 
@@ -84,12 +84,12 @@ String processor(const String& var) {
 		}
 	}
 	if (var == "UV_INDEX") {
-		if (_isGood_UV) {
-			return String(d_UVIndex.avg_now(), 1);
-		}
-		else {
-			return String("na");
-		}
+		//if (_isGood_UV) {
+		return String(d_UVIndex.avg_now(), 1);
+		//}
+		//else {
+		//	return String("na");
+		//}
 	}
 	if (var == "IR_T_SKY") {
 		return String(d_IRSky_C.avg_now(), 0);
@@ -214,7 +214,7 @@ String processor(const String& var) {
 
 	/// CHART FIELDS  //////////////////////////////////////////////
 
-	
+
 
 	if (var == "TIME_OFFSET_HOURS") {
 		if (IS_DAYLIGHT_TIME) {
@@ -285,7 +285,7 @@ String processor(const String& var) {
 			return "Wind Gusts";
 		}
 	}
-	
+
 	/// Y-AXIS MIN  //////////////
 
 	if (var == "Y_MIN") {
@@ -316,7 +316,7 @@ String processor(const String& var) {
 			return "min: -2000";
 		}
 	}
-	
+
 	/// Y-AXIS MAX  //////////////
 
 	if (var == "Y_MAX") {
@@ -347,7 +347,7 @@ String processor(const String& var) {
 			return ", max: 2000";
 		}
 	}
-	
+
 	/// Y-AXIS TICK AMOUNT  //////////////
 
 	if (var == "Y_TICK_AMOUNT") {
