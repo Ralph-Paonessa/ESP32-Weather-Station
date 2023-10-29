@@ -1214,10 +1214,10 @@ void readSensors_Simulate() {
 	dp = dataPoint(now(), dummy_Temp_F.sawtooth(10, 0.02, 20));
 	d_Temp_F.addReading(dp);
 	// UV readings.
-	dp = dataPoint(now(), dummy_UVA.linear(3, 0.1));
+	/*dp = dataPoint(now(), dummy_UVA.linear(3, 0.1));
 	d_UVA.addReading(dp);
 	dp = dataPoint(now(), dummy_UVB.linear(3, 0.1));
-	d_UVB.addReading(dp);
+	d_UVB.addReading(dp);*/
 	dp = dataPoint(now(), dummy_UVIndex.sawtooth(0, 0.05, 10));
 	d_UVIndex.addReading(dp);
 	// P, RH
@@ -1225,20 +1225,20 @@ void readSensors_Simulate() {
 	d_RH.addReading(dp);
 	dp = dataPoint(now(), dummy_Pres_mb.linear(3, 0.1) / 100);
 	d_Pres_mb.addReading(dp);			// Raw pressure in mb (hectopascals)
-	dp = dataPoint(now(), dummy_RH.linear(10, 0.02));
-	d_Temp_for_RH_C.addReading(dp);		// Temp (C) of P, RH sensor.
+	//dp = dataPoint(now(), dummy_Temp_for_RH_C.linear(10, 0.02));
+	//d_Temp_for_RH_C.addReading(dp);		// Temp (C) of P, RH sensor.
 	// P adjusted to sea level.
 	float psl = pressureAtSeaLevel(
-		dummy_Pres_seaLvl_mb.linear(3, 0.1),
+		dummy_Pres_seaLvl_mb.linear(950, 0.01),
 		gps.data.altitude(),
-		d_Temp_for_RH_C.valueLastAdded());
+		25);
 	dp = dataPoint(now(), psl);
 	d_Pres_seaLvl_mb.addReading(dp);
 	// IR sky
 	dp = dataPoint(now(), dummy_IRSky_C.sawtooth(10, 0.02, 20));	// .sawtooth(0, 0.02, 10));
 	d_IRSky_C.addReading(dp);
 	// Insolation/
-	float insol_norm = insol_norm_pct(dummy_Insol.linear(3, 0.1), INSOL_REFERENCE_MAX);
+	float insol_norm = insol_norm_pct(dummy_Insol.linear(0, 0.01), INSOL_REFERENCE_MAX);
 	dp = dataPoint(now(), insol_norm);
 	d_Insol.addReading(dp);	// % Insolation
 }

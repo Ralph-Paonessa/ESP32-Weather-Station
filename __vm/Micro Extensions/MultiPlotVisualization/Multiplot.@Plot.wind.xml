@@ -58,7 +58,7 @@
       <ChartAssignment2>3</ChartAssignment2>
     </CurveSettings>
   </CurveSettingCollection>
-  <XSweepTime>10 min</XSweepTime>
+  <XSweepTime>2 h</XSweepTime>
   <XTimeFormat>Auto</XTimeFormat>
   <DisplayRefreshRate>Rate50ms</DisplayRefreshRate>
   <ChartType>LineChart</ChartType>

@@ -26,7 +26,7 @@ namespace App_Settings {
 	const float GPS_MAX_ALLOWED_HDOP = 4;			// Minimum HDOP precision for syncing.
 
 	const unsigned int	GPS_DUMMY_HOUR = 23;		// Hour for dummy GPS time.
-	const unsigned int	GPS_DUMMY_MIN = 40;			// Minute for dummy GPS time.
+	const unsigned int	GPS_DUMMY_MIN = 05;			// Minute for dummy GPS time.
 	const unsigned int	GPS_DUMMY_SEC = 0;			// Second for dummy GPS time.
 	const unsigned int	GPS_DUMMY_DAY = 1;			// Day for dummy GPS time.
 	const unsigned int	GPS_DUMMY_MONTH = 1;		// Month for dummy GPS time.
