@@ -16,7 +16,5 @@
 #include <arduino.h>
 #include <pins_arduino.h> 
 #include "..\Weather Station.ino"
-#include "..\WebServer Processor.ino"
-#include "..\WebServer.ino"
 #endif
 #endif
