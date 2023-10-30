@@ -1,6 +1,6 @@
 // Gets data_point (time, value) pairs for a chart from 
 // the server at dataRoute and adds them to a chart.
-function getChartData(dataRoute, intervalMins, timeOffsetHrs) {
+function getChartData(dataRoute) {
     // Reset all data in series[0]
     chart_1.series[0].setData([]);
     var xhttp = new XMLHttpRequest();

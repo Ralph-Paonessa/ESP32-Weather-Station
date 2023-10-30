@@ -120,18 +120,6 @@ void serverRouteHandler() {
 
 		// Pages use javascript to get data asynchronously.
 
-
-
-
-		server.on("/chart_2", HTTP_GET, [](AsyncWebServerRequest* request) {
-			_chart_request = CHART_TEMPERATURE_F;
-			request->send(LittleFS, "/html/chart_2.html", "text/html", false, processor);
-			});
-
-
-
-
-
 		// Temperature graph page.
 		server.on("/chart_T", HTTP_GET, [](AsyncWebServerRequest* request) {
 			_chart_request = CHART_TEMPERATURE_F;
@@ -255,6 +243,14 @@ void serverRouteHandler() {
 		 page where Javascript parses and plots the data.
 		*/
 
+
+
+
+
+		server.on("/chart_2", HTTP_GET, [](AsyncWebServerRequest* request) {
+			_chart_request = CHART_TEMPERATURE_F;
+			request->send(LittleFS, "/html/chart_2.html", "text/html", false, processor);
+			});
 
 
 		/*****  DAILY MIN MAX CHARTS  *****/

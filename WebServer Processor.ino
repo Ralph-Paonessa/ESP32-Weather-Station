@@ -193,9 +193,9 @@ String processor(const String& var) {
 	if (var == "GPS_TIME") {
 		return String(gps.time_UTC_GPS());
 	}
-	if (var == "GPS_UTC_OFFSET") {
+	/*if (var == "GPS_UTC_OFFSET") {
 		return String(UTC_OFFSET_HOURS);
-	}
+	}*/
 	if (var == "GPS_DAYLIGHT_TIME_USED") {
 		return bool_Yes_No(IS_DAYLIGHT_TIME);
 	}
@@ -216,7 +216,7 @@ String processor(const String& var) {
 
 
 
-	if (var == "TIME_OFFSET_HOURS") {
+	if (var == "UTC_CURRENT_OFFSET_HOURS") {
 		if (IS_DAYLIGHT_TIME) {
 			return String(UTC_OFFSET_HOURS + 1);
 		}

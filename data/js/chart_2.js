@@ -1,6 +1,6 @@
 // Gets high and low data_point (time, value) pairs for a chart from 
 // the server at dataRoute and adds them to a chart.
-function getChartData(dataRoute, intervalMins, timeOffsetHrs) {
+function getChartData(dataRoute) {
     
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {

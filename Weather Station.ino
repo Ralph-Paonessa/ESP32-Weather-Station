@@ -618,7 +618,7 @@ void logDebugStatus() {
 	if (_isDEBUG_run_test_in_loop) {
 		sd.logStatus_indent("RUN TEST CODE IN LOOP");
 	}
-	if (_isDEBUG_addDummyDataList) {
+	if (_isDEBUG_addDummyDataLists) {
 		sd.logStatus_indent("ADD DUMMY DATA");
 	}
 	if (_isDEBUG_simulateSensorReadings) {
@@ -1368,7 +1368,7 @@ void addDummyData() {
 	d_UVIndex.addDummyData_60_min(0, 0.5, 12, 1765412100);
 
 	// daily maxima
-	d_Temp_F.addDummyData_maxima_daily(65, 0.1, 12, 1765412100);
+	d_Temp_F.addDummyData_maxima_daily(65, 1, 10, 1765412100);
 	d_Pres_mb.addDummyData_maxima_daily(989, 1.5, 12, 1765412100);
 	d_Pres_seaLvl_mb.addDummyData_maxima_daily(991, 2, 12, 1765412100);
 	d_RH.addDummyData_maxima_daily(20, .5, 12, 1765412100);
@@ -1380,7 +1380,7 @@ void addDummyData() {
 	d_UVIndex.addDummyData_maxima_daily(0, 0.5, 12, 1765412100);
 
 	// daily minima
-	d_Temp_F.addDummyData_minima_daily(65, 0.1, 12, 1765412100);
+	d_Temp_F.addDummyData_minima_daily(45, -1, 10, 1765412400);
 	d_Pres_mb.addDummyData_minima_daily(989, 1.5, 12, 1765412100);
 	d_Pres_seaLvl_mb.addDummyData_minima_daily(991, 2, 12, 1765412100);
 	d_RH.addDummyData_minima_daily(20, .5, 12, 1765412100);
@@ -1490,17 +1490,17 @@ void setup() {
 	_oldMonth = month();
 	_oldYear = year();
 
-#if defined(VM_DEBUG)
-	////////  TESTING   ////////
-	if (_isDEBUG_addDummyDataList) {
+	//#if defined(VM_DEBUG)
+		////////  TESTING   ////////
+	if (_isDEBUG_addDummyDataLists) {
 		addDummyData();
 	}
 	if (_isDEBUG_run_test_in_setup) {
 		testCodeForSetup(200000);
 	}
-#endif
+	//#endif
 
-	// ==========  INITIALIZE SENSORS  ========== //
+		// ==========  INITIALIZE SENSORS  ========== //
 	initializeSensors();
 
 	sd.logData(columnNames());	// Write column names to data log.

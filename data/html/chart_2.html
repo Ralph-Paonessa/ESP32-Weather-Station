@@ -27,10 +27,10 @@
             <div class="nav home">
                 <a href="/"><img src="home-icon.png" class="icon" /></a>
             </div>
-            <div class="nav"><a onclick="getChartData('/data_10', 10, %TIME_OFFSET_HOURS%)">Recent</a></div>
-            <div class="nav"><a onclick="getChartData('/data_60', 60, %TIME_OFFSET_HOURS%)">Hourly</a></div>
-            <!--<div class="nav"><a onclick="getChartData('/data_max', 720, %TIME_OFFSET_HOURS%)">Daily Highs</a></div>
-            <div class="nav"><a onclick="getChartData('/data_min', 720, %TIME_OFFSET_HOURS%)">Daily Lows</a></div>-->
+            <div class="nav"><a onclick="getChartData('/data_10', 10, %UTC_CURRENT_OFFSET_HOURS%)">Recent</a></div>
+            <div class="nav"><a onclick="getChartData('/data_60', 60, %UTC_CURRENT_OFFSET_HOURS%)">Hourly</a></div>
+            <!--<div class="nav"><a onclick="getChartData('/data_max', 720, %UTC_CURRENT_OFFSET_HOURS%)">Daily Highs</a></div>
+            <div class="nav"><a onclick="getChartData('/data_min', 720, %UTC_CURRENT_OFFSET_HOURS%)">Daily Lows</a></div>-->
         </div>
         <div class="chart-container">
             <div id="chart_1" class="container"></div>
@@ -51,12 +51,27 @@
             [
                 {
                     showInLegend: true,
-                    name: 'Daily highs',
+                    name: 'Daily high',
+                    marker: {
+                        symbol: 'Circle',
+                        fillColor: '#DDDDDD',
+                        lineWidth: 2,
+                        lineColor: '#FF0000',
+                        radius: 8
+                    },
                     data: []
+                    
                 },
                 {
                     showInLegend: true,
-                    name: 'Daily lows',
+                    name: 'Daily low',
+                    marker: {
+                        symbol: 'Circle',
+                        fillColor: '#FFFFFF',
+                        lineWidth: 2,
+                        lineColor: '#FF0000',
+                        radius: 8
+                    },
                     data: []
                 }
             ],
@@ -77,5 +92,5 @@
         },
         credits: { enabled: false }
     });
-    getChartData('/data_min_max', 10, %TIME_OFFSET_HOURS%);
+    getChartData('/data_min_max');
 </script>

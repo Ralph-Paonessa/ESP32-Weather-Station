@@ -27,10 +27,10 @@
             <div class="nav home">
                 <a href="/"><img src="home-icon.png" class="icon" /></a>
             </div>
-            <div class="nav"><a onclick="getChartData('/data_10', 10, %TIME_OFFSET_HOURS%)">Recent</a></div>
-            <div class="nav"><a onclick="getChartData('/data_60', 60, %TIME_OFFSET_HOURS%)">Hourly</a></div>
+            <div class="nav"><a onclick="getChartData('/data_10', 10, %UTC_CURRENT_OFFSET_HOURS%)">Recent</a></div>
+            <div class="nav"><a onclick="getChartData('/data_60', 60, %UTC_CURRENT_OFFSET_HOURS%)">Hourly</a></div>
             <div class="nav"><a href="/chart_2">Daily</a></div>
-            <!--<div class="nav"><a onclick="getChartData('/data_min', 720, %TIME_OFFSET_HOURS%)">Daily Lows</a></div>-->
+            <!--<div class="nav"><a onclick="getChartData('/data_min', 720, %UTC_CURRENT_OFFSET_HOURS%)">Daily Lows</a></div>-->
         </div>
         <div class="chart-container">
             <div id="chart_1" class="container"></div>
@@ -71,5 +71,5 @@
         },
         credits: { enabled: false }
     });
-    getChartData('/data_10', 10, %TIME_OFFSET_HOURS%);  
+    getChartData('/data_10');  
 </script>
