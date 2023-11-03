@@ -10,6 +10,9 @@ Rev. October 7, 2023
 // ========  ESP32 Libraries  ================  
 
 // ESP Async Web Server
+#include <FSImpl.h>
+#include <vfs_api.h>
+#include "FileOperations.h"
 #include <AsyncEventSource.h>
 #include <AsyncJson.h>
 #include <AsyncWebSocket.h>
@@ -70,6 +73,9 @@ Rev. October 7, 2023
 
 using namespace App_Settings;
 using namespace Utilities;
+
+#include "FileOperations.h"
+using namespace FileOperations;
 
 /*
 SensorData objects to average readings.
@@ -1443,8 +1449,8 @@ void setup() {
 	sd.logStatus();	// Empty line
 	sd.logStatus(LINE_SEPARATOR_MAJOR);
 	sd.logStatus("SETUP continues after SD card initialization.", gps.dateTime());
-	sd.createFile(LOGFILE_PATH_DATA);
-	sd.createFile(LOGFILE_PATH_STATUS);
+	createFile(SD, LOGFILE_PATH_DATA);
+	createFile(SD, LOGFILE_PATH_STATUS);
 
 	// Log the settings to the status file.
 	logDebugStatus();

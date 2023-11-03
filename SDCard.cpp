@@ -242,7 +242,6 @@ bool SDCard::createFile(const String& path) {
 			String msg = "[SDCard.createFile] " + path + " file could not be created.";
 			logStatus(msg, millis());
 			return false;
-			return false;
 		}
 		else {
 			String msg = "[SDCard.createFile] " + path + " file created.";

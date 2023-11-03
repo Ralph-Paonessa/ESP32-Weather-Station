@@ -22,6 +22,9 @@
 #include "App_Settings.h"
 using namespace App_Settings;
 
+#include "FileOperations.h"
+using namespace FileOperations;
+
 /// <summary>
 /// Exposes methods to read/write files to an SD card.
 /// </summary>
