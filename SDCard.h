@@ -34,21 +34,21 @@ private:
 	int _SPI_CS_pin;	// SPI pin number for SD card.
 	bool _isBypassSDCard = false;
 
-	/// <summary>
+	/*/// <summary>
 	/// Writes to the SD card file, overwriting existing data.
 	/// </summary>
 	/// <param name="fs">File system object.</param>
 	/// <param name="path">Target file path with name.</param>
 	/// <param name="message">String to write.</param>
-	void writeFile(fs::FS& fs, const char* path, const char* message);
+	void writeFile(fs::FS& fs, const char* path, const char* message);*/
 	
-	/// <summary>
+	/*/// <summary>
 	/// Appends data to an SD card file.
 	/// </summary>
 	/// <param name="fs">File system object.</param>
 	/// <param name="path">Target file path with name.</param>
 	/// <param name="message">String to write.</param>
-	void appendFile(fs::FS& fs, const char* path, const char* message);
+	void appendFile(fs::FS& fs, const char* path, const char* message);*/
 
 public:
 	/// <summary>

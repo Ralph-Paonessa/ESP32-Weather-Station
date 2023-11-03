@@ -23,7 +23,12 @@ used with both the SD card and LittleFS.
 namespace FileOperations {
 
 
-
+	/// <summary>
+	/// Lists contents of directory.
+	/// </summary>
+	/// <param name="fs">File system.</param>
+	/// <param name="dirname">Path of the directory.</param>
+	/// <param name="levels">Number of levels to list.</param>
 	void listDir(fs::FS& fs, const char* dirname, uint8_t levels);
 
 	void createDir(fs::FS& fs, const char* path); 

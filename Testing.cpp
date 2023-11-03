@@ -225,7 +225,7 @@ void Testing::testStructList(long time)
 	Serial.println();
 
 	Serial.println("10-min 1 decimal place.");
-	Serial.println(d_test.data_10_min_string_delim(false, 1));
+	Serial.println(d_test.data_10_min_string_delim());
 }
 
 // Add a list of rotations to a WindSpeed object, and return elapsed seconds.

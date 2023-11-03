@@ -18,6 +18,12 @@ using std::list;
 using namespace ListFunctions;
 using namespace App_Settings;
 
+// File system
+#include <LittleFS.h>
+
+#include "FileOperations.h"
+using namespace FileOperations;
+
 /// <summary>
 /// Exposes methods to read and process sensor data.
 /// </summary>
@@ -75,9 +81,12 @@ protected:		// Protected items are accessible by inherited classes.
 	float _avgMoving = 0;				// Moving average value.
 	unsigned int _avgMoving_Num;		// Maximum number of values to average.
 
+	bool _isConvertZeroToEmpty = true;	//
+	unsigned int _decimalPlaces = 0;	//
+
 	bool _isMovingAvgStarted = false;	// Flag to indicate first cycle.
 
-	
+
 	bool isOutlier(dataPoint dp);
 
 	list<dataPoint> _data_10_min;		// List of Data_Points at 10-min intervals.
@@ -88,7 +97,7 @@ protected:		// Protected items are accessible by inherited classes.
 public:
 
 	// Constructor.
-	
+
 	/// <summary>
 	/// Initializes SensorData instance that exposes 
 	/// methods to read and process sensor data.
@@ -99,10 +108,15 @@ public:
 	/// Number of points in moving avg.</param>
 	/// <param name="outlierDelta">
 	/// Range applied to moving avg for outlier rejection.</param>
+	/// <param name="isConvertZeroToEmpty">
+	/// Set to true to convert zero to empty string.</param>
+	/// <param name="decimalPlaces">Decimal places in numbers.</param>
 	SensorData(
-		bool isUseMovingAvg = true, 
-		unsigned int numSmoothPoints = 5, 
-		float outlierDelta = 1.75
+		bool isUseMovingAvg = true,
+		unsigned int numSmoothPoints = 5,
+		float outlierDelta = 1.75,
+		bool isConvertZeroToEmpty = true,
+		unsigned int decimalPlaces = 0
 	);
 
 	/// <summary>
@@ -225,53 +239,40 @@ public:
 	String units();
 	String units_html();
 
-	String data_10_min_string_delim();
+	//String data_10_min_string_delim();
 
 	/// <summary>
 	/// Returns list of 10-min dataPoints as delimited string.
 	/// </summary>
-	/// <param name="isConvertZeroToEmpty">
-	/// Set to true to convert zero to empty string.</param>
-	/// <param name="decimalPlaces">Decimal places in numbers.</param>
 	/// <returns>List of 10-min dataPoints as delimited string.</returns>
-	String data_10_min_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
+	String data_10_min_string_delim();
 
+	//String data_60_min_string_delim();
+
+	/// <summary>
+	/// Returns list of 60-min dataPoints as delimited string.
+	/// </summary>
+	/// <returns>List of 60-min dataPoints as delimited string.</returns>
 	String data_60_min_string_delim();
 
-	/// <summary>
-	/// Returns list of 60-min dataPoints as delimited string.
-	/// </summary>
-	/// <param name="isConvertZeroToEmpty">
-	/// Set to true to convert zero to empty string.</param>
-	/// <param name="decimalPlaces">Decimal places in numbers.</param>
-	/// <returns>List of 60-min dataPoints as delimited string.</returns>
-	String data_60_min_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
-
 
 	/// <summary>
 	/// Returns list of 60-min dataPoints as delimited string.
 	/// </summary>
-	/// <param name="isConvertZeroToEmpty">Set to true to convert zero to empty string.</param>
-	/// <param name="decimalPlaces">Decimal places in numbers.</param>
 	/// <returns>Delimited string of two (time, value) lists, separated by "|".</returns>
-	String data_max_min_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
+	String data_max_min_string_delim();
 
 
 	/// <summary>
-	/// Returns list of maxima dataPoints as delimited string.
+	/// Returns list of daily maxima dataPoints as delimited string.
 	/// </summary>
 	/// <param name="isConvertZeroToEmpty">Set to true to convert zero to empty string.</param>
-	/// <param name="decimalPlaces">Decimal places in numbers.</param>
-	/// <returns>List of maxima dataPoints as delimited string.</returns>
-	String maxima_byDay_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
+	String maxima_byDay_string_delim();
 
 	/// <summary>
-	/// Returns list of minima dataPoints as delimited string.
+	/// Returns list of daily minima dataPoints as delimited string.
 	/// </summary>
-	/// <param name="isConvertZeroToEmpty">Set to true to convert zero to empty string.</param>
-	/// <param name="decimalPlaces">Decimal places in numbers.</param>
-	/// <returns>List of minima dataPoints as delimited string.</returns>
-	String minima_byDay_string_delim(bool isConvertZeroToEmpty, unsigned int decimalPlaces);
+	String minima_byDay_string_delim();
 
 
 	void addDummyData_10_min(float valueStart, float increment, int numElements, unsigned long timeStart);
@@ -291,7 +292,7 @@ public:
 		float valueStart,
 		float increment,
 		int numElements,
-		unsigned long timeStart);	
+		unsigned long timeStart);
 
 	/// <summary>
 	/// Adds the specified number of elements of dummy data to the 

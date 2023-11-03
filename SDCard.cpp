@@ -87,50 +87,50 @@ void SDCard::cancelBypass()
 {
 	_isBypassSDCard = false;
 }
-
-/// <summary>
-/// Writes to an SD card file, overwriting existing data.
-/// </summary>
-/// <param name="fs">File system object.</param>
-/// <param name="path">Target file path with name.</param>
-/// <param name="msg">String to write.</param>
-void SDCard::writeFile(fs::FS& fs, const char* path, const char* msg) {
-	Serial.printf("Writing file: %s\n", path);
-	File file = fs.open(path, FILE_WRITE);
-	if (!file) {
-		Serial.println("ERROR: writeFile failed to open file for writing");
-		return;
-	}
-	if (file.print(msg)) {
-		Serial.println("File written");
-	}
-	else {
-		Serial.println("ERROR: writeFile failed");
-	}
-	file.close();
-}
-
-/// <summary>
-/// Appends to an SD card file.
-/// </summary>
-/// <param name="fs">File system object.</param>
-/// <param name="path">Target file path with name.</param>
-/// <param name="msg">String to write.</param>
-void SDCard::appendFile(fs::FS& fs, const char* path, const char* msg) {
-
-	File file = fs.open(path, FILE_APPEND);
-	if (!file) {
-		String s = "ERROR: appendFile failed to open """;
-		s += String(path) + """ for appending";
-		Serial.println(s);
-		return;
-	}
-	if (!file.print(msg)) {
-		Serial.println("ERROR: appendFile failed for :");
-		Serial.print("--|"); Serial.print(msg); Serial.println("|--");
-	}
-	file.close();
-}
+//
+///// <summary>
+///// Writes to an SD card file, overwriting existing data.
+///// </summary>
+///// <param name="fs">File system object.</param>
+///// <param name="path">Target file path with name.</param>
+///// <param name="msg">String to write.</param>
+//void SDCard::writeFile(fs::FS& fs, const char* path, const char* msg) {
+//	Serial.printf("Writing file: %s\n", path);
+//	File file = fs.open(path, FILE_WRITE);
+//	if (!file) {
+//		Serial.println("ERROR: writeFile failed to open file for writing");
+//		return;
+//	}
+//	if (file.print(msg)) {
+//		Serial.println("File written");
+//	}
+//	else {
+//		Serial.println("ERROR: writeFile failed");
+//	}
+//	file.close();
+//}
+//
+///// <summary>
+///// Appends to an SD card file.
+///// </summary>
+///// <param name="fs">File system object.</param>
+///// <param name="path">Target file path with name.</param>
+///// <param name="msg">String to write.</param>
+//void SDCard::appendFile(fs::FS& fs, const char* path, const char* msg) {
+//
+//	File file = fs.open(path, FILE_APPEND);
+//	if (!file) {
+//		String s = "ERROR: appendFile failed to open """;
+//		s += String(path) + """ for appending";
+//		Serial.println(s);
+//		return;
+//	}
+//	if (!file.print(msg)) {
+//		Serial.println("ERROR: appendFile failed for :");
+//		Serial.print("--|"); Serial.print(msg); Serial.println("|--");
+//	}
+//	file.close();
+//}
 
 /// <summary>
 /// Appends a line of data to the DATA file.
@@ -228,26 +228,21 @@ void SDCard::logStatus(const String& msg, unsigned long millisec) {
 // or if the file already exists; otherwise
 // returns false.
 bool SDCard::createFile(const String& path) {
-	if (!_isBypassSDCard)
-	{
-		// If the file doesn't exist, create it.
-		if (SD.exists(path)) {
-			String msg = "[SDCard.createFile] " + path + " file found.";
-			logStatus(msg, millis());
-			return true;
-		}
-		// File does not exist, so create empty file.
-		File file = SD.open(path, FILE_WRITE);
-		if (!file) {
-			String msg = "[SDCard.createFile] " + path + " file could not be created.";
-			logStatus(msg, millis());
-			return false;
-		}
-		else {
-			String msg = "[SDCard.createFile] " + path + " file created.";
-			logStatus(msg, millis());
-			file.close();
-			return true;
-		}
+	if (_isBypassSDCard) {
+		return false;
 	}
+	// File does not exist, so create empty file.
+	File file = SD.open(path, FILE_WRITE);
+	if (!file) {
+		String msg = "[SDCard.createFile] " + path + " file could not be created.";
+		logStatus(msg, millis());
+		return false;
+	}
+	else {
+		String msg = "[SDCard.createFile] " + path + " file created.";
+		logStatus(msg, millis());
+		file.close();
+		return true;
+	}
+
 }

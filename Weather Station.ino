@@ -20,6 +20,7 @@ Rev. October 7, 2023
 #include <WebAuthentication.h>
 #include <WebHandlerImpl.h>
 #include <WebResponseImpl.h>
+#include <WebResponseImpl.h>
 #include <AsyncTCP.h>
 
 // Debugging flags
@@ -657,43 +658,43 @@ void logLittleFsSpaceUsage() {
 	sd.logStatus_indent(msg);
 }
 
-/// <summary>
-/// Lists contents of directory.
-/// </summary>
-/// <param name="fs">File system.</param>
-/// <param name="dirname">Path of the directory.</param>
-/// <param name="levels">Number of levels to list.</param>
-void listDirectory(fs::FS& fs, const char* dirname, uint8_t levels) {
-	String msg = "Listing directory: " + String(dirname);
-	sd.logStatus(msg);
-	//Serial.printf("Listing directory: %s\r\n", dirname);
-	File root = fs.open(dirname);
-	if (!root) {
-		sd.logStatus_indent("ERROR: Failed to open directory");
-		return;
-	}
-	if (!root.isDirectory()) {
-		sd.logStatus_indent("ERROR: Not a directory");
-		return;
-	}
-	File file = root.openNextFile();
-	while (file) {
-		if (file.isDirectory()) {
-			msg = "dir: " + String(file.name());
-			sd.logStatus_indent(msg);
-			//Serial.printf("\tdir: %s\n", file.name());
-			if (levels) {
-				listDirectory(fs, file.name(), levels - 1);	// Recursive.
-			}
-		}
-		else {
-			msg = "file: " + String(file.name());
-			msg += " size: " + String(file.size() / 1000., 2) + " KB";
-			sd.logStatus_indent(msg);
-		}
-		file = root.openNextFile();
-	}
-}
+///// <summary>
+///// Lists contents of directory.
+///// </summary>
+///// <param name="fs">File system.</param>
+///// <param name="dirname">Path of the directory.</param>
+///// <param name="levels">Number of levels to list.</param>
+//void listDirectory(fs::FS& fs, const char* dirname, uint8_t levels) {
+//	String msg = "Listing directory: " + String(dirname);
+//	sd.logStatus(msg);
+//	//Serial.printf("Listing directory: %s\r\n", dirname);
+//	File root = fs.open(dirname);
+//	if (!root) {
+//		sd.logStatus_indent("ERROR: Failed to open directory");
+//		return;
+//	}
+//	if (!root.isDirectory()) {
+//		sd.logStatus_indent("ERROR: Not a directory");
+//		return;
+//	}
+//	File file = root.openNextFile();
+//	while (file) {
+//		if (file.isDirectory()) {
+//			msg = "dir: " + String(file.name());
+//			sd.logStatus_indent(msg);
+//			//Serial.printf("\tdir: %s\n", file.name());
+//			if (levels) {
+//				listDirectory(fs, file.name(), levels - 1);	// Recursive.
+//			}
+//		}
+//		else {
+//			msg = "file: " + String(file.name());
+//			msg += " size: " + String(file.size() / 1000., 2) + " KB";
+//			sd.logStatus_indent(msg);
+//		}
+//		file = root.openNextFile();
+//	}
+//}
 
 /// <summary>
 /// LogS the application settings to the STATUS file.
@@ -1029,7 +1030,7 @@ void initializeSensors() {
 	logLittleFsSpaceUsage();
 
 	if (_isDEBUG_ListLittleFS) {
-		listDirectory(LittleFS, "/", 5);
+		listDir(LittleFS, "/", 5);
 	}
 
 	sd.logStatus("Device initialization complete.", millis());
@@ -1252,6 +1253,7 @@ void readSensors_Simulate() {
 /// </summary>
 void processReadings_10_min() {
 	windSpeed.process_data_10_min();
+	//appendFile(LittleFS, "/Sensor readings/" + windSpeed.label() + ".txt", "message");
 	windGust.process_data_10_min();
 	windDir.process_data_10_min();
 	d_Temp_F.process_data_10_min();
@@ -1446,8 +1448,8 @@ void setup() {
 	sd.logStatus();	// Empty line
 	sd.logStatus(LINE_SEPARATOR_MAJOR);
 	sd.logStatus("SETUP continues after SD card initialization.", gps.dateTime());
-	createFile(SD, LOGFILE_PATH_DATA);
-	createFile(SD, LOGFILE_PATH_STATUS);
+	sd.createFile(LOGFILE_PATH_DATA);
+	sd.createFile(LOGFILE_PATH_STATUS);
 
 	// Log the settings to the status file.
 	logDebugStatus();
@@ -1592,6 +1594,9 @@ void loop() {
 		// Get 10-min avgs.
 		processReadings_10_min();
 		sd.logData(sensorsDataString_10_min());	// Save readings to SD card.
+
+		
+
 		sd.logStatus("Logged 10-min avgs.", gps.dateTime());
 		// Check for unhandled.
 		if (_countInterrupts_10_min > BASE_PERIODS_IN_10_MIN)

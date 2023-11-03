@@ -1,8 +1,16 @@
-// 
+// Adapted from SD_Test.ino in the Arduino/ESP32 example sketches.
 // 
 // 
 
 #include "FileOperations.h"
+
+
+/// <summary>
+/// Lists contents of directory.
+/// </summary>
+/// <param name="fs">File system.</param>
+/// <param name="dirname">Path of the directory.</param>
+/// <param name="levels">Number of levels to list.</param>
 void FileOperations::listDir(fs::FS& fs, const char* dirname, uint8_t levels) {
     Serial.printf("Listing directory: %s\n", dirname);
 
