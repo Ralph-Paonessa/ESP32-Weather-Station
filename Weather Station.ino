@@ -10,9 +10,6 @@ Rev. October 7, 2023
 // ========  ESP32 Libraries  ================  
 
 // ESP Async Web Server
-#include <FSImpl.h>
-#include <vfs_api.h>
-#include "FileOperations.h"
 #include <AsyncEventSource.h>
 #include <AsyncJson.h>
 #include <AsyncWebSocket.h>
