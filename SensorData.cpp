@@ -14,18 +14,34 @@
 /// <param name="numInMovingAvg">Number of points in moving avg.</param>
 /// <param name="outlierDelta">
 /// Range applied to moving avg for outlier rejection.</param>
-SensorData::SensorData(
-	bool isUseSmoothing, 
-	unsigned int numInMovingAvg, 
-	float outlierDelta, 
-	bool isConvertZeroToEmpty, 
-	unsigned int decimalPlaces
-) {
+SensorData::SensorData(bool isUseSmoothing, unsigned int numInMovingAvg, float outlierDelta) {
 	_isUseSmoothing = isUseSmoothing;
 	_avgMoving_Num = numInMovingAvg;
 	_outlierDelta = outlierDelta;
-	_isConvertZeroToEmpty = isConvertZeroToEmpty;
+}
+
+
+/// <summary>
+/// Initializes files that hold sensor readings.
+/// </summary>
+/// <param name="isConvertZeroToEmpty">
+/// Set to true to convert zero to empty in output strings.</param>
+/// <param name="decimalPlaces">Decimal places in output strings.</param>
+void SensorData::initializeFiles(bool isConvertZeroToEmpty, unsigned int decimalPlaces)
+{	_isConvertZeroToEmpty = isConvertZeroToEmpty;
 	_decimalPlaces = decimalPlaces;
+	createFile(LittleFS, sensorFilepath("_10_min"));
+	createFile(LittleFS, sensorFilepath("_60_min"));
+	createFile(LittleFS, sensorFilepath("_max_min"));
+}
+
+/// <summary>
+/// Returns the path to a sensor data .txt file based on SensorData::Label().
+/// </summary>
+/// <param name="fileSuffix">A suffix to append to the file name.</param>
+/// <returns>Path to a sensor data .txt file.</returns>
+String SensorData::sensorFilepath(String fileSuffix) {
+	return SENSOR_DATA_DIR_PATH + "/" + _label + fileSuffix + ".txt";
 }
 
 /// <summary>
@@ -129,8 +145,8 @@ bool SensorData::isOutlier(dataPoint dp) {
 		return false;
 	}
 	///////////////////////////////
-	bool isOut = (dp.value > _avgMoving + _avgMoving) || (dp.value < _avgMoving - _outlierDelta);		// lower bound
-	return isOut;
+	return  (dp.value > _avgMoving + _avgMoving)
+		|| (dp.value < _avgMoving - _outlierDelta);		// lower bound
 }
 
 /// <summary>
@@ -206,8 +222,7 @@ void SensorData::process_data_10_min() {
 		SIZE_10_MIN_LIST);
 
 	// Store in LittleFS
-	String path = "/Sensor readings/" + _label + ".txt";
-	appendFile(LittleFS, path.c_str(), data_10_min_string_delim().c_str());
+	appendFile(LittleFS, sensorFilepath("_10_min").c_str(), data_10_min_string_delim().c_str());
 
 	clear_10_min();	// Start another 10-min period.
 }
@@ -254,7 +269,8 @@ float SensorData::valueLastAdded()
 }
 
 /// <summary>
-/// The accumulated avg now (reset every 10 minutes) when data smoothing is enabled, outlier values are not included in this average.
+/// The accumulated avg now (reset every 10 minutes)> When 
+/// data smoothing is enabled, outlier values are excluded.
 /// </summary>
 /// <returns>Average now.</returns>
 float SensorData::avg_now()
@@ -355,9 +371,11 @@ list<dataPoint> SensorData::maxima_dayList()
 /// to valueLastAdded and avg_10_min.
 /// </summary>
 /// <param name="valueStart">Initial value.</param>
-/// <param name="increment">Amount to increment the value each time.</param>
+/// <param name="increment">Amount to increment the value each time.
+/// </param>
 /// <param name="numElements">Number of elements to add.</param>
-/// <param name="_timeStartLoop">Time assigned to first data point.</param>
+/// <param name="_timeStartLoop">Time assigned to first data point.
+/// </param>
 void SensorData::addDummyData_10_min(float valueStart,
 	float increment,
 	int numElements,
@@ -378,9 +396,11 @@ void SensorData::addDummyData_10_min(float valueStart,
 /// 10-min list, incrementing the value each time.
 /// </summary>
 /// <param name="valueStart">Initial value.</param>
-/// <param name="increment">Amount to increment the value each time.</param>
+/// <param name="increment">Amount to increment the value each time.
+/// </param>
 /// <param name="numElements">Number of elements to add.</param>
-/// <param name="_timeStartLoop">Time assigned to first data point.</param>
+/// <param name="_timeStartLoop">Time assigned to first data point.
+/// </param>
 void SensorData::addDummyData_60_min(float valueStart,
 	float increment,
 	int numElements,
@@ -401,9 +421,11 @@ void SensorData::addDummyData_60_min(float valueStart,
 /// daily maxima list, incrementing the value each time.
 /// </summary>
 /// <param name="valueStart">Initial value.</param>
-/// <param name="increment">Amount to increment the value each time.</param>
+/// <param name="increment">Amount to increment the value each time.
+/// </param>
 /// <param name="numElements">Number of elements to add.</param>
-/// <param name="_timeStartLoop">Time assigned to first data point.</param>
+/// <param name="_timeStartLoop">Time assigned to first data point.
+/// </param>
 void SensorData::addDummyData_maxima_daily(
 	float valueStart,
 	float increment,
@@ -543,9 +565,9 @@ String SensorData::data_60_min_string_delim()
 /// <returns>Delimited string of two (time, value) lists, separated by "|".</returns>
 String SensorData::data_max_min_string_delim()
 {
-	return 	listToString_dataPoints(_maxima_dayList, 
-		_minima_dayList, 
-		_isConvertZeroToEmpty, 
+	return 	listToString_dataPoints(_maxima_dayList,
+		_minima_dayList,
+		_isConvertZeroToEmpty,
 		_decimalPlaces);
 }
 

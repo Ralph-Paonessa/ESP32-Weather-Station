@@ -31,6 +31,12 @@ class SensorData {
 
 protected:		// Protected items are accessible by inherited classes.
 
+	/// <summary>
+	/// Returns a sensor data text-file path.
+	/// </summary>
+	/// <param name="fileSuffix">Suffix to append to file name.</param>
+	String sensorFilepath(String fileSuffix);
+
 	String _label, _labelShort;		// Identifying info.
 	String _units, _units_html;		// Units used.
 
@@ -44,8 +50,6 @@ protected:		// Protected items are accessible by inherited classes.
 
 	float _avg_10_min = 0;			// Average over 10 min.
 	float _avg_60_min = 0;			// Average over 60 min.
-
-	//float _avgSmoothed = 0;			// Avg of the last few readings (for smoothing).
 
 	const float VAL_LIMIT = 999999;	// No reading absolute value will ever be greater.
 
@@ -108,17 +112,16 @@ public:
 	/// Number of points in moving avg.</param>
 	/// <param name="outlierDelta">
 	/// Range applied to moving avg for outlier rejection.</param>
-	/// <param name="isConvertZeroToEmpty">
-	/// Set to true to convert zero to empty string.</param>
-	/// <param name="decimalPlaces">Decimal places in numbers.</param>
-	SensorData(
-		bool isUseMovingAvg = true,
-		unsigned int numSmoothPoints = 5,
-		float outlierDelta = 1.75,
-		bool isConvertZeroToEmpty = true,
-		unsigned int decimalPlaces = 0
-	);
+	SensorData(bool isUseMovingAvg = true, unsigned int numSmoothPoints = 5, float outlierDelta = 1.75);
 
+	/// <summary>
+	/// Initializes files that hold sensor readings.
+	/// </summary>
+	/// <param name="isConvertZeroToEmpty">
+	/// Set to true to convert zero to empty in output strings.</param>
+	/// <param name="decimalPlaces">Decimal places in output strings.</param>
+	void initializeFiles(bool isConvertZeroToEmpty = true, unsigned int decimalPlaces = 0);
+		
 	/// <summary>
 	/// Adds (time, value) dataPoint, accumulates average, 
 	/// and processes min, max.
@@ -141,12 +144,16 @@ public:
 	float valueLastAdded();
 
 	/// <summary>
-	/// The accumulated avg now (reset every 10 minutes).
+	/// The accumulated avg now (reset every 10 minutes)> When 
+	/// data smoothing is enabled, outlier values are excluded.
 	/// </summary>
 	/// <returns>Average now.</returns>
 	float avg_now();
 
-
+	/// <summary>
+	/// Returns moving average of last several reading values.
+	/// </summary>
+	/// <returns>Moving average.</returns>
 	float avgMoving();
 
 	/// <summary>
@@ -239,15 +246,11 @@ public:
 	String units();
 	String units_html();
 
-	//String data_10_min_string_delim();
-
 	/// <summary>
 	/// Returns list of 10-min dataPoints as delimited string.
 	/// </summary>
 	/// <returns>List of 10-min dataPoints as delimited string.</returns>
 	String data_10_min_string_delim();
-
-	//String data_60_min_string_delim();
 
 	/// <summary>
 	/// Returns list of 60-min dataPoints as delimited string.
@@ -255,18 +258,15 @@ public:
 	/// <returns>List of 60-min dataPoints as delimited string.</returns>
 	String data_60_min_string_delim();
 
-
 	/// <summary>
 	/// Returns list of 60-min dataPoints as delimited string.
 	/// </summary>
 	/// <returns>Delimited string of two (time, value) lists, separated by "|".</returns>
 	String data_max_min_string_delim();
 
-
 	/// <summary>
 	/// Returns list of daily maxima dataPoints as delimited string.
 	/// </summary>
-	/// <param name="isConvertZeroToEmpty">Set to true to convert zero to empty string.</param>
 	String maxima_byDay_string_delim();
 
 	/// <summary>
@@ -275,10 +275,11 @@ public:
 	String minima_byDay_string_delim();
 
 
+	/******     DUMMY DATA     ******/
+
 	void addDummyData_10_min(float valueStart, float increment, int numElements, unsigned long timeStart);
 
 	void addDummyData_60_min(float valueStart, float increment, int numElements, unsigned long timeStart);
-
 
 	/// <summary>
 	/// Adds the specified number of elements of dummy data to the 
@@ -307,7 +308,5 @@ public:
 		float increment,
 		int numElements,
 		unsigned long timeStart);
-
 };
-
 #endif

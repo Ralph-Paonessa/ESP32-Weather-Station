@@ -76,7 +76,7 @@ using namespace Utilities;
 using namespace FileOperations;
 
 /*
-SensorData objects to average readings.
+SensorData instances to average readings.
 Wind speed handled by WindSpeed.
 Wind direction handled by WindDirection.
 */
@@ -953,9 +953,9 @@ void PrintSensorOutputs() {
 }
 
 /// <summary>
-/// Initializes all sensors.
+/// Starts all sensors.
 /// </summary>
-void initializeSensors() {
+void sensors_begin() {
 	//  ---------------  BME280 P, RH sensor   ---------------
 	// Initialize BME280 sensor.
 	if (!sensor_PRH.begin(0x77)) {
@@ -1038,9 +1038,10 @@ void initializeSensors() {
 }
 
 /// <summary>
-/// Adds labels to SensorData objects.
+/// Adds labels to SensorData instances.
 /// </summary>
-void sensorsAddLabels() {
+void sensors_AddLabels() 
+{
 	windSpeed.addLabels("Wind Speed", "Wind", "mph");
 	windDir.addLabels("Wind direction", "Wind Dir", "", "&deg;");
 	windGust.addLabels("Wind Gust", "Gust", "mph");
@@ -1055,6 +1056,27 @@ void sensorsAddLabels() {
 	d_UVIndex.addLabels("UV Index", "UV Index", "");
 	d_Insol.addLabels("Insolation", "Sun", "%", "&percnt;");
 	d_fanRPM.addLabels("Aspirator Fan speedInstant", "Fan speedInstant", "rpm");
+}
+
+/// <summary>
+/// Initializes data files for SensorData instances.
+/// </summary>
+void sensors_InitializeFiles() 
+{
+	windSpeed.initializeFiles();
+	windDir.initializeFiles();
+	windGust.initializeFiles(); 
+	d_Temp_F.initializeFiles(); 
+	d_Pres_mb.initializeFiles();
+	d_Pres_seaLvl_mb.initializeFiles();
+	d_Temp_for_RH_C.initializeFiles(); 
+	d_RH.initializeFiles();          
+	d_IRSky_C.initializeFiles();     
+	d_UVA.initializeFiles();         
+	d_UVB.initializeFiles();         
+	d_UVIndex.initializeFiles();     
+	d_Insol.initializeFiles();       
+	d_fanRPM.initializeFiles();      
 }
 
 
@@ -1438,9 +1460,7 @@ void setup() {
 	msg += LINE_SEPARATOR_MAJOR + "\n\n";
 	Serial.print(msg);
 
-	// Add labels to the SensorData objects.
-	sensorsAddLabels();
-
+	
 	//  ==========  INITIALIZE SD CARD   ========== //
 	// (Do this first - need SD card for logging.)
 	_isGood_SDCard = sd.initialize(SPI_CS_PIN, _isDEBUG_BypassSDCard);
@@ -1506,7 +1526,19 @@ void setup() {
 	//#endif
 
 		// ==========  INITIALIZE SENSORS  ========== //
-	initializeSensors();
+	
+	sensors_AddLabels();	// Add labels to the SensorData instances.
+	sensors_begin();
+	sensors_InitializeFiles();
+
+
+	if (_isDEBUG_ListLittleFS) {
+		Serial.println("LITTLEFS AFTER sensors_InitializeFiles():");
+		listDir(LittleFS, "/", 5);
+	}
+
+
+
 
 	sd.logData(columnNames());	// Write column names to data log.
 	sd.logStatus_indent("DATA COLUMNS:\t" + columnNames());	// Write column names to status log.

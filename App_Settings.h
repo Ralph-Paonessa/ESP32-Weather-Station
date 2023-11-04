@@ -40,6 +40,8 @@ namespace App_Settings {
 
 	const unsigned int FAN_DUTY_PERCENT = 30;		// PWM duty cycle for fan speed.
 
+	const String SENSOR_DATA_DIR_PATH = "/Sensor data";	// Directory absolute path to sensor data files.
+	
 	const String LOGFILE_PATH_DATA = "/data.txt";
 
 	const String LOGFILE_PATH_STATUS = "/log.txt";
