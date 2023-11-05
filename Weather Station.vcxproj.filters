@@ -68,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="WebServer Processor.ino" />
     <ClCompile Include="WebServer.ino" />
+    <ClCompile Include="FileOperations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataPoint.h">
@@ -109,6 +112,9 @@
     <ClInclude Include="WindSpeed2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FileOperations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt">
@@ -117,6 +123,7 @@
     <Text Include="board.txt">
       <Filter>Misc Files</Filter>
     </Text>
+    <Text Include="README_DataInLittleFS.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\img\chart-icon-black-150px.png">

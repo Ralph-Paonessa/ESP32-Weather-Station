@@ -252,6 +252,13 @@ public:
 	/// <returns>List of 10-min dataPoints as delimited string.</returns>
 	String data_10_min_string_delim();
 
+
+
+	void get_data_10_min_fromFile();
+	
+
+
+
 	/// <summary>
 	/// Returns list of 60-min dataPoints as delimited string.
 	/// </summary>

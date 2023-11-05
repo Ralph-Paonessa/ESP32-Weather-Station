@@ -16,6 +16,7 @@ used with both the SD card and LittleFS.
 #endif
 
 #include "FS.h"
+#include <LittleFS.h>
 
 /// <summary>
 /// Exposes methods that operate on files.
@@ -35,7 +36,9 @@ namespace FileOperations {
 
 	void removeDir(fs::FS& fs, const char* path);
 
-	void readFile(fs::FS& fs, const char* path); 
+	String readFile_intoString(fs::FS& fs, const char* path, const char terminator = '\n');
+
+	void readFile(fs::FS& fs, const char* path);
 
 	void writeFile(fs::FS& fs, const char* path, const char* message); 
 
@@ -57,7 +60,7 @@ namespace FileOperations {
 	/// <param name="path">
 	/// Full path including the filename and extension.</param>
 	/// <returns>True on success</returns>
-	bool createFile(FS& fsys, const String& path);
+	bool create_or_existsFile(FS& fsys, const String& path);
 
 	/// <summary>
 	/// Writes to a file, overwriting existing data.

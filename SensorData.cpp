@@ -28,11 +28,27 @@ SensorData::SensorData(bool isUseSmoothing, unsigned int numInMovingAvg, float o
 /// Set to true to convert zero to empty in output strings.</param>
 /// <param name="decimalPlaces">Decimal places in output strings.</param>
 void SensorData::initializeFiles(bool isConvertZeroToEmpty, unsigned int decimalPlaces)
-{	_isConvertZeroToEmpty = isConvertZeroToEmpty;
+{
+	_isConvertZeroToEmpty = isConvertZeroToEmpty;
 	_decimalPlaces = decimalPlaces;
-	createFile(LittleFS, sensorFilepath("_10_min"));
-	createFile(LittleFS, sensorFilepath("_60_min"));
-	createFile(LittleFS, sensorFilepath("_max_min"));
+#if defined(VM_DEBUG)
+	if (LittleFS.mkdir(SENSOR_DATA_DIR_PATH)) {
+		Serial.printf("Created or found dir %s.\n", SENSOR_DATA_DIR_PATH);
+}
+	else {
+		Serial.printf("Filed to create or find dir %s.\n", SENSOR_DATA_DIR_PATH);
+	}
+#endif
+	if (!create_or_existsFile(LittleFS, sensorFilepath("_10_min")))	{
+		Serial.printf("ERROR: Could not create or find %s", sensorFilepath("_10_min").c_str());
+	}
+	
+	if (!create_or_existsFile(LittleFS, sensorFilepath("_60_min")))	{
+		Serial.printf("ERROR: Could not create or find %s", sensorFilepath("_60_min").c_str());
+	}
+	if (!create_or_existsFile(LittleFS, sensorFilepath("_max_min")))	{
+		Serial.printf("ERROR: Could not create or find %s", sensorFilepath("_max_min"));
+	}
 }
 
 /// <summary>
@@ -222,7 +238,7 @@ void SensorData::process_data_10_min() {
 		SIZE_10_MIN_LIST);
 
 	// Store in LittleFS
-	appendFile(LittleFS, sensorFilepath("_10_min").c_str(), data_10_min_string_delim().c_str());
+	writeFile(LittleFS, sensorFilepath("_10_min").c_str(), data_10_min_string_delim().c_str());
 
 	clear_10_min();	// Start another 10-min period.
 }
@@ -544,6 +560,17 @@ String SensorData::data_10_min_string_delim()
 		_isConvertZeroToEmpty,
 		_decimalPlaces);
 }
+
+
+
+void SensorData::get_data_10_min_fromFile() {
+	//sensorFilepath("_10_min");
+	Serial.println(_label);
+	Serial.println(readFile_intoString(LittleFS, "/js/chart.js"));
+
+}
+
+
 
 
 /// <summary>

@@ -79,7 +79,7 @@ public:
 	/// </summary>
 	/// <param name="path">The file path including name.</param>
 	/// <returns>True if file found or created.</returns>
-	bool createFile(const String& path);
+	bool create_or_existsFile(const String& path);
 
 	/// <summary>
 	/// Appends data to the SD card, and advances to new line.

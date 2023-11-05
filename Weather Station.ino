@@ -1468,8 +1468,8 @@ void setup() {
 	sd.logStatus();	// Empty line
 	sd.logStatus(LINE_SEPARATOR_MAJOR);
 	sd.logStatus("SETUP continues after SD card initialization.", gps.dateTime());
-	sd.createFile(LOGFILE_PATH_DATA);
-	sd.createFile(LOGFILE_PATH_STATUS);
+	sd.create_or_existsFile(LOGFILE_PATH_DATA);
+	sd.create_or_existsFile(LOGFILE_PATH_STATUS);
 
 	// Log the settings to the status file.
 	logDebugStatus();
@@ -1531,6 +1531,13 @@ void setup() {
 	sensors_begin();
 	sensors_InitializeFiles();
 
+	Serial.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+	Serial.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+
+	d_Temp_F.get_data_10_min_fromFile();
+
+	Serial.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+	Serial.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 
 	if (_isDEBUG_ListLittleFS) {
 		Serial.println("LITTLEFS AFTER sensors_InitializeFiles():");

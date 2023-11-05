@@ -63,6 +63,35 @@ void FileOperations::removeDir(fs::FS& fs, const char* path) {
     }
 }
 
+
+
+//
+
+
+
+//
+
+
+String FileOperations::readFile_intoString(fs::FS& fs, const char* path, const char terminator) {
+
+    File file = fs.open(path);
+    if (!file) {
+        Serial.println("Failed to open file for reading");
+        return "";
+    }
+
+    String str = "";
+
+    Serial.printf("**************   Read from file %s\n", path);
+    while (file.available()) {
+        str += String(file.read());
+    }
+    file.close();
+    return str;
+
+}
+
+
 void FileOperations::readFile(fs::FS& fs, const char* path) {
     Serial.printf("Reading file: %s\n", path);
 
@@ -87,6 +116,7 @@ void FileOperations::writeFile(fs::FS& fs, const char* path, const char* message
         Serial.println("Failed to open file for writing");
         return;
     }
+
     if (file.print(message)) {
         Serial.println("File written");
     }
@@ -145,25 +175,31 @@ void FileOperations::deleteFile(fs::FS& fs, const char* path) {
 /// <param name="fs">File system to use.</param>
 /// <param name="path">Full path including the filename and extension.</param>
 /// <returns>True on success</returns>
-bool FileOperations::createFile(fs::FS& fs, const String& path) {
+bool FileOperations::create_or_existsFile(fs::FS& fs, const String& path) {
 	if (true)            //(!_isBypassSDCard)
 	{
 		// If the file doesn't exist, create it.
 		if (fs.exists(path)) {
-			//String msg = "[SDCard.createFile] " + path + " file found.";
+			//String msg = "[SDCard.create_or_existsFile] " + path + " file found.";
 			//logStatus(msg, millis());
+            Serial.printf("File %s exists.\n", path.c_str());
 			return true;
-		}
+        }
+        else {
+            Serial.printf("File %s does not exist.\n", path.c_str());
+        }
 		// File does not exist, so create empty file.
 		File file = fs.open(path, FILE_WRITE);
 		if (!file) {
-			//String msg = "[SDCard.createFile] " + path + " file could not be created.";
+			//String msg = "[SDCard.create_or_existsFile] " + path + " file could not be created.";
 			//logStatus(msg, millis());
+            Serial.printf("File %s could not be opened.\n", path.c_str());
 			return false;
 		}
 		else {
-			//String msg = "[SDCard.createFile] " + path + " file created.";
+			//String msg = "[SDCard.create_or_existsFile] " + path + " file created.";
 			//logStatus(msg, millis());
+            Serial.printf("File %s was opened and will be closed.\n", path.c_str());
 			file.close();
 			return true;
 		}

@@ -227,19 +227,19 @@ void SDCard::logStatus(const String& msg, unsigned long millisec) {
 // already exist. Returns true on success
 // or if the file already exists; otherwise
 // returns false.
-bool SDCard::createFile(const String& path) {
+bool SDCard::create_or_existsFile(const String& path) {
 	if (_isBypassSDCard) {
 		return false;
 	}
 	// File does not exist, so create empty file.
 	File file = SD.open(path, FILE_WRITE);
 	if (!file) {
-		String msg = "[SDCard.createFile] " + path + " file could not be created.";
+		String msg = "[SDCard.create_or_existsFile] " + path + " file could not be created.";
 		logStatus(msg, millis());
 		return false;
 	}
 	else {
-		String msg = "[SDCard.createFile] " + path + " file created.";
+		String msg = "[SDCard.create_or_existsFile] " + path + " file created.";
 		logStatus(msg, millis());
 		file.close();
 		return true;
