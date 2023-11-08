@@ -40,7 +40,7 @@ private:
 	/// <param name="fs">File system object.</param>
 	/// <param name="path">Target file path with name.</param>
 	/// <param name="message">String to write.</param>
-	void writeFile(fs::FS& fs, const char* path, const char* message);*/
+	void fileWrite(fs::FS& fs, const char* path, const char* message);*/
 	
 	/*/// <summary>
 	/// Appends data to an SD card file.
@@ -48,7 +48,7 @@ private:
 	/// <param name="fs">File system object.</param>
 	/// <param name="path">Target file path with name.</param>
 	/// <param name="message">String to write.</param>
-	void appendFile(fs::FS& fs, const char* path, const char* message);*/
+	void fileAppend(fs::FS& fs, const char* path, const char* message);*/
 
 public:
 	/// <summary>
@@ -79,7 +79,7 @@ public:
 	/// </summary>
 	/// <param name="path">The file path including name.</param>
 	/// <returns>True if file found or created.</returns>
-	bool create_or_existsFile(const String& path);
+	bool fileCreateOrExists(const String& path);
 
 	/// <summary>
 	/// Appends data to the SD card, and advances to new line.

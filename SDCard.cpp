@@ -94,18 +94,18 @@ void SDCard::cancelBypass()
 ///// <param name="fs">File system object.</param>
 ///// <param name="path">Target file path with name.</param>
 ///// <param name="msg">String to write.</param>
-//void SDCard::writeFile(fs::FS& fs, const char* path, const char* msg) {
+//void SDCard::fileWrite(fs::FS& fs, const char* path, const char* msg) {
 //	Serial.printf("Writing file: %s\n", path);
 //	File file = fs.open(path, FILE_WRITE);
 //	if (!file) {
-//		Serial.println("ERROR: writeFile failed to open file for writing");
+//		Serial.println("ERROR: fileWrite failed to open file for writing");
 //		return;
 //	}
 //	if (file.print(msg)) {
 //		Serial.println("File written");
 //	}
 //	else {
-//		Serial.println("ERROR: writeFile failed");
+//		Serial.println("ERROR: fileWrite failed");
 //	}
 //	file.close();
 //}
@@ -116,17 +116,17 @@ void SDCard::cancelBypass()
 ///// <param name="fs">File system object.</param>
 ///// <param name="path">Target file path with name.</param>
 ///// <param name="msg">String to write.</param>
-//void SDCard::appendFile(fs::FS& fs, const char* path, const char* msg) {
+//void SDCard::fileAppend(fs::FS& fs, const char* path, const char* msg) {
 //
 //	File file = fs.open(path, FILE_APPEND);
 //	if (!file) {
-//		String s = "ERROR: appendFile failed to open """;
+//		String s = "ERROR: fileAppend failed to open """;
 //		s += String(path) + """ for appending";
 //		Serial.println(s);
 //		return;
 //	}
 //	if (!file.print(msg)) {
-//		Serial.println("ERROR: appendFile failed for :");
+//		Serial.println("ERROR: fileAppend failed for :");
 //		Serial.print("--|"); Serial.print(msg); Serial.println("|--");
 //	}
 //	file.close();
@@ -142,7 +142,7 @@ void SDCard::logData(String msg) {
 #endif
 	if (!_isBypassSDCard) {
 		String status = msg + "\r\n";	// Append CR + LF.
-		appendFile(SD, LOGFILE_PATH_DATA.c_str(), status.c_str());
+		fileAppend(SD, LOGFILE_PATH_DATA.c_str(), status.c_str());
 	}
 }
 
@@ -157,7 +157,7 @@ void SDCard::logStatus_indent(const String& msg) {
 #endif
 	if (!_isBypassSDCard) {
 		String status = "\t" + msg + "\r\n";	// Append CR + LF.
-		appendFile(SD, LOGFILE_PATH_STATUS.c_str(), status.c_str());
+		fileAppend(SD, LOGFILE_PATH_STATUS.c_str(), status.c_str());
 	}
 }
 
@@ -169,7 +169,7 @@ void SDCard::logStatus() {
 	Serial.println();	// Echo to serial monitor
 #endif
 	if (!_isBypassSDCard) {
-		appendFile(SD, LOGFILE_PATH_STATUS.c_str(), "\r\n");
+		fileAppend(SD, LOGFILE_PATH_STATUS.c_str(), "\r\n");
 	}
 }
 
@@ -183,7 +183,7 @@ void SDCard::logStatus(const String& msg) {
 #endif
 	if (!_isBypassSDCard) {
 		String status = msg + "\r\n";	// Append CR + LF.
-		appendFile(SD, LOGFILE_PATH_STATUS.c_str(), status.c_str());
+		fileAppend(SD, LOGFILE_PATH_STATUS.c_str(), status.c_str());
 	}
 }
 
@@ -201,7 +201,7 @@ void SDCard::logStatus(const String& msg, const String& dateString) {
 #endif
 	if (!_isBypassSDCard) {
 		status += "\r\n";	// Append CR + LF.
-		appendFile(SD, LOGFILE_PATH_STATUS.c_str(), status.c_str());
+		fileAppend(SD, LOGFILE_PATH_STATUS.c_str(), status.c_str());
 	}
 }
 
@@ -219,7 +219,7 @@ void SDCard::logStatus(const String& msg, unsigned long millisec) {
 #endif
 	if (!_isBypassSDCard) {
 		status += "\r\n";	// Append CR + LF.
-		appendFile(SD, LOGFILE_PATH_STATUS.c_str(), status.c_str());
+		fileAppend(SD, LOGFILE_PATH_STATUS.c_str(), status.c_str());
 	}
 }
 
@@ -227,19 +227,19 @@ void SDCard::logStatus(const String& msg, unsigned long millisec) {
 // already exist. Returns true on success
 // or if the file already exists; otherwise
 // returns false.
-bool SDCard::create_or_existsFile(const String& path) {
+bool SDCard::fileCreateOrExists(const String& path) {
 	if (_isBypassSDCard) {
 		return false;
 	}
 	// File does not exist, so create empty file.
 	File file = SD.open(path, FILE_WRITE);
 	if (!file) {
-		String msg = "[SDCard.create_or_existsFile] " + path + " file could not be created.";
+		String msg = "[SDCard.fileCreateOrExists] " + path + " file could not be created.";
 		logStatus(msg, millis());
 		return false;
 	}
 	else {
-		String msg = "[SDCard.create_or_existsFile] " + path + " file created.";
+		String msg = "[SDCard.fileCreateOrExists] " + path + " file created.";
 		logStatus(msg, millis());
 		file.close();
 		return true;

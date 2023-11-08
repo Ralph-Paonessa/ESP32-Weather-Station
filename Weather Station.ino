@@ -1030,7 +1030,7 @@ void sensors_begin() {
 	logLittleFsSpaceUsage();
 
 	if (_isDEBUG_ListLittleFS) {
-		listDir(LittleFS, "/", 5);
+		dirList(LittleFS, "/", 5);
 	}
 
 	sd.logStatus("Device initialization complete.", millis());
@@ -1275,7 +1275,7 @@ void readSensors_Simulate() {
 /// </summary>
 void processReadings_10_min() {
 	windSpeed.process_data_10_min();
-	//appendFile(LittleFS, "/Sensor readings/" + windSpeed.label() + ".txt", "message");
+	//fileAppend(LittleFS, "/Sensor readings/" + windSpeed.label() + ".txt", "message");
 	windGust.process_data_10_min();
 	windDir.process_data_10_min();
 	d_Temp_F.process_data_10_min();
@@ -1468,8 +1468,8 @@ void setup() {
 	sd.logStatus();	// Empty line
 	sd.logStatus(LINE_SEPARATOR_MAJOR);
 	sd.logStatus("SETUP continues after SD card initialization.", gps.dateTime());
-	sd.create_or_existsFile(LOGFILE_PATH_DATA);
-	sd.create_or_existsFile(LOGFILE_PATH_STATUS);
+	sd.fileCreateOrExists(LOGFILE_PATH_DATA);
+	sd.fileCreateOrExists(LOGFILE_PATH_STATUS);
 
 	// Log the settings to the status file.
 	logDebugStatus();
@@ -1541,7 +1541,7 @@ void setup() {
 
 	if (_isDEBUG_ListLittleFS) {
 		Serial.println("LITTLEFS AFTER sensors_InitializeFiles():");
-		listDir(LittleFS, "/", 5);
+		dirList(LittleFS, "/", 5);
 	}
 
 

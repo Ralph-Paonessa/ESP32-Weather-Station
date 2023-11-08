@@ -124,6 +124,9 @@
       <Filter>Misc Files</Filter>
     </Text>
     <Text Include="README_DataInLittleFS.md" />
+    <Text Include="data\text.txt">
+      <Filter>Misc Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\img\chart-icon-black-150px.png">

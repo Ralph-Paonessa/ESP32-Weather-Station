@@ -39,14 +39,14 @@ void SensorData::initializeFiles(bool isConvertZeroToEmpty, unsigned int decimal
 		Serial.printf("Filed to create or find dir %s.\n", SENSOR_DATA_DIR_PATH);
 	}
 #endif
-	if (!create_or_existsFile(LittleFS, sensorFilepath("_10_min")))	{
+	if (!fileCreateOrExists(LittleFS, sensorFilepath("_10_min")))	{
 		Serial.printf("ERROR: Could not create or find %s", sensorFilepath("_10_min").c_str());
 	}
 	
-	if (!create_or_existsFile(LittleFS, sensorFilepath("_60_min")))	{
+	if (!fileCreateOrExists(LittleFS, sensorFilepath("_60_min")))	{
 		Serial.printf("ERROR: Could not create or find %s", sensorFilepath("_60_min").c_str());
 	}
-	if (!create_or_existsFile(LittleFS, sensorFilepath("_max_min")))	{
+	if (!fileCreateOrExists(LittleFS, sensorFilepath("_max_min")))	{
 		Serial.printf("ERROR: Could not create or find %s", sensorFilepath("_max_min"));
 	}
 }
@@ -238,7 +238,7 @@ void SensorData::process_data_10_min() {
 		SIZE_10_MIN_LIST);
 
 	// Store in LittleFS
-	writeFile(LittleFS, sensorFilepath("_10_min").c_str(), data_10_min_string_delim().c_str());
+	fileWrite(LittleFS, sensorFilepath("_10_min").c_str(), data_10_min_string_delim().c_str());
 
 	clear_10_min();	// Start another 10-min period.
 }
@@ -566,7 +566,7 @@ String SensorData::data_10_min_string_delim()
 void SensorData::get_data_10_min_fromFile() {
 	//sensorFilepath("_10_min");
 	Serial.println(_label);
-	Serial.println(readFile_intoString(LittleFS, "/js/chart.js"));
+	Serial.println(fileReadString(LittleFS, "/text.txt"));
 
 }
 
