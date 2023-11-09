@@ -265,7 +265,7 @@ void serverRouteHandler() {
 		   
 		*/
 
-		XXX	// INTENTIONAL ERROR!
+		//XXX	// INTENTIONAL ERROR!
 
 		server.on("/chart_2", HTTP_GET, [](AsyncWebServerRequest* request) {
 			_chart_request = CHART_TEMPERATURE_F;
@@ -293,9 +293,9 @@ void serverRouteHandler() {
 				case CHART_NONE:
 					request->send_P(200, "text/plain", "");
 					break;
-				/*case CHART_INSOLATION:
+				case CHART_INSOLATION:
 					request->send_P(200, "text/plain", d_Insol.dataFile_max_min_string_delim().c_str());
-					break;*/
+					break;
 				case CHART_IR_SKY:
 					request->send_P(200, "text/plain", d_IRSky_C.dataFile_max_min_string_delim().c_str());
 					break;

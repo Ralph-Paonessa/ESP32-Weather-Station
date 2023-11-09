@@ -10,13 +10,22 @@
 /// Creates SensorData instance that exposes 
 /// methods to read and process sensor data.
 /// </summary>
-/// <param name="isDataInFileSys">Set true to store data in LittleFS file system.</param>
+/// <param name="isDataInFileSys">
+/// Set true to store data in LittleFS file system.</param>
+/// <param name="isReportDailyMaxOnly">
+/// Set true to maxima but not minima LittleFS file system.</param>
 /// <param name="isUseSmoothing">Set true to smooth data.</param>
 /// <param name="numInMovingAvg">Number of points in moving avg.</param>
 /// <param name="outlierDelta">
 /// Range applied to moving avg for outlier rejection.</param>
-SensorData::SensorData(bool isDataInFileSys, bool isUseSmoothing, unsigned int numInMovingAvg, float outlierDelta) {
+SensorData::SensorData(
+	bool isDataInFileSys,
+	bool isReportDailyMaxOnly = false,
+	bool isUseSmoothing,
+	unsigned int numInMovingAvg,
+	float outlierDelta) {
 	_isDataInFileSys = isDataInFileSys;
+	_isReportDailyMaxOnly = isReportDailyMaxOnly;
 	_isUseSmoothing = isUseSmoothing;
 	_avgMoving_Num = numInMovingAvg;
 	_outlierDelta = outlierDelta;
@@ -600,7 +609,7 @@ String SensorData::dataFile_10_min_string_delim() {
 }
 
 String SensorData::dataFile_60_min_string_delim() {
-	if (_isDataInFileSys)	{
+	if (_isDataInFileSys) {
 		return fileReadString(LittleFS, sensorFilepath("_60_min").c_str());
 	}
 	else {
@@ -609,7 +618,7 @@ String SensorData::dataFile_60_min_string_delim() {
 }
 
 String SensorData::dataFile_max_min_string_delim() {
-	if (_isDataInFileSys)	{
+	if (_isDataInFileSys) {
 		return fileReadString(LittleFS, sensorFilepath("_max_min").c_str());
 	}
 	else {
@@ -631,16 +640,31 @@ String SensorData::data_60_min_string_delim()
 }
 
 /// <summary>
-/// Returns combined dlimited lists of list of daily 
+/// Returns combined delimited lists of list of daily 
 /// maxima and minima dataPoints,delimited by "|"string.
+/// For some sensors, only returns maxima without "|".
 /// </summary>
-/// <returns>Delimited string of two (time, value) lists, separated by "|".</returns>
+/// <returns>
+/// Delimited string of max and min (time, value) lists, 
+/// separated by "|". For some sensors, only returns 
+/// maxima without "|".</returns>
 String SensorData::data_max_min_string_delim()
 {
-	return 	listToString_dataPoints(_maxima_dayList,
-		_minima_dayList,
-		_isConvertZeroToEmpty,
-		_decimalPlaces);
+	if (!_isReportDailyMaxOnly)
+	{
+		return listToString_dataPoints(
+			_maxima_dayList,
+			_minima_dayList,
+			_isConvertZeroToEmpty,
+			_decimalPlaces);
+	}
+	else {
+		// Do not include minima in list.
+		return listToString_dataPoints(
+			_maxima_dayList,
+			_isConvertZeroToEmpty,
+			_decimalPlaces);
+	}
 }
 
 /// <summary>

@@ -1,6 +1,6 @@
-﻿<html>
+<html>
 <head>
-    <title>WMA Wx* Chart</title>
+    <title>WMA Wx* Chart Multi</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <link href="style.min.css" rel="stylesheet" media="all" type="text/css" />
@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" sizes="180x180" target="_blank" href="/favicon-180.png">
     %CSS_LIGHT_STYLE%
     <script type="text/javascript" src="highcharts.js"></script>
-    <script type="text/javascript" src="chart.js"></script>
+    <script type="text/javascript" src="chart_2.js"></script>
     <style>
         body {
             min-width: 310px;
@@ -29,8 +29,7 @@
             </div>
             <div class="nav"><a onclick="getChartData('/data_10', 10, %UTC_CURRENT_OFFSET_HOURS%)">Recent</a></div>
             <div class="nav"><a onclick="getChartData('/data_60', 60, %UTC_CURRENT_OFFSET_HOURS%)">Hourly</a></div>
-            <div class="nav"><a href="/chart_2">Daily</a></div>
-            <!--<div class="nav"><a onclick="getChartData('/data_min', 720, %UTC_CURRENT_OFFSET_HOURS%)">Daily Lows</a></div>-->
+            <div class="nav"><a onclick="getChartData('/data_max_min', 720, %UTC_CURRENT_OFFSET_HOURS%)">Daily</a></div>
         </div>
         <div class="chart-container">
             <div id="chart_1" class="container"></div>
@@ -39,18 +38,37 @@
 </body>
 </html>
 <script>
-    /*   Temperature   ***************/
     var chart_1 = new Highcharts.Chart({
         chart: {
             renderTo: 'chart_1',
             backgroundColor: null,
             styledMode: true
         },
-        title: { text: '%CHART_TITLE%' },
+        title: { text: 'Daily %CHART_TITLE%' },
         series:
             [
                 {
-                    showInLegend: false,
+                    showInLegend: true,
+                    name: 'Daily high',
+                    marker: {
+                        symbol: 'Circle',
+                        fillColor: '#DDDDDD',
+                        lineWidth: 2,
+                        lineColor: '#FF0000',
+                        radius: 8
+                    },
+                    data: []                    
+                },
+                {
+                    showInLegend: true,
+                    name: 'Daily low',
+                    marker: {
+                        symbol: 'Circle',
+                        fillColor: '#FFFFFF',
+                        lineWidth: 2,
+                        lineColor: '#FF0000',
+                        radius: 8
+                    },
                     data: []
                 }
             ],
@@ -71,5 +89,5 @@
         },
         credits: { enabled: false }
     });
-    getChartData('/data_10');  
+    getChartData('/data_min_max');
 </script>

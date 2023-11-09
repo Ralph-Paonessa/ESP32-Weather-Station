@@ -101,13 +101,13 @@
     <None Include="data\css\style.light.min.css" />
     <None Include="data\css\style.min.css" />
     <None Include="data\html\Admin.html" />
+    <None Include="data\html\chart_OLD.html" />
     <None Include="data\html\chart.html" />
-    <None Include="data\html\chart_2.html" />
     <None Include="data\html\gps.html" />
     <None Include="data\html\sensors.html" />
     <None Include="data\html\summary.html" />
+    <None Include="data\js\chart_OLD.js" />
     <None Include="data\js\chart.js" />
-    <None Include="data\js\chart_2.js" />
     <None Include="data\js\highcharts.js" />
     <None Include="README.md" />
     <None Include="README_charts.md" />

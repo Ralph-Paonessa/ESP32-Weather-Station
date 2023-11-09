@@ -77,6 +77,7 @@ protected:		// Protected items are accessible by inherited classes.
 	void clear_10_min();
 
 	bool _isDataInFileSys = true;		// Set true to save periodic data in LittleFS file system.
+	bool _isReportDailyMaxOnly = false;	// Set true to save maxima but not minima on LittleFS file system.
 	bool _isUseSmoothing;				// Set true to smooth data with moving avg and reject outliers.
 	float _outlierDelta;				// Factor to determine if reading is an outlier.
 	list<float> _avg_moving_List;		// Moving avg of latest reading values.
@@ -106,6 +107,8 @@ public:
 	/// </summary>
 	/// <param name="isDataInFileSys">
 	/// Set true to store data in LittleFS file system.</param>
+	/// <param name="isReportDailyMaxOnly">
+	/// Set true to maxima but not minima LittleFS file system.</param>
 	/// <param name="isUseMovingAvg">
 	/// Set true to smooth data.</param>
 	/// <param name="numSmoothPoints">
@@ -113,6 +116,7 @@ public:
 	/// <param name="outlierDelta">
 	/// Range applied to moving avg for outlier rejection.</param>
 	SensorData(bool isDataInFileSys = true, 
+		bool isReportDailyMaxOnly = false,
 		bool isUseMovingAvg = true, 
 		unsigned int numSmoothPoints = 5, 
 		float outlierDelta = 1.75);
