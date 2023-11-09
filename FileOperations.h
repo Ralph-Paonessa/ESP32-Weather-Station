@@ -16,6 +16,10 @@ used with both SD cards and LittleFS.
 
 #include "FS.h"
 #include <LittleFS.h>
+//#include <iostream>
+//#include <fstream>
+//#include <string>
+//using namespace std;
 
 /// <summary>
 /// Exposes methods that operate on files.
@@ -41,6 +45,17 @@ namespace FileOperations {
 	/// <param name="path">Target file path with name.</param>
 	/// <returns>String read from a file.</returns>
 	String fileReadString(fs::FS& fs, const char* path);
+
+	// DOESN'T WORK!!! NOT SURE ABOUT POINTERS, BUT IS ARRAY DESTROYED WHEN FUNCTION FINISHES?!
+	//char* fileReadChars(fs::FS& fs, const char* path);
+
+	// XXX RETURNS BLANK STRING!
+	/*/// <summary>
+	/// Returns a String read from a file.
+	/// </summary>
+	/// <param name="path">Target file path with name.</param>
+	/// <returns>String read from a file.</returns>
+	String fileReadStringStream(const char* path);*/
 
 	//void fileRead(fs::FS& fs, const char* path);
 
@@ -76,5 +91,4 @@ namespace FileOperations {
 	void fileAppend(fs::FS& fs, const char* path, const char* message);
 
 }
-
 #endif

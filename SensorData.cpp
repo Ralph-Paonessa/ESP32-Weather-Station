@@ -7,7 +7,7 @@
 // Constructor.
 
 /// <summary>
-/// Initializes SensorData instance that exposes 
+/// Creates SensorData instance that exposes 
 /// methods to read and process sensor data.
 /// </summary>
 /// <param name="isUseSmoothing">Set true to smooth data.</param>
@@ -20,23 +20,22 @@ SensorData::SensorData(bool isUseSmoothing, unsigned int numInMovingAvg, float o
 	_outlierDelta = outlierDelta;
 }
 
-
 /// <summary>
-/// Initializes files that hold sensor readings.
+/// Creates files that hold sensor data points at various intervals.
 /// </summary>
 /// <param name="isConvertZeroToEmpty">
 /// Set to true to convert zero to empty in output strings.</param>
 /// <param name="decimalPlaces">Decimal places in output strings.</param>
-void SensorData::initializeFiles(bool isConvertZeroToEmpty, unsigned int decimalPlaces)
+void SensorData::createFiles(bool isConvertZeroToEmpty, unsigned int decimalPlaces)
 {
 	_isConvertZeroToEmpty = isConvertZeroToEmpty;
 	_decimalPlaces = decimalPlaces;
 #if defined(VM_DEBUG)
 	if (LittleFS.mkdir(SENSOR_DATA_DIR_PATH)) {
-		Serial.printf("Created or found dir %s.\n", SENSOR_DATA_DIR_PATH);
+		Serial.printf("Created or found dir %s for %s.\n", SENSOR_DATA_DIR_PATH, _labelFile);
 }
 	else {
-		Serial.printf("Filed to create or find dir %s.\n", SENSOR_DATA_DIR_PATH);
+		Serial.printf("Filed to create or find dir %s for %s.\n", SENSOR_DATA_DIR_PATH, _labelFile);
 	}
 #endif
 	if (!fileCreateOrExists(LittleFS, sensorFilepath("_10_min")))	{
@@ -57,7 +56,7 @@ void SensorData::initializeFiles(bool isConvertZeroToEmpty, unsigned int decimal
 /// <param name="fileSuffix">A suffix to append to the file name.</param>
 /// <returns>Path to a sensor data .txt file.</returns>
 String SensorData::sensorFilepath(String fileSuffix) {
-	return SENSOR_DATA_DIR_PATH + "/" + _label + fileSuffix + ".txt";
+	return SENSOR_DATA_DIR_PATH + "/" + _labelFile + fileSuffix + ".txt";
 }
 
 /// <summary>
@@ -490,10 +489,10 @@ void SensorData::addDummyData_minima_daily(
 /// <param name="label">Label for the data.</param>
 /// <param name="labelShort">Brief label for the data.</param>
 /// <param name="units">The units of the data.</param>
-void SensorData::addLabels(String label, String labelShort, String units)
+void SensorData::addLabels(String label, String labelFile, String units)
 {
 	_label = label;
-	_labelShort = labelShort;
+	_labelFile = labelFile;
 	_units = units;
 }
 
@@ -505,30 +504,30 @@ void SensorData::addLabels(String label, String labelShort, String units)
 /// <param name="units">Data units.</param>
 /// <param name="units_html">Data units with html encoding.</param>
 void SensorData::addLabels(String label,
-	String labelShort,
+	String labelFile,
 	String units,
 	String units_html)
 {
-	addLabels(label, labelShort, units);
+	addLabels(label, labelFile, units);
 	_units_html = units_html;
 }
 
 /// <summary>
-/// Label for the  data.
+/// Returns display label for the data.
 /// </summary>
-/// <returns>String</returns>
+/// <returns>Display label for the data.</returns>
 String SensorData::label()
 {
 	return _label;
 }
 
 /// <summary>
-/// Abbreviated label for the data.
+/// Returns string for constructing data file name.
 /// </summary>
-/// <returns>String</returns>
-String SensorData::labelShort()
+/// <returns>String for constructing data file name.</returns>
+String SensorData::labelFile()
 {
-	return _labelShort;
+	return _labelFile;
 }
 
 /// <summary>
@@ -566,10 +565,17 @@ String SensorData::data_10_min_string_delim()
 void SensorData::get_data_10_min_fromFile() {
 	//sensorFilepath("_10_min");
 	Serial.println(_label);
-	Serial.println(fileReadString(LittleFS, "/text.txt"));
+	String data = fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+	Serial.println(data);
+	Serial.print("data string length = ");
+	Serial.println(data.length());
+	//Serial.println(fileReadString(LittleFS, "/test1line.txt"));	
 
 }
 
+String SensorData::dataFile_10_min_string_delim() {	
+	return fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+}
 
 
 
@@ -584,7 +590,6 @@ String SensorData::data_60_min_string_delim()
 		_decimalPlaces);
 }
 
-
 /// <summary>
 /// Returns combined dlimited lists of list of daily 
 /// maxima and minima dataPoints,delimited by "|"string.
@@ -597,11 +602,6 @@ String SensorData::data_max_min_string_delim()
 		_isConvertZeroToEmpty,
 		_decimalPlaces);
 }
-
-
-
-
-
 
 /// <summary>
 /// Returns list of daily maxima dataPoints as delimited string.

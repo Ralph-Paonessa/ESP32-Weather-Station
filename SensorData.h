@@ -11,16 +11,13 @@
 
 #include <list>
 using std::list;
-
 #include "dataPoint.h"
 #include "ListFunctions.h"
 #include "App_settings.h"
 using namespace ListFunctions;
 using namespace App_Settings;
-
 // File system
 #include <LittleFS.h>
-
 #include "FileOperations.h"
 using namespace FileOperations;
 
@@ -37,7 +34,7 @@ protected:		// Protected items are accessible by inherited classes.
 	/// <param name="fileSuffix">Suffix to append to file name.</param>
 	String sensorFilepath(String fileSuffix);
 
-	String _label, _labelShort;		// Identifying info.
+	String _label, _labelFile;		// Identifying info.
 	String _units, _units_html;		// Units used.
 
 	dataPoint _dataLastAdded;		// Data point (time, value) of most recent reading.
@@ -103,7 +100,7 @@ public:
 	// Constructor.
 
 	/// <summary>
-	/// Initializes SensorData instance that exposes 
+	/// Creates SensorData instance that exposes 
 	/// methods to read and process sensor data.
 	/// </summary>
 	/// <param name="isUseMovingAvg">
@@ -115,13 +112,13 @@ public:
 	SensorData(bool isUseMovingAvg = true, unsigned int numSmoothPoints = 5, float outlierDelta = 1.75);
 
 	/// <summary>
-	/// Initializes files that hold sensor readings.
+	/// Creates files that hold sensor data points at various intervals.
 	/// </summary>
 	/// <param name="isConvertZeroToEmpty">
 	/// Set to true to convert zero to empty in output strings.</param>
 	/// <param name="decimalPlaces">Decimal places in output strings.</param>
-	void initializeFiles(bool isConvertZeroToEmpty = true, unsigned int decimalPlaces = 0);
-		
+	void createFiles(bool isConvertZeroToEmpty = true, unsigned int decimalPlaces = 0);
+			
 	/// <summary>
 	/// Adds (time, value) dataPoint, accumulates average, 
 	/// and processes min, max.
@@ -237,12 +234,23 @@ public:
 	/// <returns>List of (time, value) dataPoints.</returns>
 	list<dataPoint> maxima_dayList();
 
-	void addLabels(String label, String labelShort, String units);
+	void addLabels(String label, String labelFile, String units);
 
-	void addLabels(String label, String labelShort, String units, String units_html);
+	void addLabels(String label, String labelFile, String units, String units_html);
 
+	/// <summary>
+	/// Returns display label for the data.
+	/// </summary>
+	/// <returns>Display label for the data.</returns>
 	String label();
-	String labelShort();
+
+	/// <summary>
+	/// Returns string for constructing data file name.
+	/// </summary>
+	/// <returns>String for constructing data file name.</returns>
+	String labelFile();
+
+
 	String units();
 	String units_html();
 
@@ -255,6 +263,12 @@ public:
 
 
 	void get_data_10_min_fromFile();
+
+	/// <summary>
+	/// Returns delimited String of 10-min data from file.
+	/// </summary>
+	/// <returns>Delimited String of 10-min data</returns>
+	String dataFile_10_min_string_delim();
 	
 
 

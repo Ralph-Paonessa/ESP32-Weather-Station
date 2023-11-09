@@ -10,14 +10,14 @@
 SDCard::SDCard() {}
 
 /// <summary>
-/// Initializes SD card module.
+/// Creates SD card module.
 /// </summary>
 /// <param name="SPI_CS_pin">GPIO pin number.</param>
 /// <param name="isBypass">
 /// Set true to bypass SD card operations and add 
 /// dummy data.</param>
 /// <returns>True if successful SD card initialization.</returns>
-bool SDCard::initialize(int SPI_CS_pin, bool isBypass) {
+bool SDCard::create(int SPI_CS_pin, bool isBypass) {
 
 	_SPI_CS_pin = SPI_CS_pin;
 
@@ -25,55 +25,55 @@ bool SDCard::initialize(int SPI_CS_pin, bool isBypass) {
 	if (isBypass) {
 		// Bypass initializing SD card		
 		Serial.print(millis() / 1000.);
-		Serial.println("s [SDCard.initialize] BYPASS SD card.");
+		Serial.println("s [SDCard.create] BYPASS SD card.");
 		return false;
 	}
-	// Initialize SD card
+	// Create SD card
 	Serial.print(millis() / 1000.);
-	Serial.println("s [SDCard.initialize] Initializing SD card.");
+	Serial.println("s [SDCard.create] Initializing SD card.");
 	if (SD.begin(_SPI_CS_pin)) {
 		// Success.
 		logStatus(); logStatus();	// empty lines
 		logStatus(LINE_SEPARATOR_LOG_BEGINS);
-		logStatus("[SDCard.initialize] Logging has started.", millis());
-		logStatus("[SDCard.initialize] MicroSD card mount successful.", millis());
+		logStatus("[SDCard.create] Logging has started.", millis());
+		logStatus("[SDCard.create] MicroSD card mount successful.", millis());
 		return true;
 	}
 	else {
 		// Failure.
-		logStatus("[SDCard.initialize] ERROR: MicroSD card mount failed.", millis());
+		logStatus("[SDCard.create] ERROR: MicroSD card mount failed.", millis());
 		return false;
 	}
 }
 
 ///// <summary>
-///// Initializes SD card module.
+///// Creates SD card module.
 ///// </summary>
 ///// <param name="gps">GPSModule object (for datetime)</param>
 ///// <param name="isBypass">Set true to bypass SD card operations.</param>
 ///// <returns>True if successful SD card initialization.</returns>
-//bool SDCard::initialize(bool isBypass) {
+//bool SDCard::create(bool isBypass) {
 //	_isBypassSDCard = isBypass;
 //	if (isBypass) {
 //		// Bypass initializing SD card		
 //		Serial.print(millis() / 1000.);
-//		Serial.println("s [SDCard.initialize] BYPASS SD card.");
+//		Serial.println("s [SDCard.create] BYPASS SD card.");
 //		return false;
 //	}
-//	// Initialize SD card
+//	// Create SD card
 //	Serial.print(millis() / 1000.);
-//	Serial.println("s [SDCard.initialize] Initializing SD card.");
+//	Serial.println("s [SDCard.create] Initializing SD card.");
 //	if (SD.begin(_SPI_CS_pin)) {
 //		// Success.
 //		logStatus(); logStatus();	// empty lines
 //		logStatus(LINE_SEPARATOR_LOG_BEGINS);
-//		logStatus("[SDCard.initialize] Logging has started.", millis());
-//		logStatus("[SDCard.initialize] MicroSD card mount successful.", millis());
+//		logStatus("[SDCard.create] Logging has started.", millis());
+//		logStatus("[SDCard.create] MicroSD card mount successful.", millis());
 //		return true;
 //	}
 //	else {
 //		// Failure.
-//		logStatus("[SDCard.initialize] ERROR: MicroSD card mount failed.", millis());
+//		logStatus("[SDCard.create] ERROR: MicroSD card mount failed.", millis());
 //		return false;
 //	}
 //}

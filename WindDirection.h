@@ -40,7 +40,7 @@ public:
 	// Constructor
 
 	/// <summary>
-	/// Initialize with an angle offset to subtract from readings.
+	/// Create with an angle offset to subtract from readings.
 	/// </summary>
 	/// <param name="offsetAngle">
 	/// Degrees by which reading exceeds true north.
@@ -48,7 +48,7 @@ public:
 	WindDirection(float offsetAngle = 0);
 
 	/// <summary>
-	/// Initialize the WindDirection object.
+	/// Create the WindDirection object.
 	/// </summary>
 	void begin();
 

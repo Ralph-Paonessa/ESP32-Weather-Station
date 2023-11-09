@@ -314,9 +314,15 @@ void serverRouteHandler() {
 				case CHART_IR_SKY:
 					request->send_P(200, "text/plain", d_IRSky_C.data_10_min_string_delim().c_str());
 					break;
+
+
+
 				case CHART_TEMPERATURE_F:
-					request->send_P(200, "text/plain", d_Temp_F.data_10_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Temp_F.dataFile_10_min_string_delim().c_str());     //     data_10_min_string_delim().c_str());
 					break;
+
+
+
 				case CHART_PRESSURE_SEA_LEVEL:
 					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_10_min_string_delim().c_str());
 					break;

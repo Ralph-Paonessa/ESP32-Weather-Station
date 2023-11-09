@@ -957,7 +957,7 @@ void PrintSensorOutputs() {
 /// </summary>
 void sensors_begin() {
 	//  ---------------  BME280 P, RH sensor   ---------------
-	// Initialize BME280 sensor.
+	// Create BME280 sensor.
 	if (!sensor_PRH.begin(0x77)) {
 		String msg = "WARNING: BME280 P/RH sensor not found.";
 		sd.logStatus(msg, millis());
@@ -1010,13 +1010,13 @@ void sensors_begin() {
 		sd.logStatus(msg, millis());
 	}
 	//  ---------------  Davis wind sensors   ---------------
-	windDir.begin();	// Initialize WindDirection.
+	windDir.begin();	// Create WindDirection.
 	String msg = "[ No connection test implemented for Davis anemometer. ]";
 	sd.logStatus(msg, millis());
 	_isGood_WindDir = true;      // How can this be tested?? XXX
 	_isGood_WindSpeed = true;
 
-	//  ---------------  Initialize LittleFS   ---------------
+	//  ---------------  Create LittleFS   ---------------
 	if (!LittleFS.begin()) {
 		String msg = "ERROR: LittleFS didn't mount.";
 		sd.logStatus(msg, millis());
@@ -1042,7 +1042,23 @@ void sensors_begin() {
 /// </summary>
 void sensors_AddLabels() 
 {
-	windSpeed.addLabels("Wind Speed", "Wind", "mph");
+
+	windSpeed.addLabels("Wind Speed", "wind", "mph");
+	windDir.addLabels("Wind direction", "windDir", "", "&deg;");
+	windGust.addLabels("Wind Gust", "gust", "mph");
+	d_Temp_F.addLabels("Temperature", "temp", "F", "&deg;F");
+	d_Pres_mb.addLabels("Pressure (abs)", "presAbs", "mb");
+	d_Pres_seaLvl_mb.addLabels("Pressure (SL)", "presSeaLvl", "mb");
+	d_Temp_for_RH_C.addLabels("Temp for RH", "tForRH", "C", "&degC;");
+	d_RH.addLabels("Rel. Humidity", "RH", "%", "&percnt;");
+	d_IRSky_C.addLabels("Sky Temperature", "skyTemp", "C", "&degC;");
+	d_UVA.addLabels("UV A Radiation", "uvA", "");
+	d_UVB.addLabels("UV B Radiation", "uvB", "");
+	d_UVIndex.addLabels("UV Index", "uvIndex", "");
+	d_Insol.addLabels("Insolation", "sun", "%", "&percnt;");
+	d_fanRPM.addLabels("Aspirator Fan speedInstant", "fanSpeed", "rpm");
+
+	/*windSpeed.addLabels("Wind Speed", "Wind", "mph");
 	windDir.addLabels("Wind direction", "Wind Dir", "", "&deg;");
 	windGust.addLabels("Wind Gust", "Gust", "mph");
 	d_Temp_F.addLabels("Temperature", "Temp", "F", "&deg;F");
@@ -1055,28 +1071,29 @@ void sensors_AddLabels()
 	d_UVB.addLabels("UV B Radiation", "UV-B", "");
 	d_UVIndex.addLabels("UV Index", "UV Index", "");
 	d_Insol.addLabels("Insolation", "Sun", "%", "&percnt;");
-	d_fanRPM.addLabels("Aspirator Fan speedInstant", "Fan speedInstant", "rpm");
+	d_fanRPM.addLabels("Aspirator Fan speedInstant", "Fan speedInstant", "rpm");*/
 }
 
 /// <summary>
-/// Initializes data files for SensorData instances.
+/// Creates data files for selected SensorData instances 
+/// that save chart data on the file system.
 /// </summary>
-void sensors_InitializeFiles() 
+void sensors_createFiles() 
 {
-	windSpeed.initializeFiles();
-	windDir.initializeFiles();
-	windGust.initializeFiles(); 
-	d_Temp_F.initializeFiles(); 
-	d_Pres_mb.initializeFiles();
-	d_Pres_seaLvl_mb.initializeFiles();
-	d_Temp_for_RH_C.initializeFiles(); 
-	d_RH.initializeFiles();          
-	d_IRSky_C.initializeFiles();     
-	d_UVA.initializeFiles();         
-	d_UVB.initializeFiles();         
-	d_UVIndex.initializeFiles();     
-	d_Insol.initializeFiles();       
-	d_fanRPM.initializeFiles();      
+	windSpeed.createFiles();
+	windDir.createFiles();
+	windGust.createFiles(); 
+	d_Temp_F.createFiles(); 
+	//d_Pres_mb.createFiles();
+	d_Pres_seaLvl_mb.createFiles();
+	//d_Temp_for_RH_C.createFiles(); 
+	d_RH.createFiles();          
+	d_IRSky_C.createFiles();     
+	//d_UVA.createFiles();         
+	//d_UVB.createFiles();         
+	d_UVIndex.createFiles();     
+	d_Insol.createFiles();       
+	//d_fanRPM.createFiles();      
 }
 
 
@@ -1371,52 +1388,52 @@ void addDummyData() {
 	Serial.printf("\naddDummyData now() = %li\n", now());
 
 	// 10-min
-	d_Temp_F.addDummyData_10_min(65, -0.75, 12, 1765412100);
-	d_Pres_mb.addDummyData_10_min(991, 1, 12, 1765412100);
-	d_Pres_seaLvl_mb.addDummyData_10_min(991, 1, 12, 1765412100);
-	d_RH.addDummyData_10_min(20, .5, 12, 1765412100);
-	d_IRSky_C.addDummyData_10_min(-25, 0.5, 12, 1765412100);
-	windSpeed.addDummyData_10_min(15, 0.5, 12, 1765412100);
-	windGust.addDummyData_10_min(25, 2, 12, 1765412100);
-	windDir.addDummyData_10_min(270, 5, 12, 1765412100);
-	d_Insol.addDummyData_10_min(2700, 25, 12, 1765412100);
-	d_UVIndex.addDummyData_10_min(0, 0.5, 12, 1765412100);
+	d_Temp_F.addDummyData_10_min(65, -0.75, 24, 1765412100);
+	d_Pres_mb.addDummyData_10_min(991, 1, 24, 1765412100);
+	d_Pres_seaLvl_mb.addDummyData_10_min(991, 1, 24, 1765412100);
+	d_RH.addDummyData_10_min(20, .5, 24, 1765412100);
+	d_IRSky_C.addDummyData_10_min(-25, 0.5, 24, 1765412100);
+	windSpeed.addDummyData_10_min(15, 0.5, 24, 1765412100);
+	windGust.addDummyData_10_min(25, 2, 24, 1765412100);
+	windDir.addDummyData_10_min(270, 5, 24, 1765412100);
+	d_Insol.addDummyData_10_min(2700, 25, 24, 1765412100);
+	d_UVIndex.addDummyData_10_min(0, 0.5, 24, 1765412100);
 
 	// 60-min
-	d_Temp_F.addDummyData_60_min(65, 0.1, 12, 1765412100);
-	d_Pres_mb.addDummyData_60_min(989, 1.5, 12, 1765412100);
-	d_Pres_seaLvl_mb.addDummyData_60_min(991, 2, 12, 1765412100);
-	d_RH.addDummyData_60_min(20, .5, 12, 1765412100);
-	d_IRSky_C.addDummyData_60_min(-25, 0.5, 12, 1765412100);
-	windSpeed.addDummyData_60_min(15, 0.5, 12, 1765412100);
-	windGust.addDummyData_60_min(25, 2, 12, 1765412100);
-	windDir.addDummyData_60_min(270, 5, 12, 1765412100);
-	d_Insol.addDummyData_60_min(2700, 25, 12, 1765412100);
-	d_UVIndex.addDummyData_60_min(0, 0.5, 12, 1765412100);
+	d_Temp_F.addDummyData_60_min(65, 0.1, 24, 1765412100);
+	d_Pres_mb.addDummyData_60_min(989, 1.5, 24, 1765412100);
+	d_Pres_seaLvl_mb.addDummyData_60_min(991, 2, 24, 1765412100);
+	d_RH.addDummyData_60_min(20, .5, 24, 1765412100);
+	d_IRSky_C.addDummyData_60_min(-25, 0.5, 24, 1765412100);
+	windSpeed.addDummyData_60_min(15, 0.5, 24, 1765412100);
+	windGust.addDummyData_60_min(25, 2, 24, 1765412100);
+	windDir.addDummyData_60_min(270, 5, 24, 1765412100);
+	d_Insol.addDummyData_60_min(2700, 25, 24, 1765412100);
+	d_UVIndex.addDummyData_60_min(0, 0.5, 24, 1765412100);
 
 	// daily maxima
 	d_Temp_F.addDummyData_maxima_daily(65, 1, 10, 1765412100);
-	d_Pres_mb.addDummyData_maxima_daily(989, 1.5, 12, 1765412100);
-	d_Pres_seaLvl_mb.addDummyData_maxima_daily(991, 2, 12, 1765412100);
-	d_RH.addDummyData_maxima_daily(20, .5, 12, 1765412100);
-	d_IRSky_C.addDummyData_maxima_daily(-25, 0.5, 12, 1765412100);
-	windSpeed.addDummyData_maxima_daily(15, 0.5, 12, 1765412100);
-	windGust.addDummyData_maxima_daily(25, 2, 12, 1765412100);
-	windDir.addDummyData_maxima_daily(270, 5, 12, 1765412100);
-	d_Insol.addDummyData_maxima_daily(2700, 25, 12, 1765412100);
-	d_UVIndex.addDummyData_maxima_daily(0, 0.5, 12, 1765412100);
+	d_Pres_mb.addDummyData_maxima_daily(989, 1.5, 24, 1765412100);
+	d_Pres_seaLvl_mb.addDummyData_maxima_daily(991, 2, 24, 1765412100);
+	d_RH.addDummyData_maxima_daily(20, .5, 24, 1765412100);
+	d_IRSky_C.addDummyData_maxima_daily(-25, 0.5, 24, 1765412100);
+	windSpeed.addDummyData_maxima_daily(15, 0.5, 24, 1765412100);
+	windGust.addDummyData_maxima_daily(25, 2, 24, 1765412100);
+	windDir.addDummyData_maxima_daily(270, 5, 24, 1765412100);
+	d_Insol.addDummyData_maxima_daily(2700, 25, 24, 1765412100);
+	d_UVIndex.addDummyData_maxima_daily(0, 0.5, 24, 1765412100);
 
 	// daily minima
 	d_Temp_F.addDummyData_minima_daily(45, -1, 10, 1765412400);
-	d_Pres_mb.addDummyData_minima_daily(989, 1.5, 12, 1765412100);
-	d_Pres_seaLvl_mb.addDummyData_minima_daily(991, 2, 12, 1765412100);
-	d_RH.addDummyData_minima_daily(20, .5, 12, 1765412100);
-	d_IRSky_C.addDummyData_minima_daily(-25, 0.5, 12, 1765412100);
-	windSpeed.addDummyData_minima_daily(15, 0.5, 12, 1765412100);
-	windGust.addDummyData_minima_daily(25, 2, 12, 1765412100);
-	windDir.addDummyData_minima_daily(270, 5, 12, 1765412100);
-	d_Insol.addDummyData_minima_daily(2700, 25, 12, 1765412100);
-	d_UVIndex.addDummyData_minima_daily(0, 0.5, 12, 1765412100);
+	d_Pres_mb.addDummyData_minima_daily(989, 1.5, 24, 1765412100);
+	d_Pres_seaLvl_mb.addDummyData_minima_daily(991, 2, 24, 1765412100);
+	d_RH.addDummyData_minima_daily(20, .5, 24, 1765412100);
+	d_IRSky_C.addDummyData_minima_daily(-25, 0.5, 24, 1765412100);
+	windSpeed.addDummyData_minima_daily(15, 0.5, 24, 1765412100);
+	windGust.addDummyData_minima_daily(25, 2, 24, 1765412100);
+	windDir.addDummyData_minima_daily(270, 5, 24, 1765412100);
+	d_Insol.addDummyData_minima_daily(2700, 25, 24, 1765412100);
+	d_UVIndex.addDummyData_minima_daily(0, 0.5, 24, 1765412100);
 
 	//#endif
 }
@@ -1461,9 +1478,9 @@ void setup() {
 	Serial.print(msg);
 
 	
-	//  ==========  INITIALIZE SD CARD   ========== //
+	//  ==========  CREATE SD CARD   ========== //
 	// (Do this first - need SD card for logging.)
-	_isGood_SDCard = sd.initialize(SPI_CS_PIN, _isDEBUG_BypassSDCard);
+	_isGood_SDCard = sd.create(SPI_CS_PIN, _isDEBUG_BypassSDCard);
 	// Begin status log entries to SD card.
 	sd.logStatus();	// Empty line
 	sd.logStatus(LINE_SEPARATOR_MAJOR);
@@ -1475,18 +1492,18 @@ void setup() {
 	logDebugStatus();
 	logApp_Settings();
 
-	//  ==========  INITIALIZE WIFI NETWORK   ========== //	
+	//  ==========  CREATE WIFI NETWORK   ========== //	
 	wifiSetupAndConnect();
 
 
-	//  ==========  INITIALIZE ASYNC WEB SERVER   ========== //	
+	//  ==========  CREATE ASYNC WEB SERVER   ========== //	
 	serverRouteHandler();	// Define routes for server requests.
 	sd.logStatus("Async web server routes defined.", millis());
 	server.begin();			// Start async web server.
 	sd.logStatus("Async web server beginning.", millis());
 
 
-	// ==========   INITIALIZE GPS AND SYNC TO GET TIME   ========== //
+	// ==========   CREATE GPS AND SYNC TO GET TIME   ========== //
 	// XXX  Need code to alter power of GPS!!!  XXX
 
 	/* 	Format for setting s serial port:
@@ -1525,14 +1542,16 @@ void setup() {
 	}
 	//#endif
 
-		// ==========  INITIALIZE SENSORS  ========== //
+		// ==========  CREATE SENSORS  ========== //
 	
 	sensors_AddLabels();	// Add labels to the SensorData instances.
 	sensors_begin();
-	sensors_InitializeFiles();
+	sensors_createFiles();
 
 	Serial.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 	Serial.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+
+	d_Temp_F.process_data_10_min();		// to force write to data file!
 
 	d_Temp_F.get_data_10_min_fromFile();
 
@@ -1540,7 +1559,7 @@ void setup() {
 	Serial.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 
 	if (_isDEBUG_ListLittleFS) {
-		Serial.println("LITTLEFS AFTER sensors_InitializeFiles():");
+		Serial.println("LITTLEFS AFTER sensors_createFiles():");
 		dirList(LittleFS, "/", 5);
 	}
 
@@ -1558,9 +1577,9 @@ void setup() {
 	ledcWrite(FAN_PWM_CHANNEL, FAN_DUTY_PERCENT / 100. * 256);
 
 
-	// Initialize interrupts after everything else has completed.
+	// Create interrupts after everything else has completed.
 
-	// ==========  INITIALIZE ANEMOMETER HARDWARE INTERRUPT  ========== //
+	// ==========  CREATE ANEMOMETER HARDWARE INTERRUPT  ========== //
 	// Anemometer hardware interrupt for detecting rotation.
 	pinMode(WIND_SPEED_PIN, INPUT_PULLUP);
 	attachInterrupt(digitalPinToInterrupt(WIND_SPEED_PIN),
@@ -1571,7 +1590,7 @@ void setup() {
 	attachInterrupt(digitalPinToInterrupt(FAN_SPEED_PIN), ISR_onFanHalfRotation, FALLING);
 
 
-	// ==========  INITIALIZE TIMER INTERRUPT  ========== //
+	// ==========  CREATE TIMER INTERRUPT  ========== //
 	/*
 	 Timer interrupt fires every BASE_PERIOD_SEC to
 	 trigger counts of anemometer and fan rotations.

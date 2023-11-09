@@ -3,6 +3,7 @@
 // 
 
 #include "FileOperations.h"
+//#include <istream>
 
 /// <summary>
 /// Lists contents of directory.
@@ -62,12 +63,38 @@ void FileOperations::dirRemove(fs::FS& fs, const char* path) {
 	}
 }
 
+
+// DOESN'T WORK!!! NOT SURE ABOUT POINTERS, BUT IS ARRAY DESTROYED WHEN FUNCTION FINISHES?!
+///// <summary>
+///// Reads a file into a character array. Reads the entire file (all lines). DOES THIS WORK???!!!  XXX
+///// </summary>
+///// <param name="fs">File system to use.</param>
+///// <param name="path">Target file path with name.</param>
+///// <returns>C-string read from a file.</returns>
+//char* FileOperations::fileReadChars(fs::FS& fs, const char* path) {
+//
+//	File file = fs.open(path, FILE_READ);
+//	if (!file) {
+//		Serial.println("ERROR: fileReadString failed to open file for reading");
+//		return "";
+//	}
+//	char stringC[1024] = {  };	// C-string array to hold values from stream.
+//	int i = 0;
+//	while (file.available()) {
+//		stringC[i] += file.read();	// Add each character to C-string.
+//		i++;
+//	}
+//	file.close();
+//	return stringC;
+//}
+
+
 /// <summary>
-	/// Returns a String read from a file.
-	/// </summary>
-	/// <param name="fs">File system to use.</param>
-	/// <param name="path">Target file path with name.</param>
-	/// <returns>String read from a file.</returns>
+/// Reads a file into a String. Reads the entire file (all lines).
+/// </summary>
+/// <param name="fs">File system to use.</param>
+/// <param name="path">Target file path with name.</param>
+/// <returns>String read from a file.</returns>
 String FileOperations::fileReadString(fs::FS& fs, const char* path) {
 
 	File file = fs.open(path, FILE_READ);
@@ -75,7 +102,7 @@ String FileOperations::fileReadString(fs::FS& fs, const char* path) {
 		Serial.println("ERROR: fileReadString failed to open file for reading");
 		return "";
 	}
-	char stringC[512] = {  };	// C-string array to hold values from stream.
+	char stringC[1024] = {  };	// C-string array to hold values from stream.
 	int i = 0;
 	while (file.available()) {
 		stringC[i] += file.read();	// Add each character to C-string.
@@ -84,6 +111,33 @@ String FileOperations::fileReadString(fs::FS& fs, const char* path) {
 	file.close();
 	return String(stringC);
 }
+
+// XXX RETURNS BLANK STRING!
+///// <summary>
+///// Returns a String read from a file.
+///// </summary>
+///// <param name="path">Target file path with name.</param>
+///// <returns>String read from a file.</returns>
+//String FileOperations::fileReadStringStream(const char* path) {
+//
+//	ifstream inFile;
+//	inFile.open(path);
+//
+//	std::string line_string;
+//	getline(inFile, line_string);
+//
+//	inFile.close();
+//
+//	char* chars = new char[line_string.length()];
+//	//char chars[line_string.length()];
+//	strcpy(chars, line_string.c_str());
+//
+//	1 == 1;
+//
+//	return String(chars);
+//}
+
+
 
 // USELESS EXCEPT FOR DEMO!!! XXX
 //void FileOperations::fileRead(fs::FS& fs, const char* path) {

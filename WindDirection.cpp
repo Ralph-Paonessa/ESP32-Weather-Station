@@ -5,7 +5,7 @@
 #include "WindDirection.h"
 
 /// <summary>
-/// Initialize with an angle offset to subtract from readings.
+/// Create with an angle offset to subtract from readings.
 /// </summary>
 /// <param name="offsetAngle">
 /// Degrees by which reading exceeds true north.
@@ -15,7 +15,7 @@ WindDirection::WindDirection(float offsetAngle) {
 }
 
 /// <summary>
-/// Initialize the WindDirection object.
+/// Create the WindDirection object.
 /// </summary>
 void WindDirection::begin() {
 	WindDirection::clear_10_min();

@@ -124,7 +124,10 @@
       <Filter>Misc Files</Filter>
     </Text>
     <Text Include="README_DataInLittleFS.md" />
-    <Text Include="data\text.txt">
+    <Text Include="data\test3lines.txt">
+      <Filter>Misc Files</Filter>
+    </Text>
+    <Text Include="data\test1line.txt">
       <Filter>Misc Files</Filter>
     </Text>
   </ItemGroup>

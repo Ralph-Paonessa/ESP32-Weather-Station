@@ -377,7 +377,7 @@ float Testing::addDummyRotations(list<float> srcList, WindSpeed& speedObj, float
 //
 //void Testing::Print_BME280_P_RH() {
 //	Serial.print(F("BME280 : \t\t"));
-//	if (sensor_PRH.initialize(0x77)) {
+//	if (sensor_PRH.create(0x77)) {
 //		Serial.print(sensor_PRH.readPressure() / 100, 0);
 //		Serial.print(F(" mb P\t")); // Pressure in mb
 //		Serial.print(sensor_PRH.readHumidity(), 0);
@@ -391,7 +391,7 @@ float Testing::addDummyRotations(list<float> srcList, WindSpeed& speedObj, float
 //
 //void Testing::Print_VEML6075_UV() {
 //	Serial.print(F("VEML6075 : \t"));
-//	if (uv.initialize()) {
+//	if (uv.create()) {
 //		Serial.print(String(uv.uva()));
 //		Serial.print(F(" UV - A\t"));
 //		Serial.print(String(uv.uvb()));

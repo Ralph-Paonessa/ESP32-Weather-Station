@@ -57,12 +57,12 @@ public:
 	SDCard();
 
 	/// <summary>
-	/// Initializes SD card module.
+	/// Creates SD card module.
 	/// </summary>
 	/// <param name="SPI_CS_pin">GPIO pin number.</param>
 	/// <param name="isBypass">Set true to bypass SD card operations.</param>
 	/// <returns>True if successful SD card initialization.</returns>
-	bool initialize(int SPI_CS_pin, bool isBypass);
+	bool create(int SPI_CS_pin, bool isBypass);
 
 	/// <summary>
 	/// Sets SDCard module to bypass logging to the card.
