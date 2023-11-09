@@ -247,10 +247,40 @@ void serverRouteHandler() {
 
 
 
+
+		
+
+		/*   TO DO
+
+		1. Need to expand to dataFile_max only for certain sensors
+
+		2. Need initializer to identify which sensors report max only.
+
+		3. Need to make sure one chart can parse BOTH max and min_max data strings.
+			this will eliminate need for chart_2.html and chart_2.js.
+
+		   XXX THIS MUST BE EXPANDED FOR *ALL* _chart_request = CHART________ !!!!!!!!!!!! XXX
+
+		   XXX AND NEED WAY TO CONTROL WHICH SENSORS REPORT *BOTH* HI AND LO!!!!!!!!!!!  XXX
+		   
+		*/
+
+		XXX	// INTENTIONAL ERROR!
+
 		server.on("/chart_2", HTTP_GET, [](AsyncWebServerRequest* request) {
 			_chart_request = CHART_TEMPERATURE_F;
 			request->send(LittleFS, "/html/chart_2.html", "text/html", false, processor);
 			});
+
+
+
+
+
+
+
+
+
+
 
 
 		/*****  DAILY MIN MAX CHARTS  *****/
@@ -264,31 +294,31 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", "");
 					break;
 				/*case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Insol.dataFile_max_min_string_delim().c_str());
 					break;*/
 				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_IRSky_C.dataFile_max_min_string_delim().c_str());
 					break;
 				case CHART_TEMPERATURE_F:
-					request->send_P(200, "text/plain", d_Temp_F.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Temp_F.dataFile_max_min_string_delim().c_str());
 					break;
 				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.dataFile_max_min_string_delim().c_str());
 					break;
 				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_RH.dataFile_max_min_string_delim().c_str());
 					break;
 				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_UVIndex.dataFile_max_min_string_delim().c_str());
 					break;
 				/*case CHART_WIND_DIRECTION:
-					request->send_P(200, "text/plain", windDir.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", windDir.dataFile_max_min_string_delim().c_str());
 					break;*/
 				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", windSpeed.dataFile_max_min_string_delim().c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windGust.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", windGust.dataFile_max_min_string_delim().c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");
@@ -309,37 +339,31 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", "");
 					break;
 				case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.data_10_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Insol.dataFile_10_min_string_delim().c_str());
 					break;
 				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.data_10_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_IRSky_C.dataFile_10_min_string_delim().c_str());
 					break;
-
-
-
 				case CHART_TEMPERATURE_F:
-					request->send_P(200, "text/plain", d_Temp_F.dataFile_10_min_string_delim().c_str());     //     data_10_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Temp_F.dataFile_10_min_string_delim().c_str());
 					break;
-
-
-
 				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_10_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.dataFile_10_min_string_delim().c_str());
 					break;
 				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.data_10_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_RH.dataFile_10_min_string_delim().c_str());
 					break;
 				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.data_10_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_UVIndex.dataFile_10_min_string_delim().c_str());
 					break;
 				case CHART_WIND_DIRECTION:
-					request->send_P(200, "text/plain", windDir.data_10_min_string_delim().c_str());
+					request->send_P(200, "text/plain", windDir.dataFile_10_min_string_delim().c_str());
 					break;
 				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.data_10_min_string_delim().c_str());
+					request->send_P(200, "text/plain", windSpeed.dataFile_10_min_string_delim().c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windGust.data_10_min_string_delim().c_str());
+					request->send_P(200, "text/plain", windGust.dataFile_10_min_string_delim().c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");
@@ -358,31 +382,31 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", "");
 					break;
 				case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.data_60_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Insol.dataFile_60_min_string_delim().c_str());
 					break;
 				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.data_60_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_IRSky_C.dataFile_60_min_string_delim().c_str());
 					break;
 				case CHART_TEMPERATURE_F:
-					request->send_P(200, "text/plain", d_Temp_F.data_60_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Temp_F.dataFile_60_min_string_delim().c_str());
 					break;
 				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_60_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.dataFile_60_min_string_delim().c_str());
 					break;
 				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.data_60_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_RH.dataFile_60_min_string_delim().c_str());
 					break;
 				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.data_60_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_UVIndex.dataFile_60_min_string_delim().c_str());
 					break;
 				case CHART_WIND_DIRECTION:
-					request->send_P(200, "text/plain", windDir.data_60_min_string_delim().c_str());
+					request->send_P(200, "text/plain", windDir.dataFile_60_min_string_delim().c_str());
 					break;
 				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.data_60_min_string_delim().c_str());
+					request->send_P(200, "text/plain", windSpeed.dataFile_60_min_string_delim().c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windGust.data_60_min_string_delim().c_str());
+					request->send_P(200, "text/plain", windGust.dataFile_60_min_string_delim().c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");

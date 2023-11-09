@@ -10,11 +10,13 @@
 /// Creates SensorData instance that exposes 
 /// methods to read and process sensor data.
 /// </summary>
+/// <param name="isDataInFileSys">Set true to store data in LittleFS file system.</param>
 /// <param name="isUseSmoothing">Set true to smooth data.</param>
 /// <param name="numInMovingAvg">Number of points in moving avg.</param>
 /// <param name="outlierDelta">
 /// Range applied to moving avg for outlier rejection.</param>
-SensorData::SensorData(bool isUseSmoothing, unsigned int numInMovingAvg, float outlierDelta) {
+SensorData::SensorData(bool isDataInFileSys, bool isUseSmoothing, unsigned int numInMovingAvg, float outlierDelta) {
+	_isDataInFileSys = isDataInFileSys;
 	_isUseSmoothing = isUseSmoothing;
 	_avgMoving_Num = numInMovingAvg;
 	_outlierDelta = outlierDelta;
@@ -33,19 +35,19 @@ void SensorData::createFiles(bool isConvertZeroToEmpty, unsigned int decimalPlac
 #if defined(VM_DEBUG)
 	if (LittleFS.mkdir(SENSOR_DATA_DIR_PATH)) {
 		Serial.printf("Created or found dir %s for %s.\n", SENSOR_DATA_DIR_PATH, _labelFile);
-}
+	}
 	else {
 		Serial.printf("Filed to create or find dir %s for %s.\n", SENSOR_DATA_DIR_PATH, _labelFile);
 	}
 #endif
-	if (!fileCreateOrExists(LittleFS, sensorFilepath("_10_min")))	{
+	if (!fileCreateOrExists(LittleFS, sensorFilepath("_10_min"))) {
 		Serial.printf("ERROR: Could not create or find %s", sensorFilepath("_10_min").c_str());
 	}
-	
-	if (!fileCreateOrExists(LittleFS, sensorFilepath("_60_min")))	{
+
+	if (!fileCreateOrExists(LittleFS, sensorFilepath("_60_min"))) {
 		Serial.printf("ERROR: Could not create or find %s", sensorFilepath("_60_min").c_str());
 	}
-	if (!fileCreateOrExists(LittleFS, sensorFilepath("_max_min")))	{
+	if (!fileCreateOrExists(LittleFS, sensorFilepath("_max_min"))) {
 		Serial.printf("ERROR: Could not create or find %s", sensorFilepath("_max_min"));
 	}
 }
@@ -237,8 +239,10 @@ void SensorData::process_data_10_min() {
 		SIZE_10_MIN_LIST);
 
 	// Store in LittleFS
-	fileWrite(LittleFS, sensorFilepath("_10_min").c_str(), data_10_min_string_delim().c_str());
-
+	if (_isDataInFileSys)
+	{
+		fileWrite(LittleFS, sensorFilepath("_10_min").c_str(), data_10_min_string_delim().c_str());
+	}
 	clear_10_min();	// Start another 10-min period.
 }
 
@@ -252,6 +256,12 @@ void SensorData::process_data_60_min() {
 	addToList(_data_60_min,
 		dataPoint(_dataLastAdded.time, _avg_60_min),
 		SIZE_60_MIN_LIST);
+
+	// Store in LittleFS
+	if (_isDataInFileSys)
+	{
+		fileWrite(LittleFS, sensorFilepath("_60_min").c_str(), data_60_min_string_delim().c_str());
+	}
 }
 
 /// <summary>
@@ -263,6 +273,13 @@ void SensorData::process_data_day() {
 	addToList(_minima_dayList, _min_today, SIZE_DAY_LIST);
 	addToList(_maxima_dayList, _max_today, SIZE_DAY_LIST);
 	clearMinMax_day();
+
+	// Store in LittleFS
+	if (_isDataInFileSys)
+	{
+		fileWrite(LittleFS, sensorFilepath("_max_min").c_str(), data_max_min_string_delim().c_str());
+	}
+
 }
 
 /// <summary>
@@ -562,7 +579,7 @@ String SensorData::data_10_min_string_delim()
 
 
 
-void SensorData::get_data_10_min_fromFile() {
+void SensorData::get_data_10_min_fromFile_DEBUG() {
 	//sensorFilepath("_10_min");
 	Serial.println(_label);
 	String data = fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
@@ -573,8 +590,31 @@ void SensorData::get_data_10_min_fromFile() {
 
 }
 
-String SensorData::dataFile_10_min_string_delim() {	
-	return fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+String SensorData::dataFile_10_min_string_delim() {
+	if (_isDataInFileSys) {
+		return fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+	}
+	else {
+		return "";
+	}
+}
+
+String SensorData::dataFile_60_min_string_delim() {
+	if (_isDataInFileSys)	{
+		return fileReadString(LittleFS, sensorFilepath("_60_min").c_str());
+	}
+	else {
+		return "";
+	}
+}
+
+String SensorData::dataFile_max_min_string_delim() {
+	if (_isDataInFileSys)	{
+		return fileReadString(LittleFS, sensorFilepath("_max_min").c_str());
+	}
+	else {
+		return "";
+	}
 }
 
 

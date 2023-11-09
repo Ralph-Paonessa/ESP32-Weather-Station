@@ -76,6 +76,7 @@ protected:		// Protected items are accessible by inherited classes.
 	/// </summary>
 	void clear_10_min();
 
+	bool _isDataInFileSys = true;		// Set true to save periodic data in LittleFS file system.
 	bool _isUseSmoothing;				// Set true to smooth data with moving avg and reject outliers.
 	float _outlierDelta;				// Factor to determine if reading is an outlier.
 	list<float> _avg_moving_List;		// Moving avg of latest reading values.
@@ -103,13 +104,18 @@ public:
 	/// Creates SensorData instance that exposes 
 	/// methods to read and process sensor data.
 	/// </summary>
+	/// <param name="isDataInFileSys">
+	/// Set true to store data in LittleFS file system.</param>
 	/// <param name="isUseMovingAvg">
 	/// Set true to smooth data.</param>
 	/// <param name="numSmoothPoints">
 	/// Number of points in moving avg.</param>
 	/// <param name="outlierDelta">
 	/// Range applied to moving avg for outlier rejection.</param>
-	SensorData(bool isUseMovingAvg = true, unsigned int numSmoothPoints = 5, float outlierDelta = 1.75);
+	SensorData(bool isDataInFileSys = true, 
+		bool isUseMovingAvg = true, 
+		unsigned int numSmoothPoints = 5, 
+		float outlierDelta = 1.75);
 
 	/// <summary>
 	/// Creates files that hold sensor data points at various intervals.
@@ -118,7 +124,7 @@ public:
 	/// Set to true to convert zero to empty in output strings.</param>
 	/// <param name="decimalPlaces">Decimal places in output strings.</param>
 	void createFiles(bool isConvertZeroToEmpty = true, unsigned int decimalPlaces = 0);
-			
+
 	/// <summary>
 	/// Adds (time, value) dataPoint, accumulates average, 
 	/// and processes min, max.
@@ -262,16 +268,19 @@ public:
 
 
 
-	void get_data_10_min_fromFile();
+	void get_data_10_min_fromFile_DEBUG();
 
 	/// <summary>
 	/// Returns delimited String of 10-min data from file.
 	/// </summary>
 	/// <returns>Delimited String of 10-min data</returns>
 	String dataFile_10_min_string_delim();
-	
 
 
+	String dataFile_60_min_string_delim();
+
+
+	String dataFile_max_min_string_delim();
 
 	/// <summary>
 	/// Returns list of 60-min dataPoints as delimited string.

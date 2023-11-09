@@ -84,14 +84,14 @@ Wind direction handled by WindDirection.
 SensorData d_Temp_F;			// Temperature readings.
 SensorData d_Pres_mb;			// Pressure readings.
 SensorData d_Pres_seaLvl_mb;	// Pressure readings.
-SensorData d_Temp_for_RH_C;		// Sensor temperature for pressure readings.
+SensorData d_Temp_for_RH_C(false);		// Sensor temperature for pressure readings.
 SensorData d_RH;				// Rel. humidity readings.
-SensorData d_UVA;				// UVA readings.
-SensorData d_UVB;				// UVB readings.
+SensorData d_UVA(false);				// UVA readings.
+SensorData d_UVB(false);				// UVB readings.
 SensorData d_UVIndex;			// UV Index readings.
 SensorData d_Insol;				// Insolaton readings.
 SensorData d_IRSky_C;			// IR sky temperature readings.
-SensorData d_fanRPM;			// Fan RPM readings.
+SensorData d_fanRPM(false);			// Fan RPM readings.
 
 WindSpeed windSpeed(
 	DAVIS_SPEED_CAL_FACTOR,
@@ -1553,7 +1553,7 @@ void setup() {
 
 	d_Temp_F.process_data_10_min();		// to force write to data file!
 
-	d_Temp_F.get_data_10_min_fromFile();
+	d_Temp_F.get_data_10_min_fromFile_DEBUG();
 
 	Serial.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 	Serial.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");

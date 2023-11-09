@@ -185,7 +185,8 @@ String ListFunctions::listToString_dataPoints(
 /// </param>
 /// <param name="decimalPlaces">
 /// Decimal places to display.</param>
-/// <returns>Two lists delimited by "|".</returns>
+/// <returns>Two String lists, respectively delimited by "|".
+/// </returns>
 String ListFunctions::listToString_dataPoints(
 	list<dataPoint>& targetList_hi,
 	list<dataPoint>& targetList_lo,
@@ -195,7 +196,10 @@ String ListFunctions::listToString_dataPoints(
 	String s = "";
 	if (!targetList_hi.size() == 0)
 	{
-		s += listToString_dataPoints(targetList_hi, isConvertZeroToEmpty, decimalPlaces);
+		s += listToString_dataPoints(
+			targetList_hi, 
+			isConvertZeroToEmpty, 
+			decimalPlaces);
 	}
 	else
 	{
@@ -204,7 +208,10 @@ String ListFunctions::listToString_dataPoints(
 	s += "|";	// delimiter between lists
 	if ((!targetList_lo.size() == 0))
 	{
-		s += listToString_dataPoints(targetList_lo, isConvertZeroToEmpty, decimalPlaces);
+		s += listToString_dataPoints(
+			targetList_lo, 
+			isConvertZeroToEmpty, 
+			decimalPlaces);
 	}
 	else
 	{

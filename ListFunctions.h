@@ -27,7 +27,7 @@ namespace ListFunctions {
 	/// <param name="dp">dataPoint to add.</param>
 	/// <param name="numElements">Maximum allowed elements in list.</param>
 	void addToList(list<dataPoint>& targetList, dataPoint val, int numElements);
-	
+
 	/// <summary>
 	/// Adds values to list and limits list size. (If adding 
 	/// creates too many elements, the first element is removed.)
@@ -93,15 +93,20 @@ namespace ListFunctions {
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
 
-	
+
 	/// <summary>
-	/// 
+	/// Converts two lists of dataPoints to strings of 
+	/// comma-separated "time,value" pairs delimited by "~".
+	/// Then combines both lists, delimited by "|".
 	/// </summary>
-	/// <param name="targetList_hi"></param>
-	/// <param name="targetList_lo"></param>
-	/// <param name="isConvertZeroToEmpty"></param>
-	/// <param name="decimalPlaces"></param>
-	/// <returns></returns>
+	/// <param name="targetList_hi">First list of dataPoints.</param>
+	/// <param name="targetList_lo">Second list of dataPoints.</param>
+	/// <param name="isConvertZeroToEmpty">
+	/// Set true to convert zero values to empty strings.
+	/// </param>
+	/// <param name="decimalPlaces">
+	/// Decimal places to display.</param>
+	/// <returns>Two String lists, respectively delimited by "|".</returns>
 	String listToString_dataPoints(
 		list<dataPoint>& targetList_hi,
 		list<dataPoint>& targetList_lo,
