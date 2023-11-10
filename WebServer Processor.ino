@@ -13,12 +13,17 @@ String processor(const String& var) {
 	if (var == "CSS_LIGHT_STYLE") {
 		// Switch display theme when ambient light is,
 		// detected by normalized insolation %.
-		if (d_Insol.valueLastAdded() > 0.01) {
-			return "<link href = ""style.light.min.css"" rel = ""stylesheet"" media = ""all"" type = ""text/css"" />";
-		}
-		else {
-			return "";
-		}
+		
+		
+		return"";
+
+
+		///////*if (d_Insol.valueLastAdded() > 0.01) {
+		//////	return "<link href = ""style.light.min.css"" rel = ""stylesheet"" media = ""all"" type = ""text/css"" />";
+		//////}
+		//////else {
+		//////	return "";
+		//////}*/
 	}
 
 	///  CURRENT SENSOR READINGS  ///////////////////

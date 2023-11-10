@@ -74,7 +74,7 @@ void serverRouteHandler() {
 		// js
 		server.serveStatic("/highcharts.js", LittleFS, "/js/highcharts.js").setCacheControl("max-age=864000");
 		server.serveStatic("/chart.js", LittleFS, "/js/chart.js").setCacheControl("max-age=864000");
-		server.serveStatic("/chart_2.js", LittleFS, "/js/chart_2.js").setCacheControl("max-age=864000");
+		//server.serveStatic("/chart_2.js", LittleFS, "/js/chart_2.js").setCacheControl("max-age=864000");
 		// img
 		server.serveStatic("/chart-icon.png", LittleFS, "/img/chart-icon-red-150px.png").setCacheControl("max-age=864000");
 		server.serveStatic("/home-icon.png", LittleFS, "/img/home-icon-red-150px.png").setCacheControl("max-age=864000");
@@ -230,12 +230,12 @@ void serverRouteHandler() {
 			[](AsyncWebServerRequest* request) {
 				request->send(LittleFS, "/js/chart.js", "text/javascript");
 			});
-		// highcharts custom javascript file 2.
-		server.on("/chart_2.js",
-			HTTP_GET,
-			[](AsyncWebServerRequest* request) {
-				request->send(LittleFS, "/js/chart_2.js", "text/javascript");
-			});
+		//// highcharts custom javascript file 2.
+		//server.on("/chart_2.js",
+		//	HTTP_GET,
+		//	[](AsyncWebServerRequest* request) {
+		//		request->send(LittleFS, "/js/chart_2.js", "text/javascript");
+		//	});
 
 		/*****  DATA SOURCES FOR GRAPHS  ************************************/
 		/*
@@ -267,10 +267,10 @@ void serverRouteHandler() {
 
 		//XXX	// INTENTIONAL ERROR!
 
-		server.on("/chart_2", HTTP_GET, [](AsyncWebServerRequest* request) {
+		/*server.on("/chart_2", HTTP_GET, [](AsyncWebServerRequest* request) {
 			_chart_request = CHART_TEMPERATURE_F;
 			request->send(LittleFS, "/html/chart_2.html", "text/html", false, processor);
-			});
+			});*/
 
 
 
@@ -285,7 +285,7 @@ void serverRouteHandler() {
 
 		/*****  DAILY MIN MAX CHARTS  *****/
 
-		server.on("/data_min_max", HTTP_GET,
+		server.on("/data_max_min", HTTP_GET,
 			[](AsyncWebServerRequest* request) {
 				// Which chart?
 				switch (_chart_request)

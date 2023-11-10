@@ -20,7 +20,7 @@
 /// Range applied to moving avg for outlier rejection.</param>
 SensorData::SensorData(
 	bool isDataInFileSys,
-	bool isReportDailyMaxOnly = false,
+	bool isReportDailyMaxOnly,
 	bool isUseSmoothing,
 	unsigned int numInMovingAvg,
 	float outlierDelta) {

@@ -1399,6 +1399,8 @@ void addDummyData() {
 	d_Insol.addDummyData_10_min(2700, 25, 24, 1765412100);
 	d_UVIndex.addDummyData_10_min(0, 0.5, 24, 1765412100);
 
+	processReadings_10_min();
+
 	// 60-min
 	d_Temp_F.addDummyData_60_min(65, 0.1, 24, 1765412100);
 	d_Pres_mb.addDummyData_60_min(989, 1.5, 24, 1765412100);
@@ -1410,6 +1412,8 @@ void addDummyData() {
 	windDir.addDummyData_60_min(270, 5, 24, 1765412100);
 	d_Insol.addDummyData_60_min(2700, 25, 24, 1765412100);
 	d_UVIndex.addDummyData_60_min(0, 0.5, 24, 1765412100);
+
+	processReadings_60_min();
 
 	// daily maxima
 	d_Temp_F.addDummyData_maxima_daily(65, 1, 10, 1765412100);
@@ -1434,6 +1438,8 @@ void addDummyData() {
 	windDir.addDummyData_minima_daily(270, 5, 24, 1765412100);
 	d_Insol.addDummyData_minima_daily(2700, 25, 24, 1765412100);
 	d_UVIndex.addDummyData_minima_daily(0, 0.5, 24, 1765412100);
+
+	processReadings_Day();
 
 	//#endif
 }
@@ -1527,20 +1533,7 @@ void setup() {
 		msg += String(GPS_CYCLES_COUNT_MAX) + " cycles.";
 		sd.logStatus(msg, millis());
 	}
-	// Hold to determine when new day begins.
-	_oldDay = day();
-	_oldMonth = month();
-	_oldYear = year();
-
-	//#if defined(VM_DEBUG)
-		////////  TESTING   ////////
-	if (_isDEBUG_addDummyDataLists) {
-		addDummyData();
-	}
-	if (_isDEBUG_run_test_in_setup) {
-		testCodeForSetup(200000);
-	}
-	//#endif
+	
 
 		// ==========  CREATE SENSORS  ========== //
 	
@@ -1564,6 +1557,21 @@ void setup() {
 	}
 
 
+
+	// Hold to determine when new day begins.
+	_oldDay = day();
+	_oldMonth = month();
+	_oldYear = year();
+
+	//#if defined(VM_DEBUG)
+		////////  TESTING   ////////
+	if (_isDEBUG_addDummyDataLists) {
+		addDummyData();
+	}
+	if (_isDEBUG_run_test_in_setup) {
+		testCodeForSetup(200000);
+	}
+	//#endif
 
 
 	sd.logData(columnNames());	// Write column names to data log.

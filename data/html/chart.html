@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" sizes="180x180" target="_blank" href="/favicon-180.png">
     %CSS_LIGHT_STYLE%
     <script type="text/javascript" src="highcharts.js"></script>
-    <script type="text/javascript" src="chart_2.js"></script>
+    <script type="text/javascript" src="chart.js"></script>
     <style>
         body {
             min-width: 310px;
@@ -27,9 +27,14 @@
             <div class="nav home">
                 <a href="/"><img src="home-icon.png" class="icon" /></a>
             </div>
-            <div class="nav"><a onclick="getChartData('/data_10', 10, %UTC_CURRENT_OFFSET_HOURS%)">Recent</a></div>
-            <div class="nav"><a onclick="getChartData('/data_60', 60, %UTC_CURRENT_OFFSET_HOURS%)">Hourly</a></div>
-            <div class="nav"><a onclick="getChartData('/data_max_min', 720, %UTC_CURRENT_OFFSET_HOURS%)">Daily</a></div>
+            <!--<div class="nav"><a onclick="getChartData('/data_10', 10, %UTC_CURRENT_OFFSET_HOURS%)">Recent</a></div>
+    <div class="nav"><a onclick="getChartData('/data_60', 60, %UTC_CURRENT_OFFSET_HOURS%)">Hourly</a></div>
+    <div class="nav"><a onclick="getChartData('/data_max_min', 720, %UTC_CURRENT_OFFSET_HOURS%)">Daily</a></div>-->
+
+            <div class="nav"><a onclick="getChartData('/data_10')">Recent</a></div>
+            <div class="nav"><a onclick="getChartData('/data_60')">Hourly</a></div>
+            <div class="nav"><a onclick="getChartData('/data_max_min')">Daily</a></div>
+
         </div>
         <div class="chart-container">
             <div id="chart_1" class="container"></div>
@@ -44,7 +49,7 @@
             backgroundColor: null,
             styledMode: true
         },
-        title: { text: 'Daily %CHART_TITLE%' },
+        title: { text: '%CHART_TITLE%' },
         series:
             [
                 {
@@ -52,10 +57,10 @@
                     name: 'Daily high',
                     marker: {
                         symbol: 'Circle',
-                        fillColor: '#DDDDDD',
+                        /*fillColor: '#DDDDDD',*/
                         lineWidth: 2,
-                        lineColor: '#FF0000',
-                        radius: 8
+                        /*lineColor: '#FF0000',*/
+                        /*radius: 8*/
                     },
                     data: []                    
                 },
@@ -64,9 +69,9 @@
                     name: 'Daily low',
                     marker: {
                         symbol: 'Circle',
-                        fillColor: '#FFFFFF',
+                        /*fillColor: '#FFFFFF',*/
                         lineWidth: 2,
-                        lineColor: '#FF0000',
+                        /*lineColor: '#FF0000',*/
                         radius: 8
                     },
                     data: []
@@ -89,5 +94,5 @@
         },
         credits: { enabled: false }
     });
-    getChartData('/data_min_max');
+    getChartData('/data_10'); 
 </script>
