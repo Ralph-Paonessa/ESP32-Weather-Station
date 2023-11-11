@@ -11,9 +11,6 @@ function getChartData(dataRoute) {
             // Reset all data in two series
             chart_1.series[0].setData([]);
             chart_1.series[1].setData([]);
-           
-            console.log(dataSeries);
-
             // Parse each list and add it to a series in the chart.
             for (var i_series = 0; i_series < dataSeries.length; i_series++) {
                 // Split into array of (time,value) strings.
