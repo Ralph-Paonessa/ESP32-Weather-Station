@@ -78,3 +78,31 @@ vm.ctags.cache.gcc-e=true
 #
 
 runtime.tools.mklittlefs.path=[mklittlefs.exe path only]
+
+## Added for partitions - from https://github.com/espressif/arduino-esp32/issues/1906
+
+esp32doit-devkit-v1.menu.PartitionScheme.default=Default
+esp32doit-devkit-v1.menu.PartitionScheme.default.build.partitions=default
+esp32doit-devkit-v1.menu.PartitionScheme.minimal=Minimal (2MB FLASH)
+esp32doit-devkit-v1.menu.PartitionScheme.minimal.build.partitions=minimal
+esp32doit-devkit-v1.menu.PartitionScheme.no_ota=No OTA (Large APP)
+esp32doit-devkit-v1.menu.PartitionScheme.no_ota.build.partitions=no_ota
+esp32doit-devkit-v1.menu.PartitionScheme.no_ota.upload.maximum_size=2097152
+esp32doit-devkit-v1.menu.PartitionScheme.min_spiffs=Minimal SPIFFS (Large APPS with OTA)
+esp32doit-devkit-v1.menu.PartitionScheme.min_spiffs.build.partitions=min_spiffs
+esp32doit-devkit-v1.menu.PartitionScheme.min_spiffs.upload.maximum_size=1966080
+esp32doit-devkit-v1.menu.PartitionScheme.fatflash=16M Fat
+esp32doit-devkit-v1.menu.PartitionScheme.fatflash.build.partitions=ffat
+
+[env:esp32doit-devkit-v1]
+platform = espressif32
+framework = arduino
+board = esp32doit-devkit-v1
+
+board_build.partitions = no_ota.csv
+
+# From https://www.visualmicro.com/forums/YaBB.pl?num=1623838272/10
+
+# Modify Maximum sizes to align with custom partition tables
+upload.maximum_size=1310720
+upload.maximum_data_size=327680
