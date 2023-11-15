@@ -159,3 +159,15 @@ h1, h2, h3 {
     stroke: mediumaquamarine;
     stroke-width: 8px;  /* Stroke data point. Optional color from stroke */
 }
+
+/* Tooltips for points */
+.highcharts-tooltip-box {
+    fill: red;
+    fill-opacity: 0.6;
+    stroke-width: 0;
+}
+
+.highcharts-tooltip text {
+    fill: white;
+    text-shadow: 0 0 3px black;
+}
