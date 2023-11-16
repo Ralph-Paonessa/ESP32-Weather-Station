@@ -35,6 +35,7 @@
     <None Include="data\js\chart.js" />
     <None Include="data\js\highcharts.js" />
     <None Include="partitions.csv" />
+    <None Include="data\css\highcharts.alt.css" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Weather Station.ino" />

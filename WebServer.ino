@@ -55,7 +55,7 @@ void serverRouteHandler() {
 			server.serveStatic([Route], [File system], [File path]).setCacheControl("max-age=[seconds]");
 
 		Example:
-			server.serveStatic("/highcharts.css", LittleFS, "/css/highcharts.css").setCacheControl("max-age=864000");
+			server.serveStatic("/highcharts.css", LittleFS, "/css/highcharts.alt.css").setCacheControl("max-age=864000");
 
 			10 days = 864,000 seconds
 			 2 days = 172,800 seconds
@@ -67,7 +67,7 @@ void serverRouteHandler() {
 #endif
 		// Set cache for static files.
 		// css
-		server.serveStatic("/highcharts.css", LittleFS, "/css/highcharts.css").setCacheControl("max-age=864000");
+		server.serveStatic("/highcharts.css", LittleFS, "/css/highcharts.alt.css").setCacheControl("max-age=864000");
 		server.serveStatic("/highcharts-custom.css", LittleFS, "/css/highcharts-custom.css").setCacheControl("max-age=864000");
 		server.serveStatic("/style.light.min.css", LittleFS, "/css/style.light.min.css").setCacheControl("max-age=864000");
 		server.serveStatic("/style.min.css", LittleFS, "/css/style.min.css").setCacheControl("max-age=864000");
@@ -210,7 +210,7 @@ void serverRouteHandler() {
 		server.on("/highcharts.css",
 			HTTP_GET,
 			[](AsyncWebServerRequest* request) {
-				request->send(LittleFS, "/css/highcharts.css", "text/css");
+				request->send(LittleFS, "/css/highcharts.alt.css", "text/css");
 			});
 		// Highcharts customized css style sheet.
 		server.on("/highcharts-custom.css",

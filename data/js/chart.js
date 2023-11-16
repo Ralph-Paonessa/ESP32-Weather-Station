@@ -1,10 +1,18 @@
 // Gets high and low data_point (time, value) pairs for a chart from 
 // the server at dataRoute and adds them to a chart.
-function getChartData(dataRoute) {
+function getChartData(dataRoute, elem) {
 
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
+
+            // Remove "active" class from all "nav" divs.
+            const nodeList = document.querySelectorAll("div.nav");
+            for (i = 0; i < nodeList.length; i++) {
+                nodeList[i].classList.remove("active");
+            }
+            // Add "active" class to calling div.
+            elem.classList.add("active");
 
             // Split into arrary of high and low delimited list strings.
             const dataSeries = this.responseText.split("|");

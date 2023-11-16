@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>WMA Wx* Chart Multi</title>
+    <title>WMA Wx* Chart</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <link href="style.min.css" rel="stylesheet" media="all" type="text/css" />
@@ -23,17 +23,21 @@
 
 <body>
     <div id="content" class="content">
-        <div class="navigation">
+        <div id="home" class="navigation">
             <div class="nav home">
                 <a href="/"><img src="home-icon.png" class="icon" /></a>
             </div>
             <!--<div class="nav"><a onclick="getChartData('/data_10', 10, %UTC_CURRENT_OFFSET_HOURS%)">Recent</a></div>
-    <div class="nav"><a onclick="getChartData('/data_60', 60, %UTC_CURRENT_OFFSET_HOURS%)">Hourly</a></div>
-    <div class="nav"><a onclick="getChartData('/data_max_min', 720, %UTC_CURRENT_OFFSET_HOURS%)">Daily</a></div>-->
+            <div class="nav"><a onclick="getChartData('/data_60', 60, %UTC_CURRENT_OFFSET_HOURS%)">Hourly</a></div>
+            <div class="nav"><a onclick="getChartData('/data_max_min', 720, %UTC_CURRENT_OFFSET_HOURS%)">Daily</a></div>-->
 
-            <div class="nav"><a onclick="getChartData('/data_10')">Recent</a></div>
-            <div class="nav"><a onclick="getChartData('/data_60')">Hourly</a></div>
-            <div class="nav"><a onclick="getChartData('/data_max_min')">Daily</a></div>
+            <div id="min_10" class="nav active" onclick="getChartData('/data_10', this)">Recent</div>
+            <div id="min_60" class="nav" onclick="getChartData('/data_60', this)">Hourly</div>
+            <div id="mx_mn" class="nav" onclick="getChartData('/data_max_min', this)">Daily</div>
+
+            <!--<div id="min_10" class="nav active"><a onclick="getChartData('/data_10', this)">Recent</a></div>
+            <div id="min_60" class="nav"><a onclick="getChartData('/data_60', this)">Hourly</a></div>
+            <div id="mx_mn" class="nav"><a onclick="getChartData('/data_max_min', this)">Daily</a></div>-->
 
         </div>
         <div class="chart-container">
@@ -54,19 +58,19 @@
             [
                 {
                     showInLegend: true,
-                    name: 'Daily high',
+                    name: 'High',
                     marker: {
                         symbol: 'Circle',
                         /*fillColor: '#DDDDDD',*/
-                        lineWidth: 2,
+                        lineWidth: 6,
                         /*lineColor: '#FF0000',*/
-                        /*radius: 8*/
+                        radius: 8
                     },
-                    data: []                    
+                    data: []
                 },
                 {
                     showInLegend: true,
-                    name: 'Daily low',
+                    name: 'Low',
                     marker: {
                         symbol: 'Circle',
                         /*fillColor: '#FFFFFF',*/
@@ -94,5 +98,5 @@
         },
         credits: { enabled: false }
     });
-    getChartData('/data_10'); 
+    getChartData('/data_10', document.getElementById("min_10"));
 </script>

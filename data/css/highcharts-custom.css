@@ -20,33 +20,22 @@ h1, h2, h3 {
 
 
 
-/* Data points */
-
-.highcharts-color-0 {
-    fill: azure;
-    stroke-width: 0;
-    stroke: #b30e0e
+.highcharts-point {
+    stroke-width: inherit;
 }
-
-.highcharts-color-1 {
-    fill: #ff0000;
-    stroke-width: 0;
-    stroke: #ff0000;
-}
-
 /* Line */
-
-.highcharts-series-0 {
-    stroke: blue; /* point is LIGHT blue */
-    color: blue; /* line is DARK blue */
-    stroke-width: 10; /* affects size on hover? */
-}
+/*.highcharts-series-0 {
+    stroke: blue;*/ /* point is LIGHT blue */
+    /*color: blue;*/ /* line is DARK blue */
+    /*stroke-width: 10;*/ /* affects size on hover? */
+/*}
 
 .highcharts-series-1 {
-    stroke: darkgreen; /* line color */
-    color: darkorange; /* point color not affected? */
-    stroke-width: 1;
-}
+    stroke: darkgreen;*/ /* line color */
+    /*color: darkorange;*/ /* point color not affected? */
+    /*stroke-width: 1;
+}*/
+
 
 .highcharts-graph-0 {
     width: 0;
@@ -67,14 +56,14 @@ h1, h2, h3 {
     font-size: 3em;
 }
 
-.highcharts-legend-title {
+/*.highcharts-legend-title {
     color: goldenrod;
     fill: goldenrod;
 }
 
 .highcharts-legend-box {
-    col
-}
+   
+}*/
 
 .highcharts-axis-labels {
     font-size: 1.5em;
@@ -104,60 +93,37 @@ h1, h2, h3 {
 }
 
 
-.highcharts-series-0 {
-    color: green; /* line is DARK blue */
+
+
+/* Data points */
+
+
+/*  Changes marker color for series-0  */
+/*.highcharts-color-0 {
+    fill: red;
+    stroke-width: 3;*/ /* Outline */
+/*stroke: blue;
 }
 
-/*
-.highcharts-legend-title { 
-  color: goldenrod;
-  fill: goldenrod;
-}
-*/
+.highcharts-color-1 {
+    color: purple;*/ /*  ??  */
+/*fill: green;*/ /*  marker color  */
+/*stroke-width: 0;*/ /*  Affects legend text  */
+/*stroke: #b30e0e;*/ /*  Affects legend text  */
+/*}*/
+
+
+
 
 .highcharts-legend-box {
-    color: green;
-    fill: white;
-}
-
-.highcharts-legend-item text {
-    color: green;
-    fill: green;
+/*    color: green;*/
+    fill: #acacac;
 }
 
 .highcharts-data-label text, text.highcharts-data-label {
     fill: #b30e0e;
     stroke: #b30e0e;
     font-size: 2.25em;
-}
-
-.highcharts-series-1 {
-    stroke: red; /* line color */
-    color: green; /* point color not affected? */
-    stroke-width: 0;
-}
-
-    .highcharts-series-1 marker symbol {
-    }
-
-/*  Changes marker color for series-0  */
-.highcharts-color-0 {
-    fill: red;
-    stroke-width: 3; /* Outline */
-    stroke: blue;
-}
-
-.highcharts-color-1 {
-    color: purple;          /*  ??  */
-    fill: cornflowerblue;   /*  marker color  */
-    stroke-width: 0;        /*  Affects legend text  */
-    stroke: #b30e0e;        /*  Affects legend text  */
-}
-
-/* Each data point */
-.highcharts-point {
-    stroke: mediumaquamarine;
-    stroke-width: 8px;  /* Stroke data point. Optional color from stroke */
 }
 
 /* Tooltips for points */
