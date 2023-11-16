@@ -13,8 +13,8 @@ String processor(const String& var) {
 	if (var == "CSS_LIGHT_STYLE") {
 		// Switch display theme when ambient light is,
 		// detected by normalized insolation %.
-		
-		
+
+
 		return"";
 
 
@@ -375,5 +375,17 @@ String processor(const String& var) {
 			return "";
 		}
 	}
+
+	/*/// LEGEND DISPLAY  //////////////
+
+	if (var == "IS_LEGEND") {
+		if (_isChart_max_min) {
+			return "true";
+		}
+		else {
+			return "false";
+		}
+	}*/
+
 	return var + String(" not found");
 }

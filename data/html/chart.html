@@ -48,34 +48,37 @@
 </html>
 <script>
     var chart_1 = new Highcharts.Chart({
+
         chart: {
             renderTo: 'chart_1',
             backgroundColor: null,
             styledMode: true
         },
+
         title: { text: '%CHART_TITLE%' },
+
+        //legend: {
+        //    enabled: %IS_LEGEND%
+        //},
+
         series:
             [
                 {
-                    showInLegend: true,
-                    name: 'High',
+                    //showInLegend: true,
+                    //name: 'High',
                     marker: {
                         symbol: 'Circle',
-                        /*fillColor: '#DDDDDD',*/
                         lineWidth: 6,
-                        /*lineColor: '#FF0000',*/
                         radius: 8
                     },
                     data: []
                 },
                 {
-                    showInLegend: true,
-                    name: 'Low',
+                    //showInLegend: true,
+                    //name: 'Low',
                     marker: {
                         symbol: 'Circle',
-                        /*fillColor: '#FFFFFF',*/
                         lineWidth: 2,
-                        /*lineColor: '#FF0000',*/
                         radius: 8
                     },
                     data: []

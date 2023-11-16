@@ -287,6 +287,9 @@ void serverRouteHandler() {
 
 		server.on("/data_max_min", HTTP_GET,
 			[](AsyncWebServerRequest* request) {
+
+				_isChart_max_min = true;
+
 				// Which chart?
 				switch (_chart_request)
 				{
@@ -332,6 +335,9 @@ void serverRouteHandler() {
 
 		server.on("/data_10", HTTP_GET,
 			[](AsyncWebServerRequest* request) {
+
+				_isChart_max_min = false;
+
 				// Which chart?
 				switch (_chart_request)
 				{
@@ -375,6 +381,9 @@ void serverRouteHandler() {
 
 		server.on("/data_60", HTTP_GET,
 			[](AsyncWebServerRequest* request) {
+
+				_isChart_max_min = false;
+
 				// Which chart?
 				switch (_chart_request)
 				{

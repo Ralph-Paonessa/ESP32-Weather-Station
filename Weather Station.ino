@@ -139,6 +139,11 @@ bool _isGood_LITTLEFS = false;
 bool _isGood_fan = false;
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+
+bool _isChart_max_min = false;	// True when chart from server is max/min.
+
+
 // ==========   SD card module   ==================== //
 const int SPI_CS_PIN = 5;	// CS pin for the SD card module
 SDCard sd;		// SDCard instance.
