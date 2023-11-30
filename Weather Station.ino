@@ -1045,7 +1045,7 @@ void sensors_begin() {
 /// <summary>
 /// Adds labels to SensorData instances.
 /// </summary>
-void sensors_AddLabels() 
+void sensors_AddLabels()
 {
 
 	windSpeed.addLabels("Wind Speed", "wind", "mph");
@@ -1083,21 +1083,21 @@ void sensors_AddLabels()
 /// Creates data files for selected SensorData instances 
 /// that save chart data on the file system.
 /// </summary>
-void sensors_createFiles() 
+void sensors_createFiles()
 {
 	windSpeed.createFiles();
 	windDir.createFiles();
-	windGust.createFiles(); 
-	d_Temp_F.createFiles(); 
+	windGust.createFiles();
+	d_Temp_F.createFiles();
 	//d_Pres_mb.createFiles();
 	d_Pres_seaLvl_mb.createFiles();
 	//d_Temp_for_RH_C.createFiles(); 
-	d_RH.createFiles();          
-	d_IRSky_C.createFiles();     
+	d_RH.createFiles();
+	d_IRSky_C.createFiles();
 	//d_UVA.createFiles();         
 	//d_UVB.createFiles();         
-	d_UVIndex.createFiles();     
-	d_Insol.createFiles();       
+	d_UVIndex.createFiles();
+	d_Insol.createFiles();
 	//d_fanRPM.createFiles();      
 }
 
@@ -1164,28 +1164,30 @@ float rotsFromSpeed(float speed) {
 }
 
 /// <summary>
-/// Adds simulate wind sensor readings.
+/// Adds simulated wind speed readings.
 /// </summary>
 void readWind_Simulate() {
 	//#if defined(VM_DEBUG)
-		//unsigned int rots = dummy_anemCount.linear(15, 0);				// simulate
-	//unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);		// simulate
-	//unsigned int rots = dummy_anemCount.sawtooth(rotsFromSpeed(10), rotsFromSpeed(0.2), rotsFromSpeed(15), rotsFromSpeed(12), 20, 1000);
-	float target_speed = 15;
-	float target_spikeSpeed = 15;
-	float target_incSpeed = 0.1;
-	unsigned int rots = dummy_anemCount.linear(rotsFromSpeed(target_speed), rotsFromSpeed(target_incSpeed), rotsFromSpeed(target_spikeSpeed), 50, 6);
-	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);	// Speed value
+	float sim_speed_start = 3;
+	float sim_speed_spike = 15;
+	float sim_speed_incr = 0.025;
+	unsigned int rots = dummy_anemCount.linear
+	(
+		rotsFromSpeed(sim_speed_start),
+		rotsFromSpeed(sim_speed_incr),
+		rotsFromSpeed(sim_speed_spike),
+		50,
+		6
+	);
+	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);
 	dataPoint dpSpeed(now(), speed);
 	windSpeed.addReading(dpSpeed);
 
-
+	// XXX  DOES THIS WORK FOR SIMULATION?!?!  XXX
 	// Record any gusts. Use MOVING AVG of wind speed.
-	//float avg = 99;
 	float avg_moving = windSpeed.avgMoving();
 	dataPoint dpGust = windSpeed.gust(dpSpeed, avg_moving);
 	windGust.addReading(dpGust);
-
 
 	// Read wind direction.
 	float windAngle = dummy_windDir.sawtooth(90, 1, 360);
@@ -1488,7 +1490,7 @@ void setup() {
 	msg += LINE_SEPARATOR_MAJOR + "\n\n";
 	Serial.print(msg);
 
-	
+
 	//  ==========  CREATE SD CARD   ========== //
 	// (Do this first - need SD card for logging.)
 	_isGood_SDCard = sd.create(SPI_CS_PIN, _isDEBUG_BypassSDCard);
@@ -1538,10 +1540,10 @@ void setup() {
 		msg += String(GPS_CYCLES_COUNT_MAX) + " cycles.";
 		sd.logStatus(msg, millis());
 	}
-	
 
-		// ==========  CREATE SENSORS  ========== //
-	
+
+	// ==========  CREATE SENSORS  ========== //
+
 	sensors_AddLabels();	// Add labels to the SensorData instances.
 	sensors_begin();
 	sensors_createFiles();
@@ -1666,7 +1668,7 @@ void loop() {
 		processReadings_10_min();
 		sd.logData(sensorsDataString_10_min());	// Save readings to SD card.
 
-		
+
 
 		sd.logStatus("Logged 10-min avgs.", gps.dateTime());
 		// Check for unhandled.
@@ -1728,7 +1730,7 @@ void loop() {
 		if (WiFi.status() != WL_CONNECTED) {
 			checkWifiConnection();
 		}
-	}
+}
 
 #if defined(VM_DEBUG)
 	// Add delay for DEBUG.
