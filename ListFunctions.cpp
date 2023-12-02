@@ -235,7 +235,7 @@ String ListFunctions::listToString_dataPoints(
 /// List of "time,value" dataPoints retrieved from a delimited string.
 /// </returns>
 list<dataPoint> ListFunctions::listFromString_dataPoints(String& delim) {
-	list<dataPoint> dPoints();		// List to hold data points.
+	list<dataPoint> dPoints;		// List to hold data points.
 	std::istringstream ss(delim.c_str());
 	while (!ss.eof()) {
 		std::string sub;			// empty string to hold substrings
@@ -243,9 +243,9 @@ list<dataPoint> ListFunctions::listFromString_dataPoints(String& delim) {
 		// Convert string to data point and add to list.
 		size_t i = sub.find_first_of(",");
 		dataPoint dp = dataPoint(std::stoul(sub.substr(0, i)), std::stof(sub.substr(i + 1)));
-		dPoints().push_back(dp);
+		dPoints.push_back(dp);
 	}
-	return dPoints();
+	return dPoints;
 }
 
 // XXX  HOW TO USE THIS INTERNALLY IN FUNCTION ABOVE?!  XXX

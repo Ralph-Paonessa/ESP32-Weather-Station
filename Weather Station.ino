@@ -1364,24 +1364,41 @@ void testCodeForSetup(unsigned long runTime_sec) {
 #include "ListFunctions.h"
 
 	/********************************/
-	while (millis() < timeStart + runTime_sec * 1000)
+	/*while (millis() < timeStart + runTime_sec * 1000)
+	{*/
+	/********************************/
+	/* INSERT TEST CODE HERE.       */
+
+	/*Serial.println("d_Temp_F.data_10_min_string_delim():");
+	Serial.println(d_Temp_F.data_10_min_string_delim()); Serial.println();
+
+	list<dataPoint> dpList = d_Temp_F.recovered_data_10_min();
+	String s = listToString_dataPoints(dpList);	
+	Serial.println("String from list from flash:");
+	Serial.println(s);*/
+
+	String s2 = "1,64~2,~3,63~4,~5,61";
+	Serial.println("String to convert to list:");
+	Serial.println(s2);
+	list<dataPoint> dpList2 = listFromString_dataPoints(s2);
+	Serial.println("String derived from list o data points:");
+	Serial.println(listToString_dataPoints(dpList2));
+
+	/*
+	list<float> testList;
+	float val = 10;
+	for (size_t i = 0; i < 5; i++)
 	{
-		/********************************/
-		/* INSERT TEST CODE HERE.       */
-
-		list<float> testList;
-		float val = 10;
-		for (size_t i = 0; i < 5; i++)
-		{
-			val += i;
-			addToList(testList, val, 5);
-		}
-		float avg = listAverage(testList, 5);
-		Serial.printf("list avg = %f", avg);
-
-
-		/********************************/
+		val += i;
+		addToList(testList, val, 5);
 	}
+	float avg = listAverage(testList, 5);
+	Serial.printf("list avg = %f", avg);
+	*/
+
+
+	/********************************/
+/*}*/
 	Serial.println("TEST COMPLETE");
 	Serial.println(LINE_SEPARATOR);
 	while (true) {}	// infinite loop to halt
@@ -1577,7 +1594,7 @@ void setup() {
 		addDummyData();
 	}
 	if (_isDEBUG_run_test_in_setup) {
-		testCodeForSetup(200000);
+		testCodeForSetup(1);
 	}
 	//#endif
 
@@ -1731,7 +1748,7 @@ void loop() {
 		if (WiFi.status() != WL_CONNECTED) {
 			checkWifiConnection();
 		}
-}
+	}
 
 #if defined(VM_DEBUG)
 	// Add delay for DEBUG.
