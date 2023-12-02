@@ -4,7 +4,10 @@
 
 #include "ListFunctions.h"
 
+#include <sstream>
+#include <string>
 using std::list;
+using std::string;
 
 /////   LIST MANIPULATIONS   /////
 
@@ -197,8 +200,8 @@ String ListFunctions::listToString_dataPoints(
 	if (!targetList_hi.size() == 0)
 	{
 		s += listToString_dataPoints(
-			targetList_hi, 
-			isConvertZeroToEmpty, 
+			targetList_hi,
+			isConvertZeroToEmpty,
 			decimalPlaces);
 	}
 	else
@@ -209,8 +212,8 @@ String ListFunctions::listToString_dataPoints(
 	if ((!targetList_lo.size() == 0))
 	{
 		s += listToString_dataPoints(
-			targetList_lo, 
-			isConvertZeroToEmpty, 
+			targetList_lo,
+			isConvertZeroToEmpty,
 			decimalPlaces);
 	}
 	else
@@ -219,3 +222,37 @@ String ListFunctions::listToString_dataPoints(
 	}
 	return s;
 }
+
+
+
+
+/// <summary>
+/// Returns a list of dataPoints retrieved from a delimited 
+/// string of comma-separated "time,value" pairs.
+/// </summary>
+/// <param name="delim">Delimited string of dataPoints.</param>
+/// <returns>
+/// List of "time,value" dataPoints retrieved from a delimited string.
+/// </returns>
+list<dataPoint> ListFunctions::listFromString_dataPoints(String& delim) {
+	list<dataPoint> dPoints();		// List to hold data points.
+	std::istringstream ss(delim.c_str());
+	while (!ss.eof()) {
+		std::string sub;			// empty string to hold substrings
+		std::getline(ss, sub, '~');	// Read next delimited field into sub.
+		// Convert string to data point and add to list.
+		size_t i = sub.find_first_of(",");
+		dataPoint dp = dataPoint(std::stoul(sub.substr(0, i)), std::stof(sub.substr(i + 1)));
+		dPoints().push_back(dp);
+	}
+	return dPoints();
+}
+
+// XXX  HOW TO USE THIS INTERNALLY IN FUNCTION ABOVE?!  XXX
+///// <summary>
+///// Returns a data point from a comma-delimited string.
+///// </summary>
+//dataPoint ListFunctions::dataPointFromString(string& s) {
+//	size_t i = s.find_first_of(",");
+//	return dataPoint(stoul(s.substr(0, i)), stof(s.substr(i + 1)));
+//}

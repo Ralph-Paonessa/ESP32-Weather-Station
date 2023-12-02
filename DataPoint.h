@@ -26,7 +26,7 @@ struct dataPoint {
 	/// <param name="value">Data value.</param>
 	dataPoint(unsigned long time = 0, float value = 0) :
 		time(time), value(value)
-	{	}
+	{}
 };
 
 #endif

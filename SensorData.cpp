@@ -588,6 +588,8 @@ String SensorData::data_10_min_string_delim()
 
 
 
+
+
 void SensorData::get_data_10_min_fromFile_DEBUG() {
 	//sensorFilepath("_10_min");
 	Serial.println(_label);
@@ -598,6 +600,8 @@ void SensorData::get_data_10_min_fromFile_DEBUG() {
 	//Serial.println(fileReadString(LittleFS, "/test1line.txt"));	
 
 }
+
+
 
 String SensorData::dataFile_10_min_string_delim() {
 	if (_isDataInFileSys) {
@@ -687,4 +691,21 @@ String SensorData::minima_byDay_string_delim()
 	return 	listToString_dataPoints(_minima_dayList,
 		_isConvertZeroToEmpty,
 		_decimalPlaces);
+}
+
+list<dataPoint> SensorData::recovered_data_10_min() {
+	String delim = dataFile_10_min_string_delim();
+	return listFromString_dataPoints(delim);
+}
+
+list<dataPoint> SensorData::recovered_data_60_min()
+{
+	String delim = dataFile_60_min_string_delim();
+	return listFromString_dataPoints(delim);
+}
+
+list<dataPoint> SensorData::recovered_data_day_min()
+{
+	String delim = dataFile_max_min_string_delim();	// XXX  THIS MUST BE SPLIT BY "|" !!!
+	return listFromString_dataPoints(delim);
 }

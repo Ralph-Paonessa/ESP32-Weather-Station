@@ -308,6 +308,27 @@ public:
 	/// </summary>
 	String minima_byDay_string_delim();
 
+	/******     DATA RECOVERY     ******/
+
+	/// <summary>
+	/// List of (time, value) dataPoints at 10-min intervals recovered from storage.
+	/// </summary>
+	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
+	list<dataPoint> recovered_data_10_min();
+
+	/// <summary>
+	/// List of (time, value) dataPoints at 60-min intervals, recovered from storage.
+	/// </summary>
+	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
+	list<dataPoint> recovered_data_60_min();
+
+	/// <summary>
+	/// List of (time, value) dataPoints at daily intervals, recovered from storage.
+	/// </summary>
+	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
+	list<dataPoint> recovered_data_day_min();
+
+
 
 	/******     DUMMY DATA     ******/
 

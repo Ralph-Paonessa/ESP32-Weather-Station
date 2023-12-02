@@ -42,13 +42,29 @@ the results as a String.
 This seems *inefficient* because fileReadString operates by reading the file 
 characters into a char[] array, and then converting it to String using
 String(array). But it must then be *converted back* to a char[] array for 
-request->send_P().
-
-*So far, I don't have a way to return an array of char from a function that
-supplies request->send_P(); or a better approach.* From my limited knowledge,
-the complication involves using pointers to a char array, but the char array in
-fileReadString() is destroyed when the function exits?
-
-In practice, this method 
+request->send_P(). But I don't see a preferable approach. In practice, this method 
 may not put much of a burdern on the processor.
 
+## When to retrieve data from flash
+As long as there is room in memory, I will continue to keep the readings history 
+in lists in memory rather than take the extra time to read them from flash when 
+needed for the web server.
+
+Instead, a routine is needed to retrieve them from flash and put the lists back 
+in memory if the system has to reboot. It is necessary to identify which data 
+is sufficiently fresh to reuse after a boot. This is straightforward because the
+data includes the reading times.
+
+## Which data to retrieve
+It is more important to retrieve the daily values, even after an outage of 1 
+day or more. Next in priority is the hourly data, although this will damage the 
+daily values if it is too old.
+
+The 10-min values can probably be ignored, as they are most likely to have a time
+gap and are the quickest to reestablish with new data.
+
+This can be handled by having different recovery time thresholds for each data 
+period:
+ - 10-min - <30 minutes
+ - 60-min - <3 hours
+ - daily max and min - <3 days

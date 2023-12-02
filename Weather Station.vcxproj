@@ -80,6 +80,7 @@
     <TargetOSAndVersion>Arduino</TargetOSAndVersion>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="DataRecovery.cpp" />
     <ClCompile Include="FileOperations.cpp" />
     <ClCompile Include="GPSModule.cpp" />
     <ClCompile Include="ListFunctions.cpp" />
@@ -131,6 +132,7 @@
   <ItemGroup>
     <ClInclude Include="App_Settings.h" />
     <ClInclude Include="DataPoint.h" />
+    <ClInclude Include="DataRecovery.h" />
     <ClInclude Include="DebugFlags.h" />
     <ClInclude Include="FileOperations.h" />
     <ClInclude Include="GPSModule.h" />

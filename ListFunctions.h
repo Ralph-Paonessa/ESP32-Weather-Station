@@ -112,6 +112,44 @@ namespace ListFunctions {
 		list<dataPoint>& targetList_lo,
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
+
+	
+	/// <summary>
+	/// Returns a list of dataPoints retrieved from a delimited 
+	/// string of comma-separated "time,value" pairs.
+	/// </summary>
+	/// <param name="delim">Delimited string of dataPoints.</param>
+	/// <returns>
+	/// List of "time,value" dataPoints retrieved from a delimited string.
+	/// </returns>
+	list<dataPoint> listFromString_dataPoints(String& delim);
+
+	
+	
+	// dataPoint dataPointFromString(string& s);
+
+
+	
+	/*/// <summary>
+	/// Converts two lists of dataPoints to strings of 
+	/// comma-separated "time,value" pairs delimited by "~".
+	/// Then combines both lists, delimited by "|".
+	/// </summary>
+	/// <param name="targetList_hi">First list of dataPoints.</param>
+	/// <param name="targetList_lo">Second list of dataPoints.</param>
+	/// <param name="isConvertZeroToEmpty">
+	/// Set true to convert zero values to empty strings.
+	/// </param>
+	/// <param name="decimalPlaces">
+	/// Decimal places to display.</param>
+	/// <returns>Two String lists, respectively delimited by "|".</returns>
+	String listFromString_dataPoints(
+		list<dataPoint>& targetList_hi,
+		list<dataPoint>& targetList_lo,
+		bool isConvertZeroToEmpty,
+		unsigned int decimalPlaces);*/
+
+
 };
 
 #endif
