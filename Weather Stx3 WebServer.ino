@@ -1,3 +1,10 @@
+//// ==========   Async Web Server   ================== //
+//AsyncWebServer server(80);	// Async web server instance on port 80.
+
+chartRequested _chart_request = CHART_NONE;	// Chart requested from server.
+
+bool _isChart_max_min = false;	// True when chart from server is max/min.
+
 /// <summary>
 /// Defines uri routes for async web server.
 /// </summary>

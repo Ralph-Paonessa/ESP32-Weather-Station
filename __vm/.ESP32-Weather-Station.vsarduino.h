@@ -16,7 +16,10 @@
 #include <arduino.h>
 #include <pins_arduino.h> 
 #include "..\Weather Station.ino"
-#include "..\WebServer Processor.ino"
-#include "..\WebServer.ino"
+#include "..\Weather Stx1 Sensor routines.ino"
+#include "..\Weather Stx2 WiFi routines.ino"
+#include "..\Weather Stx3 WebServer.ino"
+#include "..\Weather Stx4 WebServer Processor.ino"
+#include "..\Weather Stx6 Outputs.ino"
 #endif
 #endif

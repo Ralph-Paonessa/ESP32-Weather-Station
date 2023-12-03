@@ -97,6 +97,18 @@
     <ClCompile Include="WindSpeed2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Weather Stx1 Sensor routines.ino">
+      <FileType>CppCode</FileType>
+      <DeploymentContent>true</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Weather Stx6 Outputs.ino">
+      <FileType>CppCode</FileType>
+      <DeploymentContent>true</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Weather Stx2 WiFi routines.ino">
+      <FileType>CppCode</FileType>
+      <DeploymentContent>true</DeploymentContent>
+    </ClCompile>
     <None Include="data\css\highcharts-custom.css" />
     <None Include="data\css\highcharts.alt.css" />
     <None Include="data\css\highcharts.css" />
@@ -117,11 +129,11 @@
     <None Include="Sensor readings.cd" />
     <None Include="src\arduino folders read me.txt">
     </None>
-    <ClCompile Include="WebServer Processor.ino">
+    <ClCompile Include="Weather Stx4 WebServer Processor.ino">
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="WebServer.ino">
+    <ClCompile Include="Weather Stx3 WebServer.ino">
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
@@ -152,6 +164,7 @@
     <Text Include="data\test3lines.txt" />
     <Text Include="LICENSE.txt" />
     <Text Include="README_DataInLittleFS.md" />
+    <Text Include="README_DavisAnemometer.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\img\chart-icon-black-150px.png" />

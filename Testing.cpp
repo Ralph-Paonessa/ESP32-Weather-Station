@@ -3,6 +3,70 @@
 // 
 
 #include "Testing.h"
+#include "ListFunctions.h"
+
+
+
+/// <summary>
+/// Test code to insert in setup for debugging.
+/// </summary>
+/// <param name="runTime_sec">Number of seconds to run.</param>
+void Testing::testCodeForSetup(unsigned long runTime_sec) {
+	//#if defined(VM_DEBUG)
+	Serial.println(LINE_SEPARATOR);
+	Serial.print("TEST in setup to run for "); Serial.print(runTime_sec); Serial.println(" sec/n");
+	unsigned long timeStart = millis();
+	/********************************/
+	/* INSERT DEFINITIONS HERE.     */
+
+
+	/********************************/
+	/*while (millis() < timeStart + runTime_sec * 1000)
+	{*/
+	/********************************/
+	/* INSERT TEST CODE HERE.       */
+
+	/*Serial.println("d_Temp_F.data_10_min_string_delim():");
+	Serial.println(d_Temp_F.data_10_min_string_delim()); Serial.println();
+
+	list<dataPoint> dpList = d_Temp_F.recovered_data_10_min();
+	String s = listToString_dataPoints(dpList);
+	Serial.println("String from list from flash:");
+	Serial.println(s);*/
+
+	String s2 = "1,64~2,~3,63~4,~5,61";
+	Serial.println("String to convert to list:");
+	Serial.println(s2);
+	list<dataPoint> dpList2 = listFromString_dataPoints(s2);
+	Serial.println("String derived from list o data points:");
+	Serial.println(listToString_dataPoints(dpList2));
+
+	/*
+	list<float> testList;
+	float val = 10;
+	for (size_t i = 0; i < 5; i++)
+	{
+		val += i;
+		addToList(testList, val, 5);
+	}
+	float avg = listAverage(testList, 5);
+	Serial.printf("list avg = %f", avg);
+	*/
+
+
+	/********************************/
+/*}*/
+	Serial.println("TEST COMPLETE");
+	Serial.println(LINE_SEPARATOR);
+	while (true) {}	// infinite loop to halt
+	//#endif
+}
+
+
+
+
+
+
 
 float Testing::testDummyReading(float seed, float increment1, float increment2, int periods, unsigned long count)
 {

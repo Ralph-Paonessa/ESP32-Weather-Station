@@ -34,6 +34,8 @@ public:
 	// Tests WindSpeed2.h wind directionCardinal handling.
 	void windDirection(float angleStart, float angleIncrement, int cycles, float VANE_OFFSET);
 
+	void testCodeForSetup(unsigned long runTime_sec);
+
 	float testDummyReading(float seed, float increment1, float increment2, int periods, unsigned long count);
 
 	int dummyRotations(float first, float last, float spike, int spikePeriod, int periods);
