@@ -297,7 +297,7 @@ public:
 
 	void recover_data_day_max_min_fromFile();
 
-	/*/// <summary>
+	/// <summary>
 	/// Returns delimited String of 10-min data from file.
 	/// </summary>
 	/// <returns>Delimited String of 10-min data</returns>
@@ -307,7 +307,7 @@ public:
 	String dataFile_60_min_string_delim();
 
 
-	String dataFile_max_min_string_delim();*/
+	String dataFile_max_min_string_delim();
 
 	/// <summary>
 	/// Returns list of 60-min dataPoints as delimited string.

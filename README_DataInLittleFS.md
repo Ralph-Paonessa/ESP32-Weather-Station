@@ -65,6 +65,6 @@ gap and are the quickest to reestablish with new data.
 
 This can be handled by having different recovery time thresholds for each data 
 period:
- - 10-min - <30 minutes
- - 60-min - <3 hours
- - daily max and min - <3 days
+ - 10-min - < 30 minutes
+ - 60-min - < 3 hours
+ - daily max and min - < 3 days
