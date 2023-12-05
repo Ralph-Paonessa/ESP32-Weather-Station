@@ -655,43 +655,109 @@ float SensorData::avg_10_min() {
 	return _avg_10_min;
 }
 
-/// <summary>
-/// The last average saved to the 60-min list.
-/// </summary>
-/// <returns></returns>
-float SensorData::avg_60_min() {
-	return _avg_60_min;
-}
+
+
 
 /// <summary>
-/// Returns a (time, value) data point containing the 
-/// minimum sensor reading today. Updates at 
-/// every reading and resets when day rolls over.
+/// Retrieves data points from file system and uses 
+/// them to initialize 10-min list. Used to retrieve 
+/// any data lost at reboot.
 /// </summary>
-/// <returns>Data point with (time, value) of today's 
-/// minimum reading.</returns>
-dataPoint SensorData::min_today() {
-	return _min_today;
+void SensorData::recover_data_10_min_fromFile() {
+	// Get 10-min data from file system and place in memory.
+	if (_isDataInFileSys) {
+		// Read file from flash LittleFS.
+		String delim = fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+		_data_10_min = listFromString_dataPoints(delim);
+	}
+}
+	if (_isDataInFileSys) {
+/// <summary>
+/// Retrieves data points from file system and uses 
+/// them to initialize 60-min list. Used to retrieve 
+/// any data lost at reboot.
+/// </summary>
+void SensorData::recover_data_60_min_fromFile() {
+	// Get 10-min data from file system and place in memory.
+	if (_isDataInFileSys) {
+		// Read file from flash LittleFS.
+		String delim = fileReadString(LittleFS, sensorFilepath("_60_min").c_str());
+		_data_60_min = listFromString_dataPoints(delim);
+	}
+}
+	}
+/// <summary>
+/// Retrieves data points from file system and uses 
+/// them to initialize 10-min list. Used to retrieve 
+/// any data lost at reboot.
+/// </summary>
+void SensorData::recover_data_day_max_min_fromFile() {
+	// Get 10-min data from file system and place in memory.
+	if (_isDataInFileSys) {
+		// Read file from flash LittleFS.
+		String delim = fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+		_data_10_min = listFromString_dataPoints(delim);
+	}
+		return fileReadString(LittleFS, sensorFilepath("_60_min").c_str());
+	}
+
+///// <summary>
+///// 
+///// </summary>
+///// <returns></returns>
+//list<dataPoint> SensorData::recovered_data_10_min() {
+//	String delim = dataFile_10_min_string_delim();
+//	return listFromString_dataPoints(delim);
+//}
+//
+///// <summary>
+///// Reads 10-min data from file system as a String.
+///// </summary>
+///// <returns>Delimited string of data points that 
+///// were saved in file system.</returns>
+//String SensorData::dataFile_10_min_string_delim() {
+//	if (_isDataInFileSys) {
+//		// Read file from flash LittleFS.
+//		return fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+//	}
+//	else {
+//		return "";
+//	}
+//}
+
+//String SensorData::dataFile_60_min_string_delim() {
+//	if (_isDataInFileSys) {
+//		return fileReadString(LittleFS, sensorFilepath("_60_min").c_str());
+//	}
+//	else {
+//		return "";
+//	}
+//}
+//
+//String SensorData::dataFile_max_min_string_delim() {
+//	if (_isDataInFileSys) {
+//		return fileReadString(LittleFS, sensorFilepath("_max_min").c_str());
+//	}
+//	else {
+//		return "";
+//	}
+//}
+
+
+
+	}
 }
 
-/// <summary>
-/// Returns a (time, value) data point containing the 
-/// maximum sensor reading today. Updates at 
-/// every reading and resets when day rolls over.
-/// </summary>
-/// <returns>Data point with (time, value) of today's 
-/// maximum reading.</returns>
-dataPoint SensorData::max_today() {
-	return _max_today;
+String SensorData::dataFile_max_min_string_delim() {
+	if (_isDataInFileSys) {
+		return fileReadString(LittleFS, sensorFilepath("_max_min").c_str());
+	}
+	else {
+		return "";
+	}
 }
 
-/// <summary>
-/// List of (time, value) dataPoints at 10-min intervals.
-/// </summary>
-/// <returns>List of (time, value) dataPoints.</returns>
-list<dataPoint> SensorData::data_10_min() {
-	return _data_10_min;
-}
+
 
 /// <summary>
 /// List of dataPoints at 60-min intervals.
@@ -719,10 +785,6 @@ list<dataPoint> SensorData::data_day_maxima() {
 
 /// <summary>
 /// Returns display label for the data.
-/// </summary>
-/// <returns>Display label for the data.</returns>
-String SensorData::label() {
-	return _label;
 }
 
 /// <summary>
@@ -733,12 +795,9 @@ String SensorData::filenamePrefix() {
 	return _filenamePrefix;
 }
 
-/// <summary>
-/// Data units.
-/// </summary>
-/// <returns>String</returns>
-String SensorData::units() {
-	return _units;
+list<dataPoint> SensorData::recovered_data_10_min() {
+	String delim = dataFile_10_min_string_delim();
+	return listFromString_dataPoints(delim);
 }
 
 /// <summary>

@@ -126,12 +126,9 @@ public:
 	/// intervals.
 	/// </summary>
 	/// <param name="isConvertZeroToEmpty">
-	/// Set to true to convert zero to empty in output strings.
-	/// </param>
-	/// <param name="decimalPlaces">Decimal places in output strings.
-	/// </param>
-	void createFiles(bool isConvertZeroToEmpty = true,
-		unsigned int decimalPlaces = 0);
+	/// Set to true to convert zero to empty in output strings.</param>
+	/// <param name="decimalPlaces">Decimal places in output strings.</param>
+	void createFiles(bool isConvertZeroToEmpty = true, unsigned int decimalPlaces = 0);
 
 	/// <summary>
 	/// Adds (time, value) dataPoint, accumulates average, 
@@ -267,31 +264,9 @@ public:
 	/// <returns>List of (time, value) dataPoints.</returns>
 	list<dataPoint> data_day_maxima();
 
-	/// <summary>
-	/// Adds label information to the data.
-	/// </summary>
-	/// <param name="label">Label for the data.</param>
-	/// <param name="filenamePrefix">Text that begins data file name.
-	/// </param>
-	/// <param name="units">Data units.</param>
-	void addLabels(String label,
-		String filenamePrefix,
-		String units);
+	void addLabels(String label, String labelFile, String units);
 
-	/// <summary>
-	/// Adds label information to the data.
-	/// </summary>
-	/// <param name="label">Label for the data.</param>
-	/// <param name="filenamePrefix">Text that begins data file name.
-	/// </param>
-	/// <param name="units">Data units.</param>
-	/// <param name="units_html">
-	/// Data units with html encoding, such as "&deg;F".
-	/// </param>
-	void addLabels(String label,
-		String filenamePrefix,
-		String units,
-		String units_html);
+	void addLabels(String label, String labelFile, String units, String units_html);
 
 	/// <summary>
 	/// Returns display label for the data.
@@ -314,16 +289,25 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
-	/// <returns></returns>
-	String units_html();
+	/// <returns>List of 10-min dataPoints as delimited string.</returns>
+	String data_10_min_string_delim();
 
-	/******     DATA FROM MEMORY     ******/
+
+	void recover_data_60_min_fromFile();
+
+	void get_data_10_min_fromFile_DEBUG();
 
 	/// <summary>
-	/// Returns list of 10-min dataPoints as delimited string.
+	/// Returns delimited String of 10-min data from file.
 	/// </summary>
-	/// <returns>List of 10-min dataPoints as delimited string.</returns>
-	String data_10_min_string();
+	/// <returns>Delimited String of 10-min data</returns>
+	String dataFile_10_min_string_delim();
+
+
+	String dataFile_60_min_string_delim();
+
+
+	String dataFile_max_min_string_delim();
 
 	/// <summary>
 	/// Returns list of 60-min dataPoints as delimited string.
@@ -364,11 +348,10 @@ public:
 	void data_10_min_fromFile();
 
 	/// <summary>
-	/// Retrieves data points from stored file uses 
-	/// them to initialize 60-min list. Used to retrieve 
-	/// any data lost at reboot.
+	/// List of (time, value) dataPoints at 10-min intervals recovered from storage.
 	/// </summary>
-	void data_60_min_fromFile();
+	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
+	list<dataPoint> recovered_data_10_min();
 
 	/// <summary>
 	/// Retrieves data points from stored file uses 

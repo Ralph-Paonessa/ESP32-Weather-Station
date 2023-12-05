@@ -115,15 +115,10 @@ namespace ListFunctions {
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
 
-	///// <summary>
-	///// Splits a delimited string into a list of C++ std::string.
-	///// </summary>
-	///// <param name="str">String to split.</param>
-	///// <param name="delim">Delimiter character.</param>
-	///// <returns>List of substrings after splitting.</returns>
-	//list<std::string> splitString(const String& str, const char delimiter);
 
+	list<std::string> substrings_from_String(const String& str, const char delimiter);
 
+	
 	/// <summary>
 	/// Splits a delimited string into a list of Arduino String.
 	/// </summary>
