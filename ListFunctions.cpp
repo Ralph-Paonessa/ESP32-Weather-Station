@@ -224,13 +224,28 @@ String ListFunctions::listToString_dataPoints(
 }
 
 
+list<std::string> ListFunctions::substrings_from_String(const String& str, const char delim) {
+	list<std::string> substrings;	
+	std::istringstream ss(str.c_str());	// Convert input String to stream.
+	while (!ss.eof()) {
+		std::string sub;				// empty string to hold substrings
+		std::getline(ss, sub, delim);	// Read character stream before delimiter.
+		// Convert string to data point and add to list.
+		/*size_t i = sub.find_first_of(delim);
+		dataPoint dp = dataPoint(std::stoul(sub.substr(0, i)), std::stof(sub.substr(i + 1)));*/
+		substrings.push_back(sub);
+	}
+	return substrings;
+}
+
+
 
 
 /// <summary>
 /// Returns a list of dataPoints retrieved from a delimited 
 /// string of comma-separated "time,value" pairs.
 /// </summary>
-/// <param name="delim">Delimited string of dataPoints.</param>
+/// <param name="str">Delimited string of dataPoints.</param>
 /// <returns>
 /// List of "time,value" dataPoints retrieved from a delimited string.
 /// </returns>

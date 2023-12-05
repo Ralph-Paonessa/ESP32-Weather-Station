@@ -113,6 +113,9 @@ namespace ListFunctions {
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
 
+
+	list<std::string> substrings_from_String(const String& str, const char delimiter);
+
 	
 	/// <summary>
 	/// Returns a list of dataPoints retrieved from a delimited 

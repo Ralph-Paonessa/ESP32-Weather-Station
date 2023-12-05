@@ -589,46 +589,90 @@ String SensorData::data_10_min_string_delim()
 
 
 
-
-void SensorData::get_data_10_min_fromFile_DEBUG() {
-	//sensorFilepath("_10_min");
-	Serial.println(_label);
-	String data = fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
-	Serial.println(data);
-	Serial.print("data string length = ");
-	Serial.println(data.length());
-	//Serial.println(fileReadString(LittleFS, "/test1line.txt"));	
-
-}
-
-
-
-String SensorData::dataFile_10_min_string_delim() {
+/// <summary>
+/// Retrieves data points from file system and uses 
+/// them to initialize 10-min list. Used to retrieve 
+/// any data lost at reboot.
+/// </summary>
+void SensorData::recover_data_10_min_fromFile() {
+	// Get 10-min data from file system and place in memory.
 	if (_isDataInFileSys) {
-		return fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
-	}
-	else {
-		return "";
-	}
-}
-
-String SensorData::dataFile_60_min_string_delim() {
-	if (_isDataInFileSys) {
-		return fileReadString(LittleFS, sensorFilepath("_60_min").c_str());
-	}
-	else {
-		return "";
+		// Read file from flash LittleFS.
+		String delim = fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+		_data_10_min = listFromString_dataPoints(delim);
 	}
 }
 
-String SensorData::dataFile_max_min_string_delim() {
+/// <summary>
+/// Retrieves data points from file system and uses 
+/// them to initialize 60-min list. Used to retrieve 
+/// any data lost at reboot.
+/// </summary>
+void SensorData::recover_data_60_min_fromFile() {
+	// Get 10-min data from file system and place in memory.
 	if (_isDataInFileSys) {
-		return fileReadString(LittleFS, sensorFilepath("_max_min").c_str());
-	}
-	else {
-		return "";
+		// Read file from flash LittleFS.
+		String delim = fileReadString(LittleFS, sensorFilepath("_60_min").c_str());
+		_data_60_min = listFromString_dataPoints(delim);
 	}
 }
+
+/// <summary>
+/// Retrieves data points from file system and uses 
+/// them to initialize 10-min list. Used to retrieve 
+/// any data lost at reboot.
+/// </summary>
+void SensorData::recover_data_day_max_min_fromFile() {
+	// Get 10-min data from file system and place in memory.
+	if (_isDataInFileSys) {
+		// Read file from flash LittleFS.
+		String delim = fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+		_data_10_min = listFromString_dataPoints(delim);
+	}
+}
+
+
+///// <summary>
+///// 
+///// </summary>
+///// <returns></returns>
+//list<dataPoint> SensorData::recovered_data_10_min() {
+//	String delim = dataFile_10_min_string_delim();
+//	return listFromString_dataPoints(delim);
+//}
+//
+///// <summary>
+///// Reads 10-min data from file system as a String.
+///// </summary>
+///// <returns>Delimited string of data points that 
+///// were saved in file system.</returns>
+//String SensorData::dataFile_10_min_string_delim() {
+//	if (_isDataInFileSys) {
+//		// Read file from flash LittleFS.
+//		return fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+//	}
+//	else {
+//		return "";
+//	}
+//}
+
+//String SensorData::dataFile_60_min_string_delim() {
+//	if (_isDataInFileSys) {
+//		return fileReadString(LittleFS, sensorFilepath("_60_min").c_str());
+//	}
+//	else {
+//		return "";
+//	}
+//}
+//
+//String SensorData::dataFile_max_min_string_delim() {
+//	if (_isDataInFileSys) {
+//		return fileReadString(LittleFS, sensorFilepath("_max_min").c_str());
+//	}
+//	else {
+//		return "";
+//	}
+//}
 
 
 
@@ -693,10 +737,6 @@ String SensorData::minima_byDay_string_delim()
 		_decimalPlaces);
 }
 
-list<dataPoint> SensorData::recovered_data_10_min() {
-	String delim = dataFile_10_min_string_delim();
-	return listFromString_dataPoints(delim);
-}
 
 list<dataPoint> SensorData::recovered_data_60_min()
 {
