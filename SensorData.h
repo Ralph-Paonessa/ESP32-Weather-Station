@@ -122,12 +122,16 @@ public:
 		float outlierDelta = 1.75);
 
 	/// <summary>
-	/// Creates files that hold sensor data points at various intervals.
+	/// Creates files that hold sensor data points at various 
+	/// intervals.
 	/// </summary>
 	/// <param name="isConvertZeroToEmpty">
-	/// Set to true to convert zero to empty in output strings.</param>
-	/// <param name="decimalPlaces">Decimal places in output strings.</param>
-	void createFiles(bool isConvertZeroToEmpty = true, unsigned int decimalPlaces = 0);
+	/// Set to true to convert zero to empty in output strings.
+	/// </param>
+	/// <param name="decimalPlaces">Decimal places in output strings.
+	/// </param>
+	void createFiles(bool isConvertZeroToEmpty = true, 
+		unsigned int decimalPlaces = 0);
 
 	/// <summary>
 	/// Adds (time, value) dataPoint, accumulates average, 
@@ -142,6 +146,12 @@ public:
 
 	void process_data_day();
 
+	/// <summary>
+	/// Data point (time, value) of latest sensor reading.
+	/// </summary>
+	/// <returns>Data point with (time, value) of latest 
+	/// sensor reading.
+	/// </returns>
 	dataPoint dataLastAdded();
 
 	/// <summary>
@@ -244,9 +254,14 @@ public:
 	/// <returns>List of (time, value) dataPoints.</returns>
 	list<dataPoint> maxima_dayList();
 
-	void addLabels(String label, String labelFile, String units);
+	void addLabels(String label, 
+		String labelFile, 
+		String units);
 
-	void addLabels(String label, String labelFile, String units, String units_html);
+	void addLabels(String label, 
+		String labelFile, 
+		String units, 
+		String units_html);
 
 	/// <summary>
 	/// Returns display label for the data.
@@ -271,10 +286,18 @@ public:
 	String data_10_min_string_delim();
 
 
-
-	void get_data_10_min_fromFile_DEBUG();
-
 	/// <summary>
+	/// Retrieves data points from stored file uses 
+	/// them to initialize 10-min list. Used to retrieve 
+	/// any data lost at reboot.
+	/// </summary>
+	void recover_data_10_min_fromFile();
+
+	void recover_data_60_min_fromFile();
+
+	void recover_data_day_max_min_fromFile();
+
+	/*/// <summary>
 	/// Returns delimited String of 10-min data from file.
 	/// </summary>
 	/// <returns>Delimited String of 10-min data</returns>
@@ -284,7 +307,7 @@ public:
 	String dataFile_60_min_string_delim();
 
 
-	String dataFile_max_min_string_delim();
+	String dataFile_max_min_string_delim();*/
 
 	/// <summary>
 	/// Returns list of 60-min dataPoints as delimited string.
@@ -310,11 +333,11 @@ public:
 
 	/******     DATA RECOVERY     ******/
 
-	/// <summary>
+	/*/// <summary>
 	/// List of (time, value) dataPoints at 10-min intervals recovered from storage.
 	/// </summary>
 	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
-	list<dataPoint> recovered_data_10_min();
+	list<dataPoint> recovered_data_10_min();*/
 
 	/// <summary>
 	/// List of (time, value) dataPoints at 60-min intervals, recovered from storage.
