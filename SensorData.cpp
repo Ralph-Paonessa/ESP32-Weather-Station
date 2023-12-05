@@ -710,38 +710,38 @@ void SensorData::recover_data_day_max_min_fromFile() {
 //	return listFromString_dataPoints(delim);
 //}
 //
-///// <summary>
-///// Reads 10-min data from file system as a String.
-///// </summary>
-///// <returns>Delimited string of data points that 
-///// were saved in file system.</returns>
-//String SensorData::dataFile_10_min_string_delim() {
-//	if (_isDataInFileSys) {
-//		// Read file from flash LittleFS.
-//		return fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
-//	}
-//	else {
-//		return "";
-//	}
-//}
+/// <summary>
+/// Reads 10-min data from file system as a String.
+/// </summary>
+/// <returns>Delimited string of data points that 
+/// were saved in file system.</returns>
+String SensorData::dataFile_10_min_string_delim() {
+	if (_isDataInFileSys) {
+		// Read file from flash LittleFS.
+		return fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+	}
+	else {
+		return "";
+	}
+}
 
-//String SensorData::dataFile_60_min_string_delim() {
-//	if (_isDataInFileSys) {
-//		return fileReadString(LittleFS, sensorFilepath("_60_min").c_str());
-//	}
-//	else {
-//		return "";
-//	}
-//}
-//
-//String SensorData::dataFile_max_min_string_delim() {
-//	if (_isDataInFileSys) {
-//		return fileReadString(LittleFS, sensorFilepath("_max_min").c_str());
-//	}
-//	else {
-//		return "";
-//	}
-//}
+String SensorData::dataFile_60_min_string_delim() {
+	if (_isDataInFileSys) {
+		return fileReadString(LittleFS, sensorFilepath("_60_min").c_str());
+	}
+	else {
+		return "";
+	}
+}
+
+String SensorData::dataFile_max_min_string_delim() {
+	if (_isDataInFileSys) {
+		return fileReadString(LittleFS, sensorFilepath("_max_min").c_str());
+	}
+	else {
+		return "";
+	}
+}
 
 
 
