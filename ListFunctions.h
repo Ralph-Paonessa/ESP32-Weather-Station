@@ -129,10 +129,6 @@ namespace ListFunctions {
 
 	
 	
-	// dataPoint dataPointFromString(string& s);
-
-
-	
 	/*/// <summary>
 	/// Converts two lists of dataPoints to strings of 
 	/// comma-separated "time,value" pairs delimited by "~".

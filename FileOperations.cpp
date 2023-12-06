@@ -105,6 +105,8 @@ String FileOperations::fileReadString(fs::FS& fs, const char* path) {
 	char stringC[1024] = {  };	// C-string array to hold values from stream.
 	int i = 0;
 	while (file.available()) {
+		
+		//App_Settings::CHAR_GLOBAL_BUFFER[i] += file.read();	// Add each character to C-string.
 		stringC[i] += file.read();	// Add each character to C-string.
 		i++;
 	}

@@ -16,6 +16,10 @@ used with both SD cards and LittleFS.
 
 #include "FS.h"
 #include <LittleFS.h>
+#include "App_Settings.h"
+
+using namespace App_Settings;
+
 //#include <iostream>
 //#include <fstream>
 //#include <string>

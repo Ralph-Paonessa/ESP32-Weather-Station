@@ -56,7 +56,14 @@ namespace App_Settings {
 
 	const unsigned int FAN_DUTY_PERCENT = 30;		// PWM duty cycle for fan speed.
 
-	const String SENSOR_DATA_DIR_PATH = "/Sensor data";	// Directory absolute path to sensor data files.
+	const String SENSOR_DATA_DIR_PATH = "/Sensor data";	// Absolute path to sensor data files directory.
+	const String SENSOR_DATA_TIME_FILE_PATH = "/Sensor data/last_time.txt";	// Absolute path to sensor read time file.
+
+
+	// char CHAR_GLOBAL_BUFFER[2048] = {  };			// Globally-defined character array buffer.
+
+
+
 
 	const String LOGFILE_PATH_DATA = "/data.txt";
 
@@ -83,7 +90,16 @@ namespace App_Settings {
 
 
 	const unsigned int LOOP_TIME_WARNING_THRESHOLD_MS = 2000;
-		
+
+	/// <summary>
+	/// Enumerate lists of sensor data of different periods.
+	/// </summary>
+	enum dataList {
+		LIST_10_MIN = 0,
+		LIST_60_MIN = 1,
+		LIST_DAY = 2
+	};
+
 	/// <summary>
 	/// Max size of data lists.
 	/// </summary>

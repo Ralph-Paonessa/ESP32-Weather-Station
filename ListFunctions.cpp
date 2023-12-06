@@ -263,11 +263,3 @@ list<dataPoint> ListFunctions::listFromString_dataPoints(String& delim) {
 	return dPoints;
 }
 
-// XXX  HOW TO USE THIS INTERNALLY IN FUNCTION ABOVE?!  XXX
-///// <summary>
-///// Returns a data point from a comma-delimited string.
-///// </summary>
-//dataPoint ListFunctions::dataPointFromString(string& s) {
-//	size_t i = s.find_first_of(",");
-//	return dataPoint(stoul(s.substr(0, i)), stof(s.substr(i + 1)));
-//}
