@@ -76,12 +76,62 @@ using namespace Utilities;
 #include "FileOperations.h"
 using namespace FileOperations;
 
+
+/*
+SensorData instances to average readings.
+Wind speed handled by WindSpeed.
+Wind direction handled by WindDirection.
+*/
+
+SensorData d_Temp_F;				// Temperature readings.
+SensorData d_Pres_mb;				// Pressure readings.
+SensorData d_Pres_seaLvl_mb;		// Pressure readings.
+SensorData d_Temp_for_RH_C(false);	// Sensor temperature for pressure readings.
+SensorData d_RH;					// Rel. humidity readings.
+SensorData d_UVA(false);			// UVA readings.
+SensorData d_UVB(false);			// UVB readings.
+SensorData d_UVIndex;				// UV Index readings.
+SensorData d_Insol(true, true);		// Insolation readings (no minima).
+SensorData d_IRSky_C;				// IR sky temperature readings.
+SensorData d_fanRPM(false);			// Fan RPM readings.
+
+#if defined(VM_DEBUG)
+SensorSimulate dummy_Temp_F;			// Temperature readings.
+SensorSimulate dummy_Pres_mb;			// Pressure readings.
+SensorSimulate dummy_Pres_seaLvl_mb;	// Pressure readings.
+SensorSimulate dummy_Temp_for_RH_C;		// Sensor temperature for pressure readings.
+SensorSimulate dummy_RH;				// Rel. humidity readings.
+SensorSimulate dummy_UVA;				// UVA readings.
+SensorSimulate dummy_UVB;				// UVB readings.
+SensorSimulate dummy_UVIndex;			// UV Index readings.
+SensorSimulate dummy_Insol;				// Insolaton readings.
+SensorSimulate dummy_IRSky_C;			// IR sky temperature readings.
+SensorSimulate dummy_fanRPM;			// Fan RPM readings.
+
+SensorSimulate dummy_anemCount;			// Anemometer rot count.
+SensorSimulate dummy_windDir;			// Anemometer wind direction.
+#endif
+
+// %%%%%%%%%%   STATUS FLAGS FOR DEVICES   %%%%%%%%%%%%%%%%
+bool _isGood_Temp = false;
+bool _isGood_PRH = false;
+bool _isGood_UV = false;
+bool _isGood_IR = false;
+bool _isGood_WindDir = false;
+bool _isGood_WindSpeed = false;
+//bool _isGood_GPS = false;
+bool _isGood_PMS = false;
+//bool _isGood_SDCard = false;
+bool _isGood_Solar = false;
+bool _isGood_LITTLEFS = false;
+bool _isGood_fan = false;
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 unsigned long _timeStart_Loop = 0;			//monitor loop timing
 
 volatile int _countInterrupts_base = 0;		// Timer interrupts for sensor reads.
 volatile long _countInterrupts_10_min = 0;	// Timer interrupts for sensor for 10-min averages.
 volatile long _countInterrupts_60_min = 0;	// Timer interrupts for sensor for 60-min averages.
-
 
 // ==========   SD card module   ==================== //
 const int SPI_CS_PIN = 5;	// CS pin for the SD card module
@@ -90,13 +140,10 @@ SDCard sd;		// SDCard instance that exposes SD card routines.
 bool _isGood_SDCard = false;
 bool _isGood_GPS = false;
 
-
 // ==========   Async Web Server   ================== //
-
 AsyncWebServer server(80);	// Async web server instance on port 80.
 
 // ==========   u-blox NEO-6M GPS   ========================== //
-
 // GPS module instance. 
 GPSModule gps;
 
@@ -108,8 +155,6 @@ const int RX2_PIN = 16;                 // UART2 U2_RXD
 const int TX2_PIN = 17;                 // UART2 U2_RXD
 #define SERIAL_CONFIGURATION SERIAL_8N1	// data, parity, and stop bits
 const int GPS_BAUD_RATE = 9600;         // Beitian = 9600; Brian's = 38400; NEO-6M 9600
-
-
 
 // ==========   PWM Fan for Radiation Shield  ======================== //
 const int FAN_PWM_PIN = 27;				//  GPIO 27 - fan PWM control pin
@@ -142,7 +187,6 @@ volatile unsigned int _anem_Rotations = 0;		// Count of anemometer rotations
 unsigned long _lastDebounceTime = 0;			// Last millis when output pin was toggled
 const unsigned int DEBOUNCE_TIMEOUT = 15;		// Debounce timeout (millisec)
 
-
 // TIMER INTERRUPT to count anemometer and fan rotations.
 hw_timer_t* timer_base = NULL;
 portMUX_TYPE timerMux_base = portMUX_INITIALIZER_UNLOCKED;
@@ -174,7 +218,6 @@ void IRAM_ATTR ISR_onRotation_anem() {
 }
 // ========   END Davis Anemometer 6410  =================  //
 
-
 /// <summary>
 /// Check for too many (i.e., unhandled) timer interrupts 
 /// before reading and resetting rotation counts (for 
@@ -194,7 +237,6 @@ void catchUnhandledBaseTimerInterrupts() {
 		portEXIT_CRITICAL_ISR(&timerMux_base);
 	}
 }
-
 
 /// <summary>
 /// Resets timer interrupt counters. Use when excessive time 
@@ -219,7 +261,28 @@ void resetTimerInterruptCounts() {
 	portEXIT_CRITICAL_ISR(&hardwareMux_anem);
 }
 
+void recover_data()
+{
+	unsigned long lastTime = lastReadingTime_fromFile();
+	// 10-min lists
+	if (now() - lastTime > DATA_RECOVERY_10_MIN_CUTOFF)
+	{
+		d_Temp_F.recover_data_10_min_fromFile();
+	}
 
+	// 60-min lists
+	if (now() - lastTime > DATA_RECOVERY_60_MIN_CUTOFF)
+	{
+		d_Temp_F.recover_data_60_min_fromFile();
+	}
+
+	// day lists
+	if (now() - lastTime > DATA_RECOVERY_DAY_CUTOFF)
+	{
+		d_Temp_F.recover_data_day_max_min_fromFile();
+	}
+
+}
 
 /****************************************************************************/
 /******************************      SETUP      *****************************/
@@ -234,7 +297,6 @@ void setup() {
 	msg += "s ENTERING SETUP \nSD card not yet online.\n";
 	msg += LINE_SEPARATOR_MAJOR + "\n\n";
 	Serial.print(msg);
-
 
 	//  ==========  CREATE SD CARD   ========== //
 	// (Do this first - need SD card for logging.)
@@ -252,7 +314,6 @@ void setup() {
 
 	//  ==========  CREATE WIFI NETWORK   ========== //	
 	wifiSetupAndConnect();
-
 
 	//  ==========  CREATE ASYNC WEB SERVER   ========== //	
 	serverRouteHandler();	// Define routes for server requests.
@@ -286,13 +347,11 @@ void setup() {
 		sd.logStatus(msg, millis());
 	}
 
-
 	// ==========  CREATE SENSORS  ========== //
 
 	sensors_AddLabels();	// Add labels to the SensorData instances.
 	sensors_begin();
 	sensors_createFiles();
-
 
 	// Date info to determine when new day begins.
 	_oldDay = day();
@@ -303,7 +362,7 @@ void setup() {
 	////////  TESTING   ////////
 	if (_isDEBUG_addDummyDataLists) {
 		addDummyData();
-	}
+}
 	if (_isDEBUG_run_test_in_setup) {
 		test.testCodeForSetup(1);
 	}
@@ -331,7 +390,6 @@ void setup() {
 	pinMode(FAN_SPEED_PIN, INPUT_PULLUP);
 	attachInterrupt(digitalPinToInterrupt(FAN_SPEED_PIN), ISR_onFanHalfRotation, FALLING);
 
-
 	// ==========  CREATE TIMER INTERRUPT  ========== //
 	/*
 	 Timer interrupt fires every BASE_PERIOD_SEC to
@@ -354,7 +412,6 @@ void setup() {
 /****************************************************************************/
 /************************        END SETUP       ****************************/
 /****************************************************************************/
-
 
 /****************************************************************************/
 /***************************       LOOP      ********************************/
@@ -434,7 +491,6 @@ void loop() {
 		sd.logStatus("New day rollover.", gps.dateTime());
 	}
 
-
 	/// ==========  TEST FOR LOST WIFI CONNECTION  ========== //
 	/*
 	If WiFi is lost, we're screwed because the time
@@ -464,7 +520,7 @@ void loop() {
 		String msg = "WARNING: Loop " + String(millis() - _timeStart_Loop) + "ms";
 		sd.logStatus(msg, gps.dateTime());
 	}
-}
+	}
 /******************************        END LOOP        **********************************/
 /****************************************************************************************/
 /****************************************************************************************/

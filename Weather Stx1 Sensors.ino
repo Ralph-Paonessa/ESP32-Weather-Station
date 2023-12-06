@@ -1,20 +1,20 @@
-/*
-SensorData instances to average readings.
-Wind speed handled by WindSpeed.
-Wind direction handled by WindDirection.
-*/
-
-SensorData d_Temp_F;				// Temperature readings.
-SensorData d_Pres_mb;				// Pressure readings.
-SensorData d_Pres_seaLvl_mb;		// Pressure readings.
-SensorData d_Temp_for_RH_C(false);	// Sensor temperature for pressure readings.
-SensorData d_RH;					// Rel. humidity readings.
-SensorData d_UVA(false);			// UVA readings.
-SensorData d_UVB(false);			// UVB readings.
-SensorData d_UVIndex;				// UV Index readings.
-SensorData d_Insol(true, true);		// Insolation readings (no minima).
-SensorData d_IRSky_C;				// IR sky temperature readings.
-SensorData d_fanRPM(false);			// Fan RPM readings.
+///*
+//SensorData instances to average readings.
+//Wind speed handled by WindSpeed.
+//Wind direction handled by WindDirection.
+//*/
+//
+//SensorData d_Temp_F;				// Temperature readings.
+//SensorData d_Pres_mb;				// Pressure readings.
+//SensorData d_Pres_seaLvl_mb;		// Pressure readings.
+//SensorData d_Temp_for_RH_C(false);	// Sensor temperature for pressure readings.
+//SensorData d_RH;					// Rel. humidity readings.
+//SensorData d_UVA(false);			// UVA readings.
+//SensorData d_UVB(false);			// UVB readings.
+//SensorData d_UVIndex;				// UV Index readings.
+//SensorData d_Insol(true, true);		// Insolation readings (no minima).
+//SensorData d_IRSky_C;				// IR sky temperature readings.
+//SensorData d_fanRPM(false);			// Fan RPM readings.
 
 WindSpeed windSpeed(
 	DAVIS_SPEED_CAL_FACTOR,
@@ -25,37 +25,37 @@ SensorData windGust;
 WindDirection windDir(VANE_OFFSET);	// WindDirection instance for wind.
 
 
-#if defined(VM_DEBUG)
-SensorSimulate dummy_Temp_F;			// Temperature readings.
-SensorSimulate dummy_Pres_mb;			// Pressure readings.
-SensorSimulate dummy_Pres_seaLvl_mb;	// Pressure readings.
-SensorSimulate dummy_Temp_for_RH_C;		// Sensor temperature for pressure readings.
-SensorSimulate dummy_RH;				// Rel. humidity readings.
-SensorSimulate dummy_UVA;				// UVA readings.
-SensorSimulate dummy_UVB;				// UVB readings.
-SensorSimulate dummy_UVIndex;			// UV Index readings.
-SensorSimulate dummy_Insol;				// Insolaton readings.
-SensorSimulate dummy_IRSky_C;			// IR sky temperature readings.
-SensorSimulate dummy_fanRPM;			// Fan RPM readings.
+//#if defined(VM_DEBUG)
+//SensorSimulate dummy_Temp_F;			// Temperature readings.
+//SensorSimulate dummy_Pres_mb;			// Pressure readings.
+//SensorSimulate dummy_Pres_seaLvl_mb;	// Pressure readings.
+//SensorSimulate dummy_Temp_for_RH_C;		// Sensor temperature for pressure readings.
+//SensorSimulate dummy_RH;				// Rel. humidity readings.
+//SensorSimulate dummy_UVA;				// UVA readings.
+//SensorSimulate dummy_UVB;				// UVB readings.
+//SensorSimulate dummy_UVIndex;			// UV Index readings.
+//SensorSimulate dummy_Insol;				// Insolaton readings.
+//SensorSimulate dummy_IRSky_C;			// IR sky temperature readings.
+//SensorSimulate dummy_fanRPM;			// Fan RPM readings.
+//
+//SensorSimulate dummy_anemCount;			// Anemometer rot count.
+//SensorSimulate dummy_windDir;			// Anemometer wind direction.
+//#endif
 
-SensorSimulate dummy_anemCount;			// Anemometer rot count.
-SensorSimulate dummy_windDir;			// Anemometer wind direction.
-#endif
-
-// %%%%%%%%%%   STATUS FLAGS FOR DEVICES   %%%%%%%%%%%%%%%%
-bool _isGood_Temp = false;
-bool _isGood_PRH = false;
-bool _isGood_UV = false;
-bool _isGood_IR = false;
-bool _isGood_WindDir = false;
-bool _isGood_WindSpeed = false;
-//bool _isGood_GPS = false;
-bool _isGood_PMS = false;
-//bool _isGood_SDCard = false;
-bool _isGood_Solar = false;
-bool _isGood_LITTLEFS = false;
-bool _isGood_fan = false;
-// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//// %%%%%%%%%%   STATUS FLAGS FOR DEVICES   %%%%%%%%%%%%%%%%
+//bool _isGood_Temp = false;
+//bool _isGood_PRH = false;
+//bool _isGood_UV = false;
+//bool _isGood_IR = false;
+//bool _isGood_WindDir = false;
+//bool _isGood_WindSpeed = false;
+////bool _isGood_GPS = false;
+//bool _isGood_PMS = false;
+////bool _isGood_SDCard = false;
+//bool _isGood_Solar = false;
+//bool _isGood_LITTLEFS = false;
+//bool _isGood_fan = false;
+//// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 // ==========   SENSORS   ========================== //
@@ -280,7 +280,7 @@ int windAngleReading() {
 /// Adds simulated wind speed readings.
 /// </summary>
 void readWind_Simulate() {
-	//#if defined(VM_DEBUG)
+#if defined(VM_DEBUG)
 	float sim_speed_start = 3;
 	float sim_speed_spike = 15;
 	float sim_speed_incr = 0.025;
@@ -305,7 +305,7 @@ void readWind_Simulate() {
 	// Read wind direction.
 	float windAngle = dummy_windDir.sawtooth(90, 1, 360);
 	windDir.addReading(now(), windAngle, dpSpeed.value);	// weighted by speed
-	//#endif
+#endif
 }
 
 
@@ -372,6 +372,7 @@ void readSensors() {
 /// (doesn't include wind readings).
 /// </summary>
 void readSensors_Simulate() {
+#if defined(VM_DEBUG)
 	dataPoint dp;	// holds reading
 	// Temperature.
 	dp = dataPoint(now(), dummy_Temp_F.sawtooth(10, 0.02, 20));
@@ -404,6 +405,32 @@ void readSensors_Simulate() {
 	float insol_norm = insol_norm_pct(dummy_Insol.linear(0, 0.01), INSOL_REFERENCE_MAX);
 	dp = dataPoint(now(), insol_norm);
 	d_Insol.addReading(dp);	// % Insolation
+#endif
+}
+
+/// <summary>
+/// Saves last read time to LittleFS.
+/// </summary>
+/// <param name="time">Time to save.</param>
+void saveLastReadTime_toFile(unsigned long time) {
+	// Save in LittleFS
+	//if (_isDataInFileSys) {
+	fileWrite(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str(), String(time).c_str());
+	///}
+}
+
+/// <summary>
+/// Gets last reading time from LittleFS.
+/// </summary>
+/// <returns>Saved time of last reading.</returns>
+unsigned long lastReadingTime_fromFile()
+{
+	// Read from LittleFS
+	//if (_isDataInFileSys) {
+	return fileReadString(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str()).toInt();
+	//}
+	//else {
+	//	return 0;
 }
 
 /// <summary>
@@ -425,6 +452,11 @@ void processReadings_10_min() {
 	d_UVIndex.process_data_10_min();
 	d_Insol.process_data_10_min();
 	d_IRSky_C.process_data_10_min();
+
+	// Save last 10-min reading time to LittleFS. Used 
+	// to check whether to recover data at reboot.
+	saveLastReadTime_toFile(now());
+
 }
 
 /// <summary>

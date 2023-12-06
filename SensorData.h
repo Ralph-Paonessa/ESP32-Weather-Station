@@ -115,10 +115,10 @@ public:
 	/// Number of points in moving avg.</param>
 	/// <param name="outlierDelta">
 	/// Range applied to moving avg for outlier rejection.</param>
-	SensorData(bool isDataInFileSys = true, 
+	SensorData(bool isDataInFileSys = true,
 		bool isReportDailyMaxOnly = false,
-		bool isUseMovingAvg = true, 
-		unsigned int numSmoothPoints = 5, 
+		bool isUseMovingAvg = true,
+		unsigned int numSmoothPoints = 5,
 		float outlierDelta = 1.75);
 
 	/// <summary>
@@ -130,7 +130,7 @@ public:
 	/// </param>
 	/// <param name="decimalPlaces">Decimal places in output strings.
 	/// </param>
-	void createFiles(bool isConvertZeroToEmpty = true, 
+	void createFiles(bool isConvertZeroToEmpty = true,
 		unsigned int decimalPlaces = 0);
 
 	/// <summary>
@@ -254,13 +254,13 @@ public:
 	/// <returns>List of (time, value) dataPoints.</returns>
 	list<dataPoint> maxima_dayList();
 
-	void addLabels(String label, 
-		String labelFile, 
+	void addLabels(String label,
+		String labelFile,
 		String units);
 
-	void addLabels(String label, 
-		String labelFile, 
-		String units, 
+	void addLabels(String label,
+		String labelFile,
+		String units,
 		String units_html);
 
 	/// <summary>
@@ -284,6 +284,23 @@ public:
 	/// </summary>
 	/// <returns>List of 10-min dataPoints as delimited string.</returns>
 	String data_10_min_string_delim();
+
+
+
+	/*/// <summary>
+	/// Saves last read time to LittleFS.
+	/// </summary>
+	/// <param name="time">Time to save.</param>
+	void saveLastReadTime_toFile(unsigned long time);
+
+	/// <summary>
+	/// Gets last reading time from LittleFS.
+	/// </summary>
+	/// <returns>Saved time of last reading.</returns>
+	unsigned long lastReadingTime_fromFile();*/
+
+
+
 
 
 	/// <summary>
@@ -387,4 +404,16 @@ public:
 		int numElements,
 		unsigned long timeStart);
 };
+
+///// <summary>
+//	/// Saves last read time to LittleFS.
+//	/// </summary>
+//	/// <param name="time">Time to save.</param>
+//static void saveLastReadTime_toFile(unsigned long time);
+//
+///// <summary>
+///// Gets last reading time from LittleFS.
+///// </summary>
+///// <returns>Saved time of last reading.</returns>
+//static unsigned long lastReadingTime_fromFile();
 #endif
