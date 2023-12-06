@@ -655,6 +655,32 @@ float SensorData::avg_10_min() {
 	return _avg_10_min;
 }
 
+///// <summary>
+///// Saves last read time to LittleFS.
+///// </summary>
+///// <param name="time">Time to save.</param>
+//void saveLastReadTime_toFile(unsigned long time) {
+//	// Save in LittleFS
+//	//if (_isDataInFileSys) {
+//		fileWrite(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str(), String(time).c_str());
+//	///}
+//}
+//
+///// <summary>
+///// Gets last reading time from LittleFS.
+///// </summary>
+///// <returns>Saved time of last reading.</returns>
+//unsigned long lastReadingTime_fromFile()
+//{
+//	// Read from LittleFS
+//	//if (_isDataInFileSys) {
+//		return fileReadString(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str()).toInt();
+//	//}
+//	//else {
+//	//	return 0;
+//	//}
+//}
+
 
 
 
