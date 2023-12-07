@@ -34,7 +34,7 @@ protected:		// Protected items are accessible by inherited classes.
 	/// <param name="fileSuffix">Suffix to append to file name.</param>
 	String sensorFilepath(String fileSuffix);
 
-	String _label, _labelFile;		// Identifying info.
+	String _label, _filenamePrefix;		// Identifying info.
 	String _units, _units_html;		// Units used.
 
 	dataPoint _dataLastAdded;		// Data point (time, value) of most recent reading.
@@ -254,12 +254,29 @@ public:
 	/// <returns>List of (time, value) dataPoints.</returns>
 	list<dataPoint> maxima_dayList();
 
+	/// <summary>
+	/// Adds label information to the data.
+	/// </summary>
+	/// <param name="label">Label for the data.</param>
+	/// <param name="filenamePrefix">Text that begins data file name.
+	/// </param>
+	/// <param name="units">Data units.</param>
 	void addLabels(String label,
-		String labelFile,
+		String filenamePrefix,
 		String units);
 
+	/// <summary>
+	/// Adds label information to the data.
+	/// </summary>
+	/// <param name="label">Label for the data.</param>
+	/// <param name="filenamePrefix">Text that begins data file name.
+	/// </param>
+	/// <param name="units">Data units.</param>
+	/// <param name="units_html">
+	/// Data units with html encoding, such as "&deg;F".
+	/// </param>
 	void addLabels(String label,
-		String labelFile,
+		String filenamePrefix,
 		String units,
 		String units_html);
 

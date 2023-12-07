@@ -37,14 +37,15 @@ SensorData::SensorData(
 /// Adds label information to the data.
 /// </summary>
 /// <param name="label">Label for the data.</param>
-/// <param name="labelFile">Text to use in data file name.</param>
-/// <param name="units">The units of the data.</param>
+/// <param name="filenamePrefix">Text that begins data file name.
+/// </param>
+/// <param name="units">Data units.</param>
 void SensorData::addLabels(
 	String label,
-	String labelFile,
+	String filenamePrefix,
 	String units) {
 	_label = label;
-	_labelFile = labelFile;
+	_filenamePrefix = filenamePrefix;
 	_units = units;
 }
 
@@ -52,9 +53,11 @@ void SensorData::addLabels(
 /// Adds label information to the data.
 /// </summary>
 /// <param name="label">Label for the data.</param>
-/// <param name="labelFile">Text to use in data file name.</param>
+/// <param name="filenamePrefix">Text that begins data file name.
+/// </param>
 /// <param name="units">Data units.</param>
-/// <param name="units_html">Data units with html encoding, such as "&deg;F".
+/// <param name="units_html">
+/// Data units with html encoding, such as "&deg;F".
 /// </param>
 void SensorData::addLabels(
 	String label,
@@ -292,6 +295,8 @@ void SensorData::recover_data_60_min_fromFile() {
 }
 
 
+
+
 // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 // XXX  NEEDS MODIFICATION FOR TWO LISTS!!!  XXX
@@ -306,12 +311,14 @@ void SensorData::recover_data_day_max_min_fromFile() {
 	if (_isDataInFileSys) {
 		// Read file from flash LittleFS.
 		String delim = fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
-		////////////////////////////////////////////////////////////_data_max_min_string_delim = listFromString_dataPoints(delim);
+		/////////////////////////////////////////////////////////////_data_max_min_string_delim = listFromString_dataPoints(delim);
 	}
 }
 
+
+
 /*****************************************************************
-	DELIMITED STRINGS FROM MEMORY 
+	DELIMITED STRINGS FROM MEMORY
 ******************************************************************/
 
 /// <summary>
@@ -380,7 +387,7 @@ String SensorData::minima_byDay_string_delim() {
 		_decimalPlaces);
 }
 
-/*****************************************************************  
+/*****************************************************************
 	DELIMITED STRINGS FROM FILE SYSTEM
 ******************************************************************/
 
@@ -417,9 +424,8 @@ String SensorData::dataFile_max_min_string_delim() {
 	}
 }
 
-
 /*****************************************************************
-	DATA FILES  
+	DATA FILES
 ******************************************************************/
 
 /// <summary>
@@ -428,16 +434,15 @@ String SensorData::dataFile_max_min_string_delim() {
 /// <param name="isConvertZeroToEmpty">
 /// Set to true to convert zero to empty in output strings.</param>
 /// <param name="decimalPlaces">Decimal places in output strings.</param>
-void SensorData::createFiles(bool isConvertZeroToEmpty, unsigned int decimalPlaces)
-{
+void SensorData::createFiles(bool isConvertZeroToEmpty, unsigned int decimalPlaces) {
 	_isConvertZeroToEmpty = isConvertZeroToEmpty;
 	_decimalPlaces = decimalPlaces;
 #if defined(VM_DEBUG)
 	if (LittleFS.mkdir(SENSOR_DATA_DIR_PATH)) {
-		Serial.printf("Created or found dir %s for %s.\n", SENSOR_DATA_DIR_PATH, _labelFile);
+		Serial.printf("Created or found dir %s for %s.\n", SENSOR_DATA_DIR_PATH, _filenamePrefix);
 	}
 	else {
-		Serial.printf("Filed to create or find dir %s for %s.\n", SENSOR_DATA_DIR_PATH, _labelFile);
+		Serial.printf("Failed to create or find dir %s for %s.\n", SENSOR_DATA_DIR_PATH, _filenamePrefix);
 	}
 #endif
 	if (!fileCreateOrExists(LittleFS, sensorFilepath("_10_min"))) {
@@ -458,12 +463,11 @@ void SensorData::createFiles(bool isConvertZeroToEmpty, unsigned int decimalPlac
 /// <param name="fileSuffix">A suffix to append to the file name.</param>
 /// <returns>Path to a sensor data .txt file.</returns>
 String SensorData::sensorFilepath(String fileSuffix) {
-	return SENSOR_DATA_DIR_PATH + "/" + _labelFile + fileSuffix + ".txt";
+	return SENSOR_DATA_DIR_PATH + "/" + _filenamePrefix + fileSuffix + ".txt";
 }
 
-
 /*****************************************************************
-	DUMMY DATA  
+	DUMMY DATA
 ******************************************************************/
 
 /// <summary>
@@ -713,7 +717,7 @@ String SensorData::label() {
 /// </summary>
 /// <returns>String for constructing data file name.</returns>
 String SensorData::labelFile() {
-	return _labelFile;
+	return _filenamePrefix;
 }
 
 /// <summary>
