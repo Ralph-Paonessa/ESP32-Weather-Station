@@ -285,23 +285,11 @@ public:
 	/// <returns>List of 10-min dataPoints as delimited string.</returns>
 	String data_10_min_string_delim();
 
-
-
-	/*/// <summary>
-	/// Saves last read time to LittleFS.
-	/// </summary>
-	/// <param name="time">Time to save.</param>
-	void saveLastReadTime_toFile(unsigned long time);
-
 	/// <summary>
-	/// Gets last reading time from LittleFS.
+	/// Returns true if data has been saved to LittleFS.
 	/// </summary>
-	/// <returns>Saved time of last reading.</returns>
-	unsigned long lastReadingTime_fromFile();*/
-
-
-
-
+	/// <returns>True if data has been saved to LittleFS.</returns>
+	bool isDataInFileSys();
 
 	/// <summary>
 	/// Retrieves data points from stored file uses 
@@ -356,7 +344,7 @@ public:
 	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
 	list<dataPoint> recovered_data_10_min();*/
 
-	/// <summary>
+	/*/// <summary>
 	/// List of (time, value) dataPoints at 60-min intervals, recovered from storage.
 	/// </summary>
 	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
@@ -366,8 +354,7 @@ public:
 	/// List of (time, value) dataPoints at daily intervals, recovered from storage.
 	/// </summary>
 	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
-	list<dataPoint> recovered_data_day_min();
-
+	list<dataPoint> recovered_data_day_min();*/
 
 
 	/******     DUMMY DATA     ******/
@@ -405,15 +392,4 @@ public:
 		unsigned long timeStart);
 };
 
-///// <summary>
-//	/// Saves last read time to LittleFS.
-//	/// </summary>
-//	/// <param name="time">Time to save.</param>
-//static void saveLastReadTime_toFile(unsigned long time);
-//
-///// <summary>
-///// Gets last reading time from LittleFS.
-///// </summary>
-///// <returns>Saved time of last reading.</returns>
-//static unsigned long lastReadingTime_fromFile();
 #endif

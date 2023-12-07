@@ -69,9 +69,6 @@
     <ClCompile Include="FileOperations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DataRecovery.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Weather Stx1 Sensors.ino" />
     <ClCompile Include="Weather Stx6 Outputs.ino" />
     <ClCompile Include="Weather Stx2 WiFi routines.ino" />
@@ -122,7 +119,7 @@
     <ClInclude Include="FileOperations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DataRecovery.h">
+    <ClInclude Include="PinAssignments.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,7 +3,6 @@
 // 
 
 #include "FileOperations.h"
-//#include <istream>
 
 /// <summary>
 /// Lists contents of directory.
@@ -23,7 +22,6 @@ void FileOperations::dirList(fs::FS& fs, const char* dirname, uint8_t levels) {
 		Serial.println("Not a directory");
 		return;
 	}
-
 	File file = root.openNextFile();
 	while (file) {
 		if (file.isDirectory()) {
@@ -63,32 +61,6 @@ void FileOperations::dirRemove(fs::FS& fs, const char* path) {
 	}
 }
 
-
-// DOESN'T WORK!!! NOT SURE ABOUT POINTERS, BUT IS ARRAY DESTROYED WHEN FUNCTION FINISHES?!
-///// <summary>
-///// Reads a file into a character array. Reads the entire file (all lines). DOES THIS WORK???!!!  XXX
-///// </summary>
-///// <param name="fs">File system to use.</param>
-///// <param name="path">Target file path with name.</param>
-///// <returns>C-string read from a file.</returns>
-//char* FileOperations::fileReadChars(fs::FS& fs, const char* path) {
-//
-//	File file = fs.open(path, FILE_READ);
-//	if (!file) {
-//		Serial.println("ERROR: fileReadString failed to open file for reading");
-//		return "";
-//	}
-//	char stringC[1024] = {  };	// C-string array to hold values from stream.
-//	int i = 0;
-//	while (file.available()) {
-//		stringC[i] += file.read();	// Add each character to C-string.
-//		i++;
-//	}
-//	file.close();
-//	return stringC;
-//}
-
-
 /// <summary>
 /// Reads a file into a String. Reads the entire file (all lines).
 /// </summary>
@@ -105,8 +77,7 @@ String FileOperations::fileReadString(fs::FS& fs, const char* path) {
 	char stringC[1024] = {  };	// C-string array to hold values from stream.
 	int i = 0;
 	while (file.available()) {
-		
-		//App_Settings::CHAR_GLOBAL_BUFFER[i] += file.read();	// Add each character to C-string.
+		//_char_global_buffer[i] += file.read();	// Add each character to C-string.
 		stringC[i] += file.read();	// Add each character to C-string.
 		i++;
 	}
@@ -114,51 +85,6 @@ String FileOperations::fileReadString(fs::FS& fs, const char* path) {
 	return String(stringC);
 }
 
-// XXX RETURNS BLANK STRING!
-///// <summary>
-///// Returns a String read from a file.
-///// </summary>
-///// <param name="path">Target file path with name.</param>
-///// <returns>String read from a file.</returns>
-//String FileOperations::fileReadStringStream(const char* path) {
-//
-//	ifstream inFile;
-//	inFile.open(path);
-//
-//	std::string line_string;
-//	getline(inFile, line_string);
-//
-//	inFile.close();
-//
-//	char* chars = new char[line_string.length()];
-//	//char chars[line_string.length()];
-//	strcpy(chars, line_string.c_str());
-//
-//	1 == 1;
-//
-//	return String(chars);
-//}
-
-
-
-// USELESS EXCEPT FOR DEMO!!! XXX
-//void FileOperations::fileRead(fs::FS& fs, const char* path) {
-//	Serial.printf("Reading file: %s\n", path);
-//
-//	File file = fs.open(path, FILE_READ);
-//	if (!file) {
-//		Serial.println("ERROR: Failed to open file for reading.");
-//		return;
-//	}
-//
-//	Serial.println("fileRead Read from file:");
-//	Serial.print("|");
-//	while (file.available()) {
-//		Serial.write(file.read());
-//	}
-//	Serial.println("|");
-//	file.close();
-//}
 
 void FileOperations::fileWrite(fs::FS& fs, const char* path, const char* message) {
 	Serial.printf("Writing file: %s\n", path);
@@ -168,9 +94,8 @@ void FileOperations::fileWrite(fs::FS& fs, const char* path, const char* message
 		Serial.println("ERROR: fileWrite Failed to open file for writing");
 		return;
 	}
-
 	if (file.print(message)) {
-		Serial.println("fileWrite File written.");
+		//Serial.println("fileWrite File written.");
 	}
 	else {
 		Serial.println("ERROR: fileWrite Write failed.");
@@ -181,7 +106,6 @@ void FileOperations::fileWrite(fs::FS& fs, const char* path, const char* message
 
 void FileOperations::fileAppend(fs::FS& fs, const char* path, const char* message) {
 	Serial.printf("fileAppend Appending to file: %s\n", path);
-
 	File file = fs.open(path, FILE_APPEND);
 	if (!file) {
 		Serial.println("ERROR: fileAppend Failed to open file for appending.");
@@ -225,33 +149,27 @@ void FileOperations::fileDelete(fs::FS& fs, const char* path) {
 /// <param name="path">Full path including the filename and extension.</param>
 /// <returns>True on success</returns>
 bool FileOperations::fileCreateOrExists(fs::FS& fs, const String& path) {
-	if (true)            //(!_isBypassSDCard)
-	{
+	//if (true)            //(!_isBypassSDCard)
+	//{
 		// If the file doesn't exist, create it.
-		if (fs.exists(path)) {
-			//String msg = "[SDCard.fileCreateOrExists] " + path + " file found.";
-			//logStatus(msg, millis());
-			Serial.printf("File %s exists.\n", path.c_str());
-			return true;
-		}
-		else {
-			Serial.printf("File %s does not exist.\n", path.c_str());
-		}
-
-		// File does not exist, so create empty file.
-		File file = fs.open(path, FILE_WRITE);
-		if (!file) {
-			//String msg = "[SDCard.fileCreateOrExists] " + path + " file could not be created.";
-			//logStatus(msg, millis());
-			Serial.printf("File %s could not be opened.\n", path.c_str());
-			return false;
-		}
-		else {
-			//String msg = "[SDCard.fileCreateOrExists] " + path + " file created.";
-			//logStatus(msg, millis());
-			Serial.printf("File %s was opened and will be closed.\n", path.c_str());
-			file.close();
-			return true;
-		}
+	if (fs.exists(path)) {
+		Serial.printf("File %s exists.\n", path.c_str());
+		return true;
 	}
+	else {
+		Serial.printf("File %s does not exist.\n", path.c_str());
+	}
+
+	// File does not exist, so create empty file.
+	File file = fs.open(path, FILE_WRITE);
+	if (!file) {
+		Serial.printf("File %s could not be opened.\n", path.c_str());
+		return false;
+	}
+	else {
+		Serial.printf("File %s was opened and will be closed.\n", path.c_str());
+		file.close();
+		return true;
+	}
+	//}
 }

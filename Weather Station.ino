@@ -10,7 +10,6 @@ Rev. October 7, 2023
 // ========  ESP32 Libraries  ================  
 
 // ESP Async Web Server
-#include "DataRecovery.h"
 #include <AsyncEventSource.h>
 #include <AsyncJson.h>
 #include <AsyncWebSocket.h>
@@ -54,7 +53,12 @@ Rev. October 7, 2023
 // ========  Custom Libraries  ================  
 
 #include "App_settings.h"
+using namespace App_Settings;
+#include "PinAssignments.h"
 #include "Utilities.h"
+using namespace Utilities;
+#include "FileOperations.h"
+using namespace FileOperations;
 #include "GPSModule.h"
 #include "SDCard.h"
 #include "dataPoint.h"
@@ -70,12 +74,8 @@ Rev. October 7, 2023
 Testing test;					// class for test routings
 #endif
 
-using namespace App_Settings;
-using namespace Utilities;
 
-#include "FileOperations.h"
-using namespace FileOperations;
-
+//char _char_global_buffer[2048] = {  };			// Globally-defined character array buffer.
 
 /*
 SensorData instances to average readings.
@@ -134,7 +134,6 @@ volatile long _countInterrupts_10_min = 0;	// Timer interrupts for sensor for 10
 volatile long _countInterrupts_60_min = 0;	// Timer interrupts for sensor for 60-min averages.
 
 // ==========   SD card module   ==================== //
-const int SPI_CS_PIN = 5;	// CS pin for the SD card module
 SDCard sd;		// SDCard instance that exposes SD card routines. 
 
 bool _isGood_SDCard = false;
@@ -151,24 +150,15 @@ int _oldMonth = 0;		// Month of previous day.
 int _oldDay = 0;		// Day of previous day.
 int _oldYear = 0;		// Year of previous day.
 
-const int RX2_PIN = 16;                 // UART2 U2_RXD
-const int TX2_PIN = 17;                 // UART2 U2_RXD
-#define SERIAL_CONFIGURATION SERIAL_8N1	// data, parity, and stop bits
-const int GPS_BAUD_RATE = 9600;         // Beitian = 9600; Brian's = 38400; NEO-6M 9600
-
 // ==========   PWM Fan for Radiation Shield  ======================== //
-const int FAN_PWM_PIN = 27;				//  GPIO 27 - fan PWM control pin
-const int FAN_SPEED_PIN = 35;			// Fan speed pin GPIO 35 (Digital Input with pullup).
-const int FAN_PWM_FREQUENCY = 25000;	// 25kHz
-const int FAN_PWM_CHANNEL = 0;
-const int FAN_PWM_RESOLUTION = 8;
+
 volatile unsigned long _fanHalfRots = 0;// count fan half-rotation (2 counts/cycle)
 
 // HARDWARE INTERRUPT for fan tachometer switch that signals half-rotation
 portMUX_TYPE hardwareMux_fan = portMUX_INITIALIZER_UNLOCKED;
 
-// Function called by hardware interrupt when fan tachometer switch closes.
-// It increments the half-rotation count, after accounting for switch debouncing.  XXX ???
+// Function called by hardware interrupt when fan 
+// tachometer switch closes on every half-rotation.
 void IRAM_ATTR ISR_onFanHalfRotation() {
 	portENTER_CRITICAL_ISR(&hardwareMux_fan);
 	_fanHalfRots++;
@@ -182,7 +172,6 @@ void IRAM_ATTR ISR_onFanHalfRotation() {
  Each rotation triggers a hardware interrupt that
  increments _anem_Rotations by 1.
 */
-const int WIND_SPEED_PIN = 15;					// GPIO 15 (Digital Input with pullup)
 volatile unsigned int _anem_Rotations = 0;		// Count of anemometer rotations
 unsigned long _lastDebounceTime = 0;			// Last millis when output pin was toggled
 const unsigned int DEBOUNCE_TIMEOUT = 15;		// Debounce timeout (millisec)
@@ -261,27 +250,35 @@ void resetTimerInterruptCounts() {
 	portEXIT_CRITICAL_ISR(&hardwareMux_anem);
 }
 
-void recover_data()
-{
+/// <summary>
+/// Recover recent sensor readings from LittleFS.
+/// </summary>
+void recover_data() {
 	unsigned long lastTime = lastReadingTime_fromFile();
 	// 10-min lists
-	if (now() - lastTime > DATA_RECOVERY_10_MIN_CUTOFF)
+	if (d_Temp_F.isDataInFileSys()
+		&& (now() - lastTime) > DATA_RECOVERY_10_MIN_CUTOFF)
 	{
+		sd.logStatus("Recovered 10-min data.", millis());
+
 		d_Temp_F.recover_data_10_min_fromFile();
 	}
 
 	// 60-min lists
-	if (now() - lastTime > DATA_RECOVERY_60_MIN_CUTOFF)
+	if (d_Temp_F.isDataInFileSys()
+		&& (now() - lastTime) > DATA_RECOVERY_60_MIN_CUTOFF)
 	{
+		sd.logStatus("Recovered 60-min data.", millis());
+
 		d_Temp_F.recover_data_60_min_fromFile();
 	}
 
 	// day lists
-	if (now() - lastTime > DATA_RECOVERY_DAY_CUTOFF)
+	if (d_Temp_F.isDataInFileSys()
+		&& (now() - lastTime) > DATA_RECOVERY_DAY_CUTOFF)
 	{
 		d_Temp_F.recover_data_day_max_min_fromFile();
 	}
-
 }
 
 /****************************************************************************/
@@ -330,6 +327,9 @@ void setup() {
 		(Wrong baud rate gives serial garbage.)
 	*/
 	// Connect to GPS
+
+#define SERIAL_CONFIGURATION SERIAL_8N1	// data, parity, and stop bits
+	//const int GPS_BAUD_RATE = 9600;     // Beitian = 9600; Brian's = 38400; NEO-6M 9600
 	gps.begin(GPS_BAUD_RATE, SERIAL_CONFIGURATION, RX2_PIN, TX2_PIN);
 	sd.logStatus("Connecting to GPS.", millis());
 	// Get time and location from GPS.
@@ -349,7 +349,7 @@ void setup() {
 
 	// ==========  CREATE SENSORS  ========== //
 
-	sensors_AddLabels();	// Add labels to the SensorData instances.
+	sensors_AddLabels();	// Add labels and units to the SensorData instances.
 	sensors_begin();
 	sensors_createFiles();
 
@@ -362,7 +362,9 @@ void setup() {
 	////////  TESTING   ////////
 	if (_isDEBUG_addDummyDataLists) {
 		addDummyData();
-}
+		saveLastReadTime_toFile(now());
+		Serial.println("XXX  saveLastReadTime_toFile(now())  XXX");
+	}
 	if (_isDEBUG_run_test_in_setup) {
 		test.testCodeForSetup(1);
 	}
@@ -372,6 +374,10 @@ void setup() {
 	sd.logStatus_indent("DATA COLUMNS:\t" + columnNames());	// Write column names to status log.
 
 	/// ==========  CONFIGURE FAN PWM  ========== //
+	const int FAN_PWM_FREQUENCY = 25000;	// 25kHz
+	const int FAN_PWM_CHANNEL = 0;
+	const int FAN_PWM_RESOLUTION = 8;
+	volatile unsigned long _fanHalfRots = 0;// count fan half-rotation (2 counts/cycle)
 	ledcSetup(FAN_PWM_CHANNEL, FAN_PWM_FREQUENCY, FAN_PWM_RESOLUTION);
 	// Attach the channel to the pin for PWM output.
 	ledcAttachPin(FAN_PWM_PIN, FAN_PWM_CHANNEL);
@@ -475,7 +481,7 @@ void loop() {
 			sd.logStatus(msg, gps.dateTime());
 		}
 		portENTER_CRITICAL_ISR(&timerMux_base);
-		_countInterrupts_60_min = 0;	// Interrupt handled.
+		_countInterrupts_60_min--;	// Interrupt handled.
 		portEXIT_CRITICAL_ISR(&timerMux_base);
 	}
 
@@ -520,7 +526,7 @@ void loop() {
 		String msg = "WARNING: Loop " + String(millis() - _timeStart_Loop) + "ms";
 		sd.logStatus(msg, gps.dateTime());
 	}
-	}
+}
 /******************************        END LOOP        **********************************/
 /****************************************************************************************/
 /****************************************************************************************/
