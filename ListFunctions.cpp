@@ -32,8 +32,7 @@ void ListFunctions::addToList(list<dataPoint>& targetList, dataPoint dp, int num
 /// <param name="targetList">List of values to add to.</param>
 /// <param name="val">Value to add.</param>
 /// <param name="numElements">Maximum allowed elements in list.</param>
-void ListFunctions::addToList(list<float>& targetList, float val, int numElements)
-{
+void ListFunctions::addToList(list<float>& targetList, float val, int numElements) {
 	targetList.push_back(val);		// Add value to list.
 	if (targetList.size() > numElements) {
 		targetList.pop_front();		// If too many, remove the first.
@@ -93,9 +92,6 @@ float ListFunctions::listAverage(list<float>& targetList, int numToAverage) {
 	return total / numToAverage;
 }
 
-
-
-
 /// <summary>
 /// Returns the largest value of a list of dataPoint from the last numElements.
 /// </summary>
@@ -111,8 +107,7 @@ float ListFunctions::listMaximum(list<dataPoint>& targetList, int numElements) {
 	auto it = targetList.rbegin();	// Reverse iterator to last element.
 	// Start with low value we should never see.
 	float maxItem = -999999999;
-	for (int i = 1; i < numElements + 1; i++)
-	{
+	for (int i = 1; i < numElements + 1; i++) {
 		dataPoint dp = *it;
 		if (dp.value > maxItem) {
 			maxItem = dp.value;
@@ -128,8 +123,7 @@ float ListFunctions::listMaximum(list<dataPoint>& targetList, int numElements) {
 /// </summary>
 /// <param name="targetList">List to parse.</param>
 /// <returns>Delimited string of multiple (time, value) data points.</returns>
-String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList)
-{
+String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList) {
 	String s = "";
 	if (targetList.size() == 0) {
 		return s + "[-EMPTY-]";
@@ -223,9 +217,14 @@ String ListFunctions::listToString_dataPoints(
 	return s;
 }
 
-
-list<std::string> ListFunctions::substrings_from_String(const String& str, const char delim) {
-	list<std::string> substrings;	
+/// <summary>
+/// Splits a delimited string into a list of C++ std::string.
+/// </summary>
+/// <param name="str">String to split.</param>
+/// <param name="delim">Delimiter character.</param>
+/// <returns>List of substrings after splitting.</returns>
+list<std::string> ListFunctions::splitString(const String& str, const char delim) {
+	list<std::string> substrings;
 	std::istringstream ss(str.c_str());	// Convert input String to stream.
 	while (!ss.eof()) {
 		std::string sub;				// empty string to hold substrings
@@ -237,9 +236,6 @@ list<std::string> ListFunctions::substrings_from_String(const String& str, const
 	}
 	return substrings;
 }
-
-
-
 
 /// <summary>
 /// Returns a list of dataPoints retrieved from a delimited 
@@ -263,3 +259,26 @@ list<dataPoint> ListFunctions::listFromString_dataPoints(String& delim) {
 	return dPoints;
 }
 
+void ListFunctions::listPrint(list<std::string> targetList) {
+	Serial.println("List elements:");
+	for (list<std::string>::iterator it = targetList.begin(); it != targetList.end(); ++it) {
+		std::string s = *it;
+		Serial.println(s.c_str());
+	}
+}
+
+void ListFunctions::listPrint(list<String> targetList) {
+	Serial.println("List elements:");
+	for (list<String>::iterator it = targetList.begin(); it != targetList.end(); ++it) {
+		String s = *it;
+		Serial.println(s);
+	}
+}
+
+void ListFunctions::listPrint(list<dataPoint> targetList) {
+	Serial.println("List elements:");
+	for (list<dataPoint>::iterator it = targetList.begin(); it != targetList.end(); ++it) {
+		dataPoint dp = *it;
+		Serial.println("(" + String(dp.time) + ", " + String(dp.value) + ")");
+	}
+}
