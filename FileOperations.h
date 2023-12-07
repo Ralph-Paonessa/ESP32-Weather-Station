@@ -14,16 +14,12 @@ used with both SD cards and LittleFS.
 #include "WProgram.h"
 #endif
 
-#include "FS.h"
+//#include "FS.h"
+#include <FS.h>
 #include <LittleFS.h>
 #include "App_Settings.h"
 
 using namespace App_Settings;
-
-//#include <iostream>
-//#include <fstream>
-//#include <string>
-//using namespace std;
 
 /// <summary>
 /// Exposes methods that operate on files.

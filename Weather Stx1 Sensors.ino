@@ -1,20 +1,4 @@
-///*
-//SensorData instances to average readings.
-//Wind speed handled by WindSpeed.
-//Wind direction handled by WindDirection.
-//*/
-//
-//SensorData d_Temp_F;				// Temperature readings.
-//SensorData d_Pres_mb;				// Pressure readings.
-//SensorData d_Pres_seaLvl_mb;		// Pressure readings.
-//SensorData d_Temp_for_RH_C(false);	// Sensor temperature for pressure readings.
-//SensorData d_RH;					// Rel. humidity readings.
-//SensorData d_UVA(false);			// UVA readings.
-//SensorData d_UVB(false);			// UVB readings.
-//SensorData d_UVIndex;				// UV Index readings.
-//SensorData d_Insol(true, true);		// Insolation readings (no minima).
-//SensorData d_IRSky_C;				// IR sky temperature readings.
-//SensorData d_fanRPM(false);			// Fan RPM readings.
+
 
 WindSpeed windSpeed(
 	DAVIS_SPEED_CAL_FACTOR,
@@ -23,39 +7,6 @@ WindSpeed windSpeed(
 	WIND_SPEED_OUTLIER_DELTA);	// WindSpeed instance for wind.
 SensorData windGust;
 WindDirection windDir(VANE_OFFSET);	// WindDirection instance for wind.
-
-
-//#if defined(VM_DEBUG)
-//SensorSimulate dummy_Temp_F;			// Temperature readings.
-//SensorSimulate dummy_Pres_mb;			// Pressure readings.
-//SensorSimulate dummy_Pres_seaLvl_mb;	// Pressure readings.
-//SensorSimulate dummy_Temp_for_RH_C;		// Sensor temperature for pressure readings.
-//SensorSimulate dummy_RH;				// Rel. humidity readings.
-//SensorSimulate dummy_UVA;				// UVA readings.
-//SensorSimulate dummy_UVB;				// UVB readings.
-//SensorSimulate dummy_UVIndex;			// UV Index readings.
-//SensorSimulate dummy_Insol;				// Insolaton readings.
-//SensorSimulate dummy_IRSky_C;			// IR sky temperature readings.
-//SensorSimulate dummy_fanRPM;			// Fan RPM readings.
-//
-//SensorSimulate dummy_anemCount;			// Anemometer rot count.
-//SensorSimulate dummy_windDir;			// Anemometer wind direction.
-//#endif
-
-//// %%%%%%%%%%   STATUS FLAGS FOR DEVICES   %%%%%%%%%%%%%%%%
-//bool _isGood_Temp = false;
-//bool _isGood_PRH = false;
-//bool _isGood_UV = false;
-//bool _isGood_IR = false;
-//bool _isGood_WindDir = false;
-//bool _isGood_WindSpeed = false;
-////bool _isGood_GPS = false;
-//bool _isGood_PMS = false;
-////bool _isGood_SDCard = false;
-//bool _isGood_Solar = false;
-//bool _isGood_LITTLEFS = false;
-//bool _isGood_fan = false;
-//// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 // ==========   SENSORS   ========================== //
@@ -77,12 +28,10 @@ Adafruit_BME280 sensor_PRH; // BME280 temperature sensor.
 // ==========   DS18B20 digital temperature sensor   ================== //
 // Requires <OneWire.h>
 // Requires <DallasTemperature.h>
-const int ONE_WIRE_PIN = 4;   // GPIO 4 pin for DS18B20
 // Setup a oneWire instance to communicate with any OneWire devices.
 OneWire oneWire(ONE_WIRE_PIN);
 // Pass our oneWire reference to Dallas Temperature sensor.
 DallasTemperature sensor_T(&oneWire);
-
 
 // 1-Wire routines  ///////////////////////////
 
@@ -101,7 +50,6 @@ int countOneWireDevices() {
 	return count;
 }
 
-
 /// <summary>
 /// Returns temperature (F) from DS18B20 sensor.
 /// </summary>
@@ -111,13 +59,6 @@ float reading_Temp_F_DS18B20() {
 	float temp = sensor_T.getTempFByIndex(0);	// Retrieve reading
 	return temp;
 }
-
-// ==========   Davis wind vane - wind direction   ================ //
-
-const int WIND_VANE_PIN = 34;		// Wind vane is connected to GPIO 34 (Analog ADC1 CH6)
-
-// ==========   Photovoltaic cell - solar radiation   ========================= //
-const int SOLAR_PIN = 32;	// Photovoltaic cell uses GPIO 32 (Analog ADC1 CH4)
 
 /// <summary>
 /// Insolation (solar panel output) in mV.
@@ -133,8 +74,6 @@ float readInsol_mV() {
 	*/
 	return (analogRead(SOLAR_PIN) / 4096.) * 3200.;    // Solar panel output in mV.
 }
-
-
 
 /// <summary>
 /// Starts all sensors.
@@ -221,9 +160,7 @@ void sensors_begin() {
 	logDeviceStatus();
 }
 
-
 /******   WIND READINGS    ******/
-
 
 /// <summry>
 /// Reads and saves wind speed, gusts, and direction.
@@ -439,7 +376,6 @@ unsigned long lastReadingTime_fromFile()
 /// </summary>
 void processReadings_10_min() {
 	windSpeed.process_data_10_min();
-	//fileAppend(LittleFS, "/Sensor readings/" + windSpeed.label() + ".txt", "message");
 	windGust.process_data_10_min();
 	windDir.process_data_10_min();
 	d_Temp_F.process_data_10_min();
@@ -559,7 +495,7 @@ void addDummyData() {
 }
 
 /// <summary>
-/// Adds labels to SensorData instances.
+/// Adds labels and units to SensorData instances.
 /// </summary>
 void sensors_AddLabels()
 {

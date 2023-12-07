@@ -35,6 +35,9 @@ namespace App_Settings {
 
 
 	/* GPS sync parameters */
+
+	const unsigned long GPS_BAUD_RATE = 9600;		// NEO-6M 9600
+
 	const unsigned int	GPS_SATELLITES_REQUIRED = 3;// Minimum number of GPS satellites before syncing.
 	const unsigned int	GPS_CYCLES_FOR_SYNC = 3;	// Minimum GPS cycles before syncing.
 	const unsigned int	GPS_CYCLE_DELAY_SEC = 2;	// Delay before getting another GPS fix, sec.
@@ -60,9 +63,7 @@ namespace App_Settings {
 	const String SENSOR_DATA_TIME_FILE_PATH = "/Sensor data/last_time.txt";	// Absolute path to sensor read time file.
 
 
-	// char CHAR_GLOBAL_BUFFER[2048] = {  };			// Globally-defined character array buffer.
-
-
+	//char CHAR_GLOBAL_BUFFER[2048] = {  };			// Globally-defined character array buffer.
 
 
 	const String LOGFILE_PATH_DATA = "/data.txt";
