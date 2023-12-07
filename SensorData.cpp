@@ -251,8 +251,8 @@ void SensorData::process_data_60_min() {
 /// <returns></returns>
 void SensorData::process_data_day() {
 	// Save list of daily minima and maxima.
-	addToList(_minima_dayList, _min_today, SIZE_DAY_LIST);
-	addToList(_maxima_dayList, _max_today, SIZE_DAY_LIST);
+	addToList(_data_Day_minima, _min_today, SIZE_DAY_LIST);
+	addToList(_data_Day_maxima, _max_today, SIZE_DAY_LIST);
 	clearMinMax_day();
 	// Store in LittleFS
 	if (_isDataInFileSys) {
@@ -311,6 +311,21 @@ void SensorData::recover_data_day_max_min_fromFile() {
 	if (_isDataInFileSys) {
 		// Read file from flash LittleFS.
 		String delim = fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
+
+		list<std::string> parts = splitString(delim, '|');
+		int i = 0;
+		for (list<std::string>::iterator it = parts.begin(); it != parts.end(); ++it) {
+			std::string s = *it;
+			if (i == 0)
+			{
+				// This is the maxima list.
+				
+			}
+
+
+			Serial.println(s.c_str());
+		}
+
 		/////////////////////////////////////////////////////////////_data_max_min_string_delim = listFromString_dataPoints(delim);
 	}
 }
@@ -353,15 +368,15 @@ String SensorData::data_Day_max_min_string_delim()
 {
 	if (!_isReportDailyMaxOnly) {
 		return listToString_dataPoints(
-			_maxima_dayList,
-			_minima_dayList,
+			_data_Day_maxima,
+			_data_Day_minima,
 			_isConvertZeroToEmpty,
 			_decimalPlaces);
 	}
 	else {
 		// Do not include minima in list.
 		return listToString_dataPoints(
-			_maxima_dayList,
+			_data_Day_maxima,
 			_isConvertZeroToEmpty,
 			_decimalPlaces);
 	}
@@ -372,7 +387,7 @@ String SensorData::data_Day_max_min_string_delim()
 /// </summary>
 /// <returns>List of maxima dataPoints as delimited string.</returns>
 String SensorData::data_Day_max_string_delim() {
-	return 	listToString_dataPoints(_maxima_dayList,
+	return 	listToString_dataPoints(_data_Day_maxima,
 		_isConvertZeroToEmpty,
 		_decimalPlaces);
 }
@@ -382,7 +397,7 @@ String SensorData::data_Day_max_string_delim() {
 /// </summary>
 /// <returns>List of minima dataPoints as delimited string.</returns>
 String SensorData::minima_byDay_string_delim() {
-	return 	listToString_dataPoints(_minima_dayList,
+	return 	listToString_dataPoints(_data_Day_minima,
 		_isConvertZeroToEmpty,
 		_decimalPlaces);
 }
@@ -443,7 +458,7 @@ void SensorData::createFiles(bool isConvertZeroToEmpty, unsigned int decimalPlac
 	}
 	else {
 		Serial.printf("Failed to create or find dir %s for %s.\n", SENSOR_DATA_DIR_PATH, _filenamePrefix);
-	}
+}
 #endif
 	if (!fileCreateOrExists(LittleFS, sensorFilepath("_10_min"))) {
 		Serial.printf("ERROR: Could not create or find %s", sensorFilepath("_10_min").c_str());
@@ -540,7 +555,7 @@ void SensorData::addDummyData_maxima_daily(
 	for (int elem = 0; elem < numElements; elem++)
 	{
 		dataPoint dp{ timeStart, valueStart };
-		addToList(_maxima_dayList, dp, SIZE_60_MIN_LIST);
+		addToList(_data_Day_maxima, dp, SIZE_60_MIN_LIST);
 		valueStart += increment;		// increment value each time.
 		timeStart += SECONDS_PER_DAY;	// 1-day interval
 	}
@@ -565,7 +580,7 @@ void SensorData::addDummyData_minima_daily(
 	for (int elem = 0; elem < numElements; elem++)
 	{
 		dataPoint dp{ timeStart, valueStart };
-		addToList(_minima_dayList, dp, SIZE_60_MIN_LIST);
+		addToList(_data_Day_minima, dp, SIZE_60_MIN_LIST);
 		valueStart += increment;		// increment value each time.
 		timeStart += SECONDS_PER_DAY;	// 1-day interval
 	}
@@ -692,16 +707,16 @@ list<dataPoint> SensorData::data_60_min() {
 /// List of (time, value) dataPoints of daily minima.
 /// </summary>
 /// <returns>List of (time, value) dataPoints.</returns>
-list<dataPoint> SensorData::minima_dayList() {
-	return _minima_dayList;
+list<dataPoint> SensorData::data_Day_minima() {
+	return _data_Day_minima;
 }
 
 /// <summary>
 /// List of (time, value) dataPoints of daily maxima.
 /// </summary>
 /// <returns>List of (time, value) dataPoints.</returns>
-list<dataPoint> SensorData::maxima_dayList() {
-	return _maxima_dayList;
+list<dataPoint> SensorData::data_Day_maxima() {
+	return _data_Day_maxima;
 }
 
 /// <summary>

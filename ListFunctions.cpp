@@ -124,7 +124,7 @@ float ListFunctions::listMaximum(list<dataPoint>& targetList, int numElements) {
 /// </summary>
 /// <param name="targetList">List of dataPoint.</param>
 /// <returns>Delimited string of multiple (time, value) data points.</returns>
-String ListFunctions::listToString_data(list<dataPoint>& targetList) {
+String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList) {
 	String s = "";
 	if (targetList.size() == 0) {
 		return s + "[-EMPTY-]";
@@ -215,13 +215,13 @@ String ListFunctions::listToString_data(
 }
 
 /// <summary>
-/// Splits a delimited string into a list of Arduino String.
+/// Splits a delimited string into a list of C++ std::string.
 /// </summary>
 /// <param name="str">String to split.</param>
-/// <param name="str">Delimiter char, such as ','.</param>
-/// <returns>List of Strings after splitting.</returns>
-list<String> ListFunctions::splitString(const String& str, const char delim) {
-	list<String> substrings;
+/// <param name="delim">Delimiter character.</param>
+/// <returns>List of substrings after splitting.</returns>
+list<std::string> ListFunctions::splitString(const String& str, const char delim) {
+	list<std::string> substrings;
 	std::istringstream ss(str.c_str());	// Convert input String to stream.
 	while (!ss.eof()) {
 		std::string sub;				// empty string to hold substrings
