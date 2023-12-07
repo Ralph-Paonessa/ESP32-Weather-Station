@@ -304,31 +304,31 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", "");
 					break;
 				case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Insol.data_Day_max_min_string_delim().c_str());
 					break;
 				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_IRSky_C.data_Day_max_min_string_delim().c_str());
 					break;
 				case CHART_TEMPERATURE_F:
-					request->send_P(200, "text/plain", d_Temp_F.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Temp_F.data_Day_max_min_string_delim().c_str());
 					break;
 				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_Day_max_min_string_delim().c_str());
 					break;
 				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_RH.data_Day_max_min_string_delim().c_str());
 					break;
 				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", d_UVIndex.data_Day_max_min_string_delim().c_str());
 					break;
 					/*case CHART_WIND_DIRECTION:
 						request->send_P(200, "text/plain", windDir.data_max_min_string_delim().c_str());
 						break;*/
 				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", windSpeed.data_Day_max_min_string_delim().c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windGust.data_max_min_string_delim().c_str());
+					request->send_P(200, "text/plain", windGust.data_Day_max_min_string_delim().c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");
@@ -441,31 +441,31 @@ void serverRouteHandler() {
 					request->send_P(200, "text/plain", "");
 					break;
 				case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.maxima_byDay_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Insol.data_Day_max_string_delim().c_str());
 					break;
 				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.maxima_byDay_string_delim().c_str());
+					request->send_P(200, "text/plain", d_IRSky_C.data_Day_max_string_delim().c_str());
 					break;
 				case CHART_TEMPERATURE_F:
-					request->send_P(200, "text/plain", d_Temp_F.maxima_byDay_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Temp_F.data_Day_max_string_delim().c_str());
 					break;
 				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.maxima_byDay_string_delim().c_str());
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_Day_max_string_delim().c_str());
 					break;
 				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.maxima_byDay_string_delim().c_str());
+					request->send_P(200, "text/plain", d_RH.data_Day_max_string_delim().c_str());
 					break;
 				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.maxima_byDay_string_delim().c_str());
+					request->send_P(200, "text/plain", d_UVIndex.data_Day_max_string_delim().c_str());
 					break;
 				case CHART_WIND_DIRECTION:
-					request->send_P(200, "text/plain", windDir.maxima_byDay_string_delim().c_str());
+					request->send_P(200, "text/plain", windDir.data_Day_max_string_delim().c_str());
 					break;
 				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.maxima_byDay_string_delim().c_str());
+					request->send_P(200, "text/plain", windSpeed.data_Day_max_string_delim().c_str());
 					break;
 				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windGust.maxima_byDay_string_delim().c_str());
+					request->send_P(200, "text/plain", windGust.data_Day_max_string_delim().c_str());
 					break;
 				default:
 					request->send_P(200, "text/plain", "");
