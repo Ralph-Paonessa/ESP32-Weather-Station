@@ -11,7 +11,7 @@
 /// Test code to insert in setup for debugging.
 /// </summary>
 /// <param name="runTime_sec">Number of seconds to run.</param>
-void Testing::testCodeForSetup(unsigned long runTime_sec) {
+void Testing::testCodeForSetup1(unsigned long runTime_sec, bool isInfiniteLoop) {
 	//#if defined(VM_DEBUG)
 	Serial.println(LINE_SEPARATOR);
 	Serial.print("TEST in setup to run for "); Serial.print(runTime_sec); Serial.println(" sec/n");
@@ -34,13 +34,6 @@ void Testing::testCodeForSetup(unsigned long runTime_sec) {
 	Serial.println("String from list from flash:");
 	Serial.println(s);*/
 
-	String s2 = "1,64~2,~3,63~4,~5,61";
-	Serial.println("String to convert to list:");
-	Serial.println(s2);
-	list<dataPoint> dpList2 = listFromString_dataPoints(s2);
-	Serial.println("String derived from list o data points:");
-	Serial.println(listToString_dataPoints(dpList2));
-
 	/*
 	list<float> testList;
 	float val = 10;
@@ -58,15 +51,65 @@ void Testing::testCodeForSetup(unsigned long runTime_sec) {
 /*}*/
 	Serial.println("TEST COMPLETE");
 	Serial.println(LINE_SEPARATOR);
-	while (true) {}	// infinite loop to halt
+	if (isInfiniteLoop) {
+		infiniteLoop();
+	}
 	//#endif
 }
 
 
+/// <summary>
+/// Test code to insert in setup for debugging.
+/// </summary>
+void Testing::testCodeForSetup2(bool isInfiniteLoop) {
+	//#if defined(VM_DEBUG)
+	Serial.println(LINE_SEPARATOR);
+	unsigned long timeStart = millis();
+
+	String s2 = "1,64~2,~3,63~4,~5,61";
+	Serial.println("String to convert to list:");
+	Serial.println(s2);
+	list<dataPoint> dpList2 = listFromString_dataPoints(s2);
+	Serial.println("String derived from list of data points:");
+	Serial.println(listToString_dataPoints(dpList2));
+
+	Serial.println("TEST COMPLETE");
+	Serial.println(LINE_SEPARATOR);
+	if (isInfiniteLoop) {
+		infiniteLoop();
+	}
+}
+
+/// <summary>
+/// Test code for ListFunctions::splitString.
+/// </summary>
+void Testing::testCodeForSetup3(bool isInfiniteLoop) {
+	//#if defined(VM_DEBUG)
+	Serial.println(LINE_SEPARATOR);
+	unsigned long timeStart = millis();
+
+	String s = "1,64~2,~3,63~4,~5,61";
+	
+	Serial.println("String to convert to list:");
+	Serial.println(s);
+	Serial.println("splitString(s, '~')");
+	list<std::string> sList = splitString(s, '~');
+
+	listPrint(sList);
+
+	Serial.println("TEST COMPLETE");
+	Serial.println(LINE_SEPARATOR);
+	if (isInfiniteLoop) {
+		infiniteLoop();
+	}
+}
 
 
-
-
+void Testing::infiniteLoop() {
+	Serial.println("Halting with infinite loop.");
+	while (true) {}	// infinite loop to halt
+	//#endif
+}
 
 float Testing::testDummyReading(float seed, float increment1, float increment2, int periods, unsigned long count)
 {
@@ -133,16 +176,6 @@ int Testing::dummyRotations(float first, float last, float spike, int spikePerio
 String Testing::readData()
 {
 	return "12.34,10,12.95,13,16,8.7234";
-}
-
-// Stop further execution.
-void Testing::haltWithInfiniteLoop()
-{
-	// Stop further execution.
-	Serial.println("infinite loop . . . . . . . . ");
-	while (true) {
-		// infinite loop
-	}
 }
 
 // Tests WindSpeed2.h wind directionCardinal handling.

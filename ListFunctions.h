@@ -93,7 +93,6 @@ namespace ListFunctions {
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
 
-
 	/// <summary>
 	/// Converts two lists of dataPoints to strings of 
 	/// comma-separated "time,value" pairs delimited by "~".
@@ -113,10 +112,14 @@ namespace ListFunctions {
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
 
+	/// <summary>
+	/// Splits a delimited string into a list of C++ std::string.
+	/// </summary>
+	/// <param name="str">String to split.</param>
+	/// <param name="delim">Delimiter character.</param>
+	/// <returns>List of substrings after splitting.</returns>
+	list<std::string> splitString(const String& str, const char delimiter);
 
-	list<std::string> substrings_from_String(const String& str, const char delimiter);
-
-	
 	/// <summary>
 	/// Returns a list of dataPoints retrieved from a delimited 
 	/// string of comma-separated "time,value" pairs.
@@ -127,27 +130,23 @@ namespace ListFunctions {
 	/// </returns>
 	list<dataPoint> listFromString_dataPoints(String& delim);
 
-	
-	
-	/*/// <summary>
-	/// Converts two lists of dataPoints to strings of 
-	/// comma-separated "time,value" pairs delimited by "~".
-	/// Then combines both lists, delimited by "|".
+	/// <summary>
+	/// Prints out the elements of a list of C++ std::string.
 	/// </summary>
-	/// <param name="targetList_hi">First list of dataPoints.</param>
-	/// <param name="targetList_lo">Second list of dataPoints.</param>
-	/// <param name="isConvertZeroToEmpty">
-	/// Set true to convert zero values to empty strings.
-	/// </param>
-	/// <param name="decimalPlaces">
-	/// Decimal places to display.</param>
-	/// <returns>Two String lists, respectively delimited by "|".</returns>
-	String listFromString_dataPoints(
-		list<dataPoint>& targetList_hi,
-		list<dataPoint>& targetList_lo,
-		bool isConvertZeroToEmpty,
-		unsigned int decimalPlaces);*/
+	/// <param name="targetList">The list to print.</param>
+	void listPrint(list<std::string> targetList);
 
+	/// <summary>
+	/// Prints out the elements of a list of Arduino String.
+	/// </summary>
+	/// <param name="targetList">The list to print.</param>
+	void listPrint(list<String> targetList);
+
+	/// <summary>
+	/// Prints out the (time, value) elements of a list of datPoint.
+	/// </summary>
+	/// <param name="targetList">The list to print.</param>
+	void listPrint(list<dataPoint> targetList);
 
 };
 

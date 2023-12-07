@@ -94,8 +94,8 @@ protected:		// Protected items are accessible by inherited classes.
 
 	list<dataPoint> _data_10_min;		// List of Data_Points at 10-min intervals.
 	list<dataPoint> _data_60_min;		// List of Data_Points at 60-min intervals.
-	list<dataPoint> _minima_dayList;	// List of daily minima.
-	list<dataPoint> _maxima_dayList;	// List of daily maxima.
+	list<dataPoint> _data_Day_minima;	// List of daily minima.
+	list<dataPoint> _data_Day_maxima;	// List of daily maxima.
 
 public:
 
@@ -246,13 +246,13 @@ public:
 	/// List of (time, value) dataPoints of daily minima.
 	/// </summary>
 	/// <returns>List of (time, value) dataPoints.</returns>
-	list<dataPoint> minima_dayList();
+	list<dataPoint> data_Day_minima();
 
 	/// <summary>
 	/// List of (time, value) dataPoints of daily maxima.
 	/// </summary>
 	/// <returns>List of (time, value) dataPoints.</returns>
-	list<dataPoint> maxima_dayList();
+	list<dataPoint> data_Day_maxima();
 
 	/// <summary>
 	/// Adds label information to the data.
