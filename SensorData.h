@@ -40,7 +40,7 @@ protected:		// Protected items are accessible by inherited classes.
 	dataPoint _dataLastAdded;		// Data point (time, value) of most recent reading.
 
 	float _sumReadings;				// Accumulating sum of readings.
-	unsigned int _countReadings;		// Number of readings in average.
+	unsigned int _countReadings;	// Number of readings in average.
 
 	// Samples required for smoothing avg.
 	const unsigned int COUNT_FOR_SMOOTH = 10;
@@ -275,44 +275,25 @@ public:
 	/// <returns>String for constructing data file name.</returns>
 	String labelFile();
 
-
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
 	String units();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
 	String units_html();
+
+	/******     DATA FROM MEMORY     ******/
 
 	/// <summary>
 	/// Returns list of 10-min dataPoints as delimited string.
 	/// </summary>
 	/// <returns>List of 10-min dataPoints as delimited string.</returns>
 	String data_10_min_string_delim();
-
-	/// <summary>
-	/// Returns true if data has been saved to LittleFS.
-	/// </summary>
-	/// <returns>True if data has been saved to LittleFS.</returns>
-	bool isDataInFileSys();
-
-	/// <summary>
-	/// Retrieves data points from stored file uses 
-	/// them to initialize 10-min list. Used to retrieve 
-	/// any data lost at reboot.
-	/// </summary>
-	void recover_data_10_min_fromFile();
-
-	void recover_data_60_min_fromFile();
-
-	void recover_data_day_max_min_fromFile();
-
-	/// <summary>
-	/// Returns delimited String of 10-min data from file.
-	/// </summary>
-	/// <returns>Delimited String of 10-min data</returns>
-	String dataFile_10_min_string_delim();
-
-
-	String dataFile_60_min_string_delim();
-
-
-	String dataFile_max_min_string_delim();
 
 	/// <summary>
 	/// Returns list of 60-min dataPoints as delimited string.
@@ -336,32 +317,65 @@ public:
 	/// </summary>
 	String minima_byDay_string_delim();
 
-	/******     DATA RECOVERY     ******/
 
-	/*/// <summary>
-	/// List of (time, value) dataPoints at 10-min intervals recovered from storage.
-	/// </summary>
-	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
-	list<dataPoint> recovered_data_10_min();*/
-
-	/*/// <summary>
-	/// List of (time, value) dataPoints at 60-min intervals, recovered from storage.
-	/// </summary>
-	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
-	list<dataPoint> recovered_data_60_min();
+	/******     DATA FROM FILE SYSTEM     ******/
 
 	/// <summary>
-	/// List of (time, value) dataPoints at daily intervals, recovered from storage.
+	/// Returns true if data has been saved to LittleFS.
 	/// </summary>
-	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
-	list<dataPoint> recovered_data_day_min();*/
+	/// <returns>True if data has been saved to LittleFS.</returns>
+	bool isDataInFileSys();
 
+	/// <summary>
+	/// Retrieves data points from stored file uses 
+	/// them to initialize 10-min list. Used to retrieve 
+	/// any data lost at reboot.
+	/// </summary>
+	void recover_data_10_min_fromFile();
+
+	/// <summary>
+	/// Retrieves data points from stored file uses 
+	/// them to initialize 60-min list. Used to retrieve 
+	/// any data lost at reboot.
+	/// </summary>
+	void recover_data_60_min_fromFile();
+
+	/// <summary>
+	/// Retrieves data points from stored file uses 
+	/// them to initialize day list. Used to retrieve 
+	/// any data lost at reboot.
+	/// </summary>
+	void recover_data_day_max_min_fromFile();
+
+	/// <summary>
+	/// Returns delimited String of 10-min data from file.
+	/// </summary>
+	/// <returns>Delimited String of 10-min data</returns>
+	String dataFile_10_min_string_delim();
+
+	/// <summary>
+	/// Returns delimited String of 60-min data from file.
+	/// </summary>
+	/// <returns>Delimited String of 60-min data</returns>
+	String dataFile_60_min_string_delim();
+
+	/// <summary>
+	/// Returns delimited String of day data from file.
+	/// </summary>
+	/// <returns>Delimited String of data data</returns>
+	String dataFile_max_min_string_delim();
 
 	/******     DUMMY DATA     ******/
 
-	void addDummyData_10_min(float valueStart, float increment, int numElements, unsigned long timeStart);
+	void addDummyData_10_min(float valueStart, 
+		float increment, 
+		int numElements, 
+		unsigned long timeStart);
 
-	void addDummyData_60_min(float valueStart, float increment, int numElements, unsigned long timeStart);
+	void addDummyData_60_min(float valueStart, 
+		float increment, 
+		int numElements, 
+		unsigned long timeStart);
 
 	/// <summary>
 	/// Adds the specified number of elements of dummy data to the 
