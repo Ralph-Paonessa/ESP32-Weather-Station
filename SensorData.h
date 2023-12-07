@@ -305,12 +305,12 @@ public:
 	/// Returns list of 60-min dataPoints as delimited string.
 	/// </summary>
 	/// <returns>Delimited string of two (time, value) lists, separated by "|".</returns>
-	String data_max_min_string_delim();
+	String data_Day_max_min_string_delim();
 
 	/// <summary>
 	/// Returns list of daily maxima dataPoints as delimited string.
 	/// </summary>
-	String maxima_byDay_string_delim();
+	String data_Day_max_string_delim();
 
 	/// <summary>
 	/// Returns list of daily minima dataPoints as delimited string.
