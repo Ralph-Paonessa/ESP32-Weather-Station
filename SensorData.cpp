@@ -245,9 +245,10 @@ void SensorData::process_data_10_min() {
 		dataPoint(_dataLastAdded.time, _avg_10_min),
 		SIZE_10_MIN_LIST);
 	// Store in LittleFS
-	if (_isDataInFileSys)
-	{
-		fileWrite(LittleFS, sensorFilepath("_10_min").c_str(), data_10_min_string_delim().c_str());
+	if (_isDataInFileSys) {
+		fileWrite(LittleFS,
+			sensorFilepath("_10_min").c_str(),
+			data_10_min_string_delim().c_str());
 	}
 	clear_10_min();	// Start another 10-min period.
 }
@@ -263,9 +264,10 @@ void SensorData::process_data_60_min() {
 		dataPoint(_dataLastAdded.time, _avg_60_min),
 		SIZE_60_MIN_LIST);
 	// Store in LittleFS
-	if (_isDataInFileSys)
-	{
-		fileWrite(LittleFS, sensorFilepath("_60_min").c_str(), data_60_min_string_delim().c_str());
+	if (_isDataInFileSys) {
+		fileWrite(LittleFS,
+			sensorFilepath("_60_min").c_str(),
+			data_60_min_string_delim().c_str());
 	}
 }
 
@@ -279,9 +281,10 @@ void SensorData::process_data_day() {
 	addToList(_maxima_dayList, _max_today, SIZE_DAY_LIST);
 	clearMinMax_day();
 	// Store in LittleFS
-	if (_isDataInFileSys)
-	{
-		fileWrite(LittleFS, sensorFilepath("_max_min").c_str(), data_max_min_string_delim().c_str());
+	if (_isDataInFileSys) {
+		fileWrite(LittleFS,
+			sensorFilepath("_max_min").c_str(),
+			data_max_min_string_delim().c_str());
 	}
 }
 
@@ -551,7 +554,6 @@ String SensorData::units_html() {
 	return _units_html;
 }
 
-
 /// <summary>
 /// Returns list of 10-min dataPoints as delimited string.
 /// </summary>
@@ -598,6 +600,11 @@ void SensorData::recover_data_60_min_fromFile() {
 	}
 }
 
+
+// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+// XXX  NEEDS MODIFICATION FOR TWO LISTS!!!  XXX
+
 /// <summary>
 /// Retrieves data points from file system and uses 
 /// them to initialize 10-min list. Used to retrieve 
@@ -608,20 +615,11 @@ void SensorData::recover_data_day_max_min_fromFile() {
 	if (_isDataInFileSys) {
 		// Read file from flash LittleFS.
 		String delim = fileReadString(LittleFS, sensorFilepath("_10_min").c_str());
-		_data_10_min = listFromString_dataPoints(delim);
+		_data_max_min_string_delim = listFromString_dataPoints(delim);
 	}
 }
 
 
-///// <summary>
-///// 
-///// </summary>
-///// <returns></returns>
-//list<dataPoint> SensorData::recovered_data_10_min() {
-//	String delim = dataFile_10_min_string_delim();
-//	return listFromString_dataPoints(delim);
-//}
-//
 /// <summary>
 /// Reads 10-min data from file system as a String.
 /// </summary>
@@ -711,15 +709,3 @@ String SensorData::minima_byDay_string_delim() {
 		_isConvertZeroToEmpty,
 		_decimalPlaces);
 }
-
-//list<dataPoint> SensorData::recovered_data_60_min()
-//{
-//	String delim = dataFile_60_min_string_delim();
-//	return listFromString_dataPoints(delim);
-//}
-//
-//list<dataPoint> SensorData::recovered_data_day_min()
-//{
-//	String delim = dataFile_max_min_string_delim();	// XXX  THIS MUST BE SPLIT BY "|" !!!
-//	return listFromString_dataPoints(delim);
-//}
