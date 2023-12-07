@@ -363,7 +363,9 @@ void setup() {
 	if (_isDEBUG_addDummyDataLists) {
 		addDummyData();
 		saveLastReadTime_toFile(now());
+		Serial.println();
 		Serial.println("XXX  saveLastReadTime_toFile(now())  XXX");
+		Serial.println();
 	}
 	if (_isDEBUG_run_test_in_setup) {
 		test.testCodeForSetup(1);
