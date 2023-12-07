@@ -21,13 +21,6 @@ used with both SD cards and LittleFS.
 
 using namespace App_Settings;
 
-//#include <iostream>
-//#include <fstream>
-//#include <string>
-//using namespace std;
-
-using namespace App_Settings;
-
 /// <summary>
 /// Exposes methods that operate on files.
 /// </summary>
@@ -46,13 +39,25 @@ namespace FileOperations {
 	void dirRemove(fs::FS& fs, const char* path);
 
 	/// <summary>
-	/// Returns the contents of a file.
+	/// Returns a String read from a file.
 	/// </summary>
 	/// <param name="fs">File system to use.</param>
-	/// <param name="path">Target file path, such as "/readings/data.txt".
-	/// </param>
-	/// <returns>String containing file contents.</returns>
-	String fileRead(fs::FS& fs, const char* path);
+	/// <param name="path">Target file path with name.</param>
+	/// <returns>String read from a file.</returns>
+	String fileReadString(fs::FS& fs, const char* path);
+
+	// DOESN'T WORK!!! NOT SURE ABOUT POINTERS, BUT IS ARRAY DESTROYED WHEN FUNCTION FINISHES?!
+	//char* fileReadChars(fs::FS& fs, const char* path);
+
+	// XXX RETURNS BLANK STRING!
+	/*/// <summary>
+	/// Returns a String read from a file.
+	/// </summary>
+	/// <param name="path">Target file path with name.</param>
+	/// <returns>String read from a file.</returns>
+	String fileReadStringStream(const char* path);*/
+
+	//void fileRead(fs::FS& fs, const char* path);
 
 	void fileRename(fs::FS& fs, const char* path1, const char* path2);
 

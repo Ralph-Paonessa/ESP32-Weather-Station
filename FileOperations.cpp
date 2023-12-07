@@ -78,8 +78,7 @@ String FileOperations::fileRead(fs::FS& fs, const char* path) {
 	char stringC[DATA_FILE_BUFFER_SIZE] = {  };	// C-string array to hold values from stream.
 	int i = 0;
 	while (file.available()) {
-		
-		//App_Settings::CHAR_GLOBAL_BUFFER[i] += file.read();	// Add each character to C-string.
+		//_char_global_buffer[i] += file.read();	// Add each character to C-string.
 		stringC[i] += file.read();	// Add each character to C-string.
 		i++;
 	}

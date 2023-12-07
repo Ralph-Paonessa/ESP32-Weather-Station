@@ -63,9 +63,7 @@ namespace App_Settings {
 	const String SENSOR_DATA_TIME_FILE_PATH = "/Sensor data/last_time.txt";	// Absolute path to sensor read time file.
 
 
-	// char CHAR_GLOBAL_BUFFER[2048] = {  };			// Globally-defined character array buffer.
-
-
+	//char CHAR_GLOBAL_BUFFER[2048] = {  };			// Globally-defined character array buffer.
 
 
 	const String LOGFILE_PATH_DATA = "/data.txt";

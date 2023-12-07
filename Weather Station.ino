@@ -77,6 +77,56 @@ Testing test;					// class for test routings
 
 //char _char_global_buffer[2048] = {  };			// Globally-defined character array buffer.
 
+/*
+SensorData instances to average readings.
+Wind speed handled by WindSpeed.
+Wind direction handled by WindDirection.
+*/
+
+SensorData d_Temp_F;				// Temperature readings.
+SensorData d_Pres_mb;				// Pressure readings.
+SensorData d_Pres_seaLvl_mb;		// Pressure readings.
+SensorData d_Temp_for_RH_C(false);	// Sensor temperature for pressure readings.
+SensorData d_RH;					// Rel. humidity readings.
+SensorData d_UVA(false);			// UVA readings.
+SensorData d_UVB(false);			// UVB readings.
+SensorData d_UVIndex;				// UV Index readings.
+SensorData d_Insol(true, true);		// Insolation readings (no minima).
+SensorData d_IRSky_C;				// IR sky temperature readings.
+SensorData d_fanRPM(false);			// Fan RPM readings.
+
+#if defined(VM_DEBUG)
+SensorSimulate dummy_Temp_F;			// Temperature readings.
+SensorSimulate dummy_Pres_mb;			// Pressure readings.
+SensorSimulate dummy_Pres_seaLvl_mb;	// Pressure readings.
+SensorSimulate dummy_Temp_for_RH_C;		// Sensor temperature for pressure readings.
+SensorSimulate dummy_RH;				// Rel. humidity readings.
+SensorSimulate dummy_UVA;				// UVA readings.
+SensorSimulate dummy_UVB;				// UVB readings.
+SensorSimulate dummy_UVIndex;			// UV Index readings.
+SensorSimulate dummy_Insol;				// Insolaton readings.
+SensorSimulate dummy_IRSky_C;			// IR sky temperature readings.
+SensorSimulate dummy_fanRPM;			// Fan RPM readings.
+
+SensorSimulate dummy_anemCount;			// Anemometer rot count.
+SensorSimulate dummy_windDir;			// Anemometer wind direction.
+#endif
+
+// %%%%%%%%%%   STATUS FLAGS FOR DEVICES   %%%%%%%%%%%%%%%%
+bool _isGood_Temp = false;
+bool _isGood_PRH = false;
+bool _isGood_UV = false;
+bool _isGood_IR = false;
+bool _isGood_WindDir = false;
+bool _isGood_WindSpeed = false;
+//bool _isGood_GPS = false;
+bool _isGood_PMS = false;
+//bool _isGood_SDCard = false;
+bool _isGood_Solar = false;
+bool _isGood_LITTLEFS = false;
+bool _isGood_fan = false;
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 unsigned long _timeStart_Loop = 0;			//monitor loop timing
 
 volatile int _countInterrupts_base = 0;		// Timer interrupts for sensor reads.
@@ -102,18 +152,6 @@ int _oldYear = 0;		// Year of previous day.
 
 // ==========   PWM Fan for Radiation Shield  ======================== //
 
-
-
-// ==========   PWM Fan for Radiation Shield  ======================== //
-const int FAN_PWM_PIN = 27;				//  GPIO 27 - fan PWM control pin
-const int FAN_SPEED_PIN = 35;			// Fan speed pin GPIO 35 (Digital Input with pullup).
-const int FAN_PWM_FREQUENCY = 25000;	// 25kHz
-const int FAN_PWM_CHANNEL = 0;
-const int FAN_PWM_RESOLUTION = 8;
-const int FAN_PWM_CHANNEL = 0;
-const int FAN_PWM_RESOLUTION = 8;
-const int FAN_PWM_CHANNEL = 0;
-const int FAN_PWM_RESOLUTION = 8;
 volatile unsigned long _fanHalfRots = 0;// count fan half-rotation (2 counts/cycle)
 
 // HARDWARE INTERRUPT for fan tachometer switch that signals half-rotation
@@ -190,11 +228,11 @@ void catchUnhandledBaseTimerInterrupts() {
 }
 
 /// <summary>
-/// Resets interrupt counters. Use when excessive time 
+/// Resets timer interrupt counters. Use when excessive time 
 /// in the main loop (such as WiFi reconnection after loss) 
 /// causes counts in interrupts to be unhandled.
 /// </summary>
-void resetInterruptCounts() {
+void resetTimerInterruptCounts() {
 	String msg = "Skip read cycle where _countInterrupts_base was ";
 	msg += String(_countInterrupts_base);
 	sd.logStatus(msg, millis());
@@ -218,15 +256,30 @@ void resetInterruptCounts() {
 void recover_data() {
 	unsigned long lastTime = lastReadingTime_fromFile();
 	// 10-min lists
-	if (d_Temp_F.isDatafile()
+	if (d_Temp_F.isDataInFileSys()
 		&& (now() - lastTime) > DATA_RECOVERY_10_MIN_CUTOFF)
 	{
 		sd.logStatus("Recovered 10-min data.", millis());
 
-		d_Temp_F.data_10_min_fromFile();
+		d_Temp_F.recover_data_10_min_fromFile();
 	}
 
+	// 60-min lists
+	if (d_Temp_F.isDataInFileSys()
+		&& (now() - lastTime) > DATA_RECOVERY_60_MIN_CUTOFF)
+	{
+		sd.logStatus("Recovered 60-min data.", millis());
 
+		d_Temp_F.recover_data_60_min_fromFile();
+	}
+
+	// day lists
+	if (d_Temp_F.isDataInFileSys()
+		&& (now() - lastTime) > DATA_RECOVERY_DAY_CUTOFF)
+	{
+		d_Temp_F.recover_data_day_max_min_fromFile();
+	}
+}
 
 /****************************************************************************/
 /******************************      SETUP      *****************************/
@@ -305,13 +358,15 @@ void setup() {
 	_oldMonth = month();
 	_oldYear = year();
 
-	}
+#if defined(VM_DEBUG)
 	////////  TESTING   ////////
-	}
+	if (_isDEBUG_addDummyDataLists) {
 		addDummyData();
+		saveLastReadTime_toFile(now());
+		Serial.println("XXX  saveLastReadTime_toFile(now())  XXX");
 	}
 	if (_isDEBUG_run_test_in_setup) {
-		test.testCodeForSetup3(true);
+		test.testCodeForSetup(1);
 	}
 #endif
 
@@ -435,7 +490,7 @@ void loop() {
 	if (day() > _oldDay || month() > _oldMonth || year() > _oldYear) {
 		// NEW DAY. 
 		// Save minima and maxima for previous day.
-		processReadings_day();
+		processReadings_Day();
 		_oldDay = day();
 		_oldMonth = month();
 		_oldYear = year();
@@ -471,7 +526,7 @@ void loop() {
 		String msg = "WARNING: Loop " + String(millis() - _timeStart_Loop) + "ms";
 		sd.logStatus(msg, gps.dateTime());
 	}
-	}
+}
 /******************************        END LOOP        **********************************/
 /****************************************************************************************/
 /****************************************************************************************/

@@ -34,13 +34,13 @@ protected:		// Protected items are accessible by inherited classes.
 	/// <param name="fileSuffix">Suffix to append to file name.</param>
 	String sensorFilepath(String fileSuffix);
 
-	String _label, _filenamePrefix;		// Identifying info.
+	String _label, _labelFile;		// Identifying info.
 	String _units, _units_html;		// Units used.
 
-	dataPoint _dataPointLastAdded;		// Data point (time, value) of most recent reading.
+	dataPoint _dataLastAdded;		// Data point (time, value) of most recent reading.
 
 	float _sumReadings;				// Accumulating sum of readings.
-	unsigned int _countReadings;	// Number of readings in average.
+	unsigned int _countReadings;		// Number of readings in average.
 
 	// Samples required for smoothing avg.
 	const unsigned int COUNT_FOR_SMOOTH = 10;
@@ -76,8 +76,8 @@ protected:		// Protected items are accessible by inherited classes.
 	/// </summary>
 	void clear_10_min();
 
-	bool _isDatafile = true;		// Set true to save periodic data in LittleFS file system.
-	bool _isReportDayMaxOnly = false;	// Set true to save maxima but not minima on LittleFS file system.
+	bool _isDataInFileSys = true;		// Set true to save periodic data in LittleFS file system.
+	bool _isReportDailyMaxOnly = false;	// Set true to save maxima but not minima on LittleFS file system.
 	bool _isUseSmoothing;				// Set true to smooth data with moving avg and reject outliers.
 	float _outlierDelta;				// Factor to determine if reading is an outlier.
 	list<float> _avg_moving_List;		// Moving avg of latest reading values.
@@ -94,8 +94,8 @@ protected:		// Protected items are accessible by inherited classes.
 
 	list<dataPoint> _data_10_min;		// List of Data_Points at 10-min intervals.
 	list<dataPoint> _data_60_min;		// List of Data_Points at 60-min intervals.
-	list<dataPoint> _data_dayMin;	// List of daily minima.
-	list<dataPoint> _data_dayMax;	// List of daily maxima.
+	list<dataPoint> _minima_dayList;	// List of daily minima.
+	list<dataPoint> _maxima_dayList;	// List of daily maxima.
 
 public:
 
@@ -105,7 +105,7 @@ public:
 	/// Creates SensorData instance that exposes 
 	/// methods to read and process sensor data.
 	/// </summary>
-	/// <param name="isDatafile">
+	/// <param name="isDataInFileSys">
 	/// Set true to store data in LittleFS file system.</param>
 	/// <param name="isReportDailyMaxOnly">
 	/// Set true to maxima but not minima LittleFS file system.</param>
@@ -140,23 +140,10 @@ public:
 	/// <param name="dp">(time, value) dataPoint.</param>
 	void addReading(dataPoint dp);
 
-	/// <summary>
-	/// Calculates 10-min avg and saves data to 10-min 
-	/// list. Writes this list to file system.
-	/// </summary>
 	void process_data_10_min();
 
-	/// <summary>
-	/// Calculates 60-min avg and saves data to 10-min 
-/// list. Writes this list to file system.
-	/// </summary>
 	void process_data_60_min();
 
-	/// <summary>
-	/// Adds day maximum to dayMax list and day minimum 
-	/// to dayMin list. Writes a combination of these 
-	/// lists to the file system.
-	/// </summary>
 	void process_data_day();
 
 	/// <summary>
@@ -165,7 +152,7 @@ public:
 	/// <returns>Data point with (time, value) of latest 
 	/// sensor reading.
 	/// </returns>
-	dataPoint dataPointLastAdded();
+	dataPoint dataLastAdded();
 
 	/// <summary>
 	/// The most-recently added data value.
@@ -259,13 +246,13 @@ public:
 	/// List of (time, value) dataPoints of daily minima.
 	/// </summary>
 	/// <returns>List of (time, value) dataPoints.</returns>
-	list<dataPoint> data_day_minima();
+	list<dataPoint> minima_dayList();
 
 	/// <summary>
 	/// List of (time, value) dataPoints of daily maxima.
 	/// </summary>
 	/// <returns>List of (time, value) dataPoints.</returns>
-	list<dataPoint> data_day_maxima();
+	list<dataPoint> maxima_dayList();
 
 	void addLabels(String label,
 		String labelFile,
@@ -286,37 +273,23 @@ public:
 	/// Returns string for constructing data file name.
 	/// </summary>
 	/// <returns>String for constructing data file name.</returns>
-	String filenamePrefix();
+	String labelFile();
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <returns></returns>
+
 	String units();
+	String units_html();
 
 	/// <summary>
-	/// 
+	/// Returns list of 10-min dataPoints as delimited string.
 	/// </summary>
 	/// <returns>List of 10-min dataPoints as delimited string.</returns>
 	String data_10_min_string_delim();
 
-
-
-	/*/// <summary>
-	/// Saves last read time to LittleFS.
-	/// </summary>
-	/// <param name="time">Time to save.</param>
-	void saveLastReadTime_toFile(unsigned long time);
-
 	/// <summary>
-	/// Gets last reading time from LittleFS.
+	/// Returns true if data has been saved to LittleFS.
 	/// </summary>
-	/// <returns>Saved time of last reading.</returns>
-	unsigned long lastReadingTime_fromFile();*/
-
-
-
-
+	/// <returns>True if data has been saved to LittleFS.</returns>
+	bool isDataInFileSys();
 
 	/// <summary>
 	/// Retrieves data points from stored file uses 
@@ -327,7 +300,7 @@ public:
 
 	void recover_data_60_min_fromFile();
 
-	void get_data_10_min_fromFile_DEBUG();
+	void recover_data_day_max_min_fromFile();
 
 	/// <summary>
 	/// Returns delimited String of 10-min data from file.
@@ -345,82 +318,50 @@ public:
 	/// Returns list of 60-min dataPoints as delimited string.
 	/// </summary>
 	/// <returns>List of 60-min dataPoints as delimited string.</returns>
-	String data_60_min_string();
+	String data_60_min_string_delim();
 
 	/// <summary>
 	/// Returns list of 60-min dataPoints as delimited string.
 	/// </summary>
 	/// <returns>Delimited string of two (time, value) lists, separated by "|".</returns>
-	String data_dayMaxMin_string();
+	String data_max_min_string_delim();
 
 	/// <summary>
 	/// Returns list of daily maxima dataPoints as delimited string.
 	/// </summary>
-	String data_dayMax_string();
+	String maxima_byDay_string_delim();
 
 	/// <summary>
 	/// Returns list of daily minima dataPoints as delimited string.
 	/// </summary>
-	String data_dayMin_string();
+	String minima_byDay_string_delim();
 
+	/******     DATA RECOVERY     ******/
 
-	/******     DATA FROM FILE SYSTEM     ******/
-
-	/// <summary>
-	/// Returns true if data has been saved to LittleFS.
-	/// </summary>
-	/// <returns>True if data has been saved to LittleFS.</returns>
-	bool isDatafile();
-
-	/// <summary>
-	/// Retrieves data points from stored file uses 
-	/// them to initialize 10-min list. Used to retrieve 
-	/// any data lost at reboot.
-	/// </summary>
-	void data_10_min_fromFile();
-
-	/// <summary>
+	/*/// <summary>
 	/// List of (time, value) dataPoints at 10-min intervals recovered from storage.
 	/// </summary>
 	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
-	list<dataPoint> recovered_data_10_min();
+	list<dataPoint> recovered_data_10_min();*/
+
+	/*/// <summary>
+	/// List of (time, value) dataPoints at 60-min intervals, recovered from storage.
+	/// </summary>
+	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
+	list<dataPoint> recovered_data_60_min();
 
 	/// <summary>
-	/// Retrieves data points from stored file uses 
-	/// them to initialize day list. Used to retrieve 
-	/// any data lost at reboot.
+	/// List of (time, value) dataPoints at daily intervals, recovered from storage.
 	/// </summary>
-	void data_dayMaxMin_fromFile();
+	/// <returns>List of (time, value) dataPoints recovered from storage.</returns>
+	list<dataPoint> recovered_data_day_min();*/
 
-	/// <summary>
-	/// Returns delimited String of 10-min data from file.
-	/// </summary>
-	/// <returns>Delimited String of 10-min data</returns>
-	String data_10_min_stringFile();
-
-	/// <summary>
-	/// Returns delimited String of 60-min data from file.
-	/// </summary>
-	/// <returns>Delimited String of 60-min data</returns>
-	String data_60_min_stringFile();
-
-	/// <summary>
-	/// Returns delimited String of day data from file.
-	/// </summary>
-	/// <returns>Delimited String of data data</returns>
-	String data_dayMaxMin_stringFile();
 
 	/******     DUMMY DATA     ******/
 
-	void addDummy_data_10_min(float valueStart, 
-		float increment, 
-		int numElements, 
-		unsigned long timeStart);
+	void addDummyData_10_min(float valueStart, float increment, int numElements, unsigned long timeStart);
 
-	void addDummy_data_60_min(float valueStart, 
-		float increment, 
-		int numElements, 
-		unsigned long timeStart);
+	void addDummyData_60_min(float valueStart, float increment, int numElements, unsigned long timeStart);
 
 	/// <summary>
 	/// Adds the specified number of elements of dummy data to the 
@@ -430,7 +371,7 @@ public:
 	/// <param name="increment">Amount to increment the value each time.</param>
 	/// <param name="numElements">Number of elements to add.</param>
 	/// <param name="_timeStartLoop">Time assigned to first data point.</param>
-	void addDummy_data_dayMax(
+	void addDummyData_maxima_daily(
 		float valueStart,
 		float increment,
 		int numElements,
@@ -444,22 +385,11 @@ public:
 	/// <param name="increment">Amount to increment the value each time.</param>
 	/// <param name="numElements">Number of elements to add.</param>
 	/// <param name="_timeStartLoop">Time assigned to first data point.</param>
-	void addDummy_data_dayMin(
+	void addDummyData_minima_daily(
 		float valueStart,
 		float increment,
 		int numElements,
 		unsigned long timeStart);
 };
 
-///// <summary>
-//	/// Saves last read time to LittleFS.
-//	/// </summary>
-//	/// <param name="time">Time to save.</param>
-//static void saveLastReadTime_toFile(unsigned long time);
-//
-///// <summary>
-///// Gets last reading time from LittleFS.
-///// </summary>
-///// <returns>Saved time of last reading.</returns>
-//static unsigned long lastReadingTime_fromFile();
 #endif

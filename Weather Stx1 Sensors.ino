@@ -1,20 +1,4 @@
-///*
-//SensorData instances to average readings.
-//Wind speed handled by WindSpeed.
-//Wind direction handled by WindDirection.
-//*/
-//
-//SensorData d_Temp_F;				// Temperature readings.
-//SensorData d_Pres_mb;				// Pressure readings.
-//SensorData d_Pres_seaLvl_mb;		// Pressure readings.
-//SensorData d_Temp_for_RH_C(false);	// Sensor temperature for pressure readings.
-//SensorData d_RH;					// Rel. humidity readings.
-//SensorData d_UVA(false);			// UVA readings.
-//SensorData d_UVB(false);			// UVB readings.
-//SensorData d_UVIndex;				// UV Index readings.
-//SensorData d_Insol(true, true);		// Insolation readings (no minima).
-//SensorData d_IRSky_C;				// IR sky temperature readings.
-//SensorData d_fanRPM(false);			// Fan RPM readings.
+
 
 WindSpeed windSpeed(
 	DAVIS_SPEED_CAL_FACTOR,
@@ -23,39 +7,6 @@ WindSpeed windSpeed(
 	WIND_SPEED_OUTLIER_DELTA);	// WindSpeed instance for wind.
 SensorData windGust;
 WindDirection windDir(VANE_OFFSET);	// WindDirection instance for wind.
-
-
-//#if defined(VM_DEBUG)
-//SensorSimulate dummy_Temp_F;			// Temperature readings.
-//SensorSimulate dummy_Pres_mb;			// Pressure readings.
-//SensorSimulate dummy_Pres_seaLvl_mb;	// Pressure readings.
-//SensorSimulate dummy_Temp_for_RH_C;		// Sensor temperature for pressure readings.
-//SensorSimulate dummy_RH;				// Rel. humidity readings.
-//SensorSimulate dummy_UVA;				// UVA readings.
-//SensorSimulate dummy_UVB;				// UVB readings.
-//SensorSimulate dummy_UVIndex;			// UV Index readings.
-//SensorSimulate dummy_Insol;				// Insolaton readings.
-//SensorSimulate dummy_IRSky_C;			// IR sky temperature readings.
-//SensorSimulate dummy_fanRPM;			// Fan RPM readings.
-//
-//SensorSimulate dummy_anemCount;			// Anemometer rot count.
-//SensorSimulate dummy_windDir;			// Anemometer wind direction.
-//#endif
-
-//// %%%%%%%%%%   STATUS FLAGS FOR DEVICES   %%%%%%%%%%%%%%%%
-//bool _isGood_Temp = false;
-//bool _isGood_PRH = false;
-//bool _isGood_UV = false;
-//bool _isGood_IR = false;
-//bool _isGood_WindDir = false;
-//bool _isGood_WindSpeed = false;
-////bool _isGood_GPS = false;
-//bool _isGood_PMS = false;
-////bool _isGood_SDCard = false;
-//bool _isGood_Solar = false;
-//bool _isGood_LITTLEFS = false;
-//bool _isGood_fan = false;
-//// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 // ==========   SENSORS   ========================== //
