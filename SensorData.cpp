@@ -473,7 +473,7 @@ void SensorData::createFiles(bool isConvertZeroToEmpty, unsigned int decimalPlac
 }
 
 /// <summary>
-/// Returns the path to a sensor data .txt file based on SensorData::Label().
+/// Returns the path for a sensor data text file in LittleFS.
 /// </summary>
 /// <param name="fileSuffix">A suffix to append to the file name.</param>
 /// <returns>Path to a sensor data .txt file.</returns>

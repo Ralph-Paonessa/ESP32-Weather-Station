@@ -237,106 +237,12 @@ void serverRouteHandler() {
 			[](AsyncWebServerRequest* request) {
 				request->send(LittleFS, "/js/chart.js", "text/javascript");
 			});
-		//// highcharts custom javascript file 2.
-		//server.on("/chart_2.js",
-		//	HTTP_GET,
-		//	[](AsyncWebServerRequest* request) {
-		//		request->send(LittleFS, "/js/chart_2.js", "text/javascript");
-		//	});
 
-		/*****  DATA SOURCES FOR GRAPHS  ************************************/
+		/*****  DATA SOURCES FOR GRAPHS  ***********************************
 		/*
-		 Asynchronously Send string with data to html
-		 page where Javascript parses and plots the data.
+			 Asynchronously Send string with data to html
+			 page where Javascript parses and plots the data.
 		*/
-
-
-
-
-
-
-
-
-		/*   TO DO
-
-		1. Need to expand to dataFile_max only for certain sensors
-
-		2. Need initializer to identify which sensors report max only.
-
-		3. Need to make sure one chart can parse BOTH max and min_max data strings.
-			this will eliminate need for chart_2.html and chart_2.js.
-
-		   XXX THIS MUST BE EXPANDED FOR *ALL* _chart_request = CHART________ !!!!!!!!!!!! XXX
-
-		   XXX AND NEED WAY TO CONTROL WHICH SENSORS REPORT *BOTH* HI AND LO!!!!!!!!!!!  XXX
-
-		*/
-
-		//XXX	// INTENTIONAL ERROR!
-
-		/*server.on("/chart_2", HTTP_GET, [](AsyncWebServerRequest* request) {
-			_chart_request = CHART_TEMPERATURE_F;
-			request->send(LittleFS, "/html/chart_2.html", "text/html", false, processor);
-			});*/
-
-
-
-
-
-
-
-
-
-
-
-
-			/*****  DAILY MIN MAX CHARTS  *****/
-
-		server.on("/data_max_min", HTTP_GET,
-			[](AsyncWebServerRequest* request) {
-
-				_isChart_max_min = true;
-
-				// Which chart?
-				switch (_chart_request)
-				{
-				case CHART_NONE:
-					request->send_P(200, "text/plain", "");
-					break;
-				case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.data_Day_max_min_string_delim().c_str());
-					break;
-				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.data_Day_max_min_string_delim().c_str());
-					break;
-				case CHART_TEMPERATURE_F:
-					request->send_P(200, "text/plain", d_Temp_F.data_Day_max_min_string_delim().c_str());
-					break;
-				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_Day_max_min_string_delim().c_str());
-					break;
-				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.data_Day_max_min_string_delim().c_str());
-					break;
-				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.data_Day_max_min_string_delim().c_str());
-					break;
-					/*case CHART_WIND_DIRECTION:
-						request->send_P(200, "text/plain", windDir.data_max_min_string_delim().c_str());
-						break;*/
-				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.data_Day_max_min_string_delim().c_str());
-					break;
-				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windGust.data_Day_max_min_string_delim().c_str());
-					break;
-				default:
-					request->send_P(200, "text/plain", "");
-					break;
-				}
-			});
-
-
 
 		/*****  10-MIN CHARTS  *****/
 
@@ -430,6 +336,52 @@ void serverRouteHandler() {
 				}
 			});
 
+		/*****  DAILY MIN MAX CHARTS  *****/
+
+		server.on("/data_max_min", HTTP_GET,
+			[](AsyncWebServerRequest* request) {
+
+				_isChart_max_min = true;
+
+				// Which chart?
+				switch (_chart_request)
+				{
+				case CHART_NONE:
+					request->send_P(200, "text/plain", "");
+					break;
+				case CHART_INSOLATION:
+					request->send_P(200, "text/plain", d_Insol.data_Day_max_min_string_delim().c_str());
+					break;
+				case CHART_IR_SKY:
+					request->send_P(200, "text/plain", d_IRSky_C.data_Day_max_min_string_delim().c_str());
+					break;
+				case CHART_TEMPERATURE_F:
+					request->send_P(200, "text/plain", d_Temp_F.data_Day_max_min_string_delim().c_str());
+					break;
+				case CHART_PRESSURE_SEA_LEVEL:
+					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_Day_max_min_string_delim().c_str());
+					break;
+				case CHART_RELATIVE_HUMIDITY:
+					request->send_P(200, "text/plain", d_RH.data_Day_max_min_string_delim().c_str());
+					break;
+				case CHART_UV_INDEX:
+					request->send_P(200, "text/plain", d_UVIndex.data_Day_max_min_string_delim().c_str());
+					break;
+					/*case CHART_WIND_DIRECTION:
+						request->send_P(200, "text/plain", windDir.data_max_min_string_delim().c_str());
+						break;*/
+				case CHART_WIND_SPEED:
+					request->send_P(200, "text/plain", windSpeed.data_Day_max_min_string_delim().c_str());
+					break;
+				case CHART_WIND_GUST:
+					request->send_P(200, "text/plain", windGust.data_Day_max_min_string_delim().c_str());
+					break;
+				default:
+					request->send_P(200, "text/plain", "");
+					break;
+				}
+			});
+
 		/*****  DAILY MAXIMA CHARTS  *****/
 
 		server.on("/data_max", HTTP_GET,
@@ -472,7 +424,6 @@ void serverRouteHandler() {
 					break;
 				}
 			});
-
 
 		/*****  DAILY MINIMA CHARTS  *****/
 
@@ -519,7 +470,7 @@ void serverRouteHandler() {
 			});
 
 #if defined(VM_DEBUG)
-	}
+}
 	else {
 		Serial.println("BYPASSING WEB SERVER INITIALIZATION");
 	}
