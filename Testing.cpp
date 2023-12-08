@@ -100,6 +100,9 @@ void Testing::testCodeForSetup3(bool isInfiniteLoop) {
 	// Print the list elements.
 	listPrint(sList);
 
+	Serial.println("Convert using listData_fromString:");
+	listPrint(listData_fromString(s));
+
 	Serial.println("TEST COMPLETE");
 	Serial.println(LINE_SEPARATOR);
 	if (isInfiniteLoop) {
