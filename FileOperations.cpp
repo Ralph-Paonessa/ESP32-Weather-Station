@@ -67,11 +67,11 @@ void FileOperations::dirRemove(fs::FS& fs, const char* path) {
 /// <param name="fs">File system to use.</param>
 /// <param name="path">Target file path with name.</param>
 /// <returns>String read from a file.</returns>
-String FileOperations::fileReadString(fs::FS& fs, const char* path) {
+String FileOperations::fileRead(fs::FS& fs, const char* path) {
 
 	File file = fs.open(path, FILE_READ);
 	if (!file) {
-		Serial.println("ERROR: fileReadString failed to open file for reading");
+		Serial.println("ERROR: fileRead failed to open file for reading");
 		return "";
 	}
 	char stringC[1024] = {  };	// C-string array to hold values from stream.

@@ -63,7 +63,7 @@ void WindDirection::clear_10_min() {
 /// <param name="degrees">Wind direction (uncorrected), deg.</param>
 /// <param name="speed">Speed at time of reading, mph.</param>
 void WindDirection::addReading(long time, float degrees, float speed) {
-	_dataLastAdded = dataPoint(time, degrees);
+	_dataPointLastAdded = dataPoint(time, degrees);
 	///////////_timeLastAdded = time;
 	// Only record direction for speeds greater than threshold.
 	if (speed >= WIND_DIRECTION_SPEED_THRESHOLD) {

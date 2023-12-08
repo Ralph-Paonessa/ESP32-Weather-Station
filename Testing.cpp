@@ -26,11 +26,11 @@ void Testing::testCodeForSetup1(unsigned long runTime_sec, bool isInfiniteLoop) 
 	/********************************/
 	/* INSERT TEST CODE HERE.       */
 
-	/*Serial.println("d_Temp_F.data_10_min_string_delim():");
-	Serial.println(d_Temp_F.data_10_min_string_delim()); Serial.println();
+	/*Serial.println("d_Temp_F.data_10_min_string():");
+	Serial.println(d_Temp_F.data_10_min_string()); Serial.println();
 
 	list<dataPoint> dpList = d_Temp_F.recovered_data_10_min();
-	String s = listToString_dataPoints(dpList);
+	String s = listToString_data(dpList);
 	Serial.println("String from list from flash:");
 	Serial.println(s);*/
 
@@ -70,9 +70,9 @@ void Testing::testCodeForSetup2(bool isInfiniteLoop) {
 	String s2 = "1,64~2,~3,63~4,~5,61";
 	Serial.println("String to convert to list:");
 	Serial.println(s2);
-	list<dataPoint> dpList2 = listFromString_dataPoints(s2);
+	list<dataPoint> dpList2 = listData_fromString(s2);
 	Serial.println("String derived from list of data points:");
-	Serial.println(listToString_dataPoints(dpList2));
+	Serial.println(listToString_data(dpList2));
 
 	Serial.println("TEST COMPLETE");
 	Serial.println(LINE_SEPARATOR);
@@ -143,6 +143,31 @@ void Testing::testCodeForSetup4(bool isInfiniteLoop) {
 	}
 }
 
+/// <summary>
+/// Test code for ListFunctions::splitString.
+/// </summary>
+void Testing::testCodeForSetup5(bool isInfiniteLoop) {
+	//#if defined(VM_DEBUG)
+	Serial.println(LINE_SEPARATOR);
+	Serial.println("TEST START in setup()");
+	unsigned long timeStart = millis();
+
+	std::string s = "";
+	if (s.empty()) {
+		Serial.println("s is Empty.");
+	}
+	else {
+		Serial.println("s is NOT Empty.");
+	}
+	float val = std::stof(s);
+	Serial.print("val = "); Serial.println(val);
+
+	Serial.println("TEST COMPLETE");
+	Serial.println(LINE_SEPARATOR);
+	if (isInfiniteLoop) {
+		infiniteLoop();
+	}
+}
 
 void Testing::infiniteLoop() {
 	Serial.println("Halting with infinite loop.");
@@ -282,11 +307,11 @@ void Testing::windDirection(float angleStart, float angleIncrement, int cycles, 
 //				Serial.print("Latest gust 10-min = "); Serial.println(windSpeed.gust_last_10_min().value);
 //				Serial.print("Latest gust 60-min = "); Serial.println(windSpeed.gust_last_60_min().value);
 //				//Serial.println(listToString(wind.speeds_instant(), "raw");
-//				Serial.println(listToString_dataPoints(windSpeed.speeds_2_min(), "2-min"));
-//				Serial.println(listToString_dataPoints(windSpeed.data_10_min(), "10-min"));
-//				Serial.println(listToString_dataPoints(windSpeed.gusts_10_min(), "Gusts 10-min"));
-//				Serial.println(listToString_dataPoints(windSpeed.data_60_min(), "60-min"));
-//				Serial.println(listToString_dataPoints(windSpeed.gusts_60_min(), "Gusts 60-min"));
+//				Serial.println(listToString_data(windSpeed.speeds_2_min(), "2-min"));
+//				Serial.println(listToString_data(windSpeed.data_10_min(), "10-min"));
+//				Serial.println(listToString_data(windSpeed.gusts_10_min(), "Gusts 10-min"));
+//				Serial.println(listToString_data(windSpeed.data_60_min(), "60-min"));
+//				Serial.println(listToString_data(windSpeed.gusts_60_min(), "Gusts 60-min"));
 //			}
 //		}
 //		// Loop 2 - 
@@ -307,11 +332,11 @@ void Testing::windDirection(float angleStart, float angleIncrement, int cycles, 
 //				Serial.print("Latest gust 60-min = "); Serial.println(windSpeed.gust_last_60_min().value);
 //
 //				//Serial.println(listToString(wind.speeds_instant(), "raw");
-//				Serial.println(listToString_dataPoints(windSpeed.speeds_2_min(), "2-min"));
-//				Serial.println(listToString_dataPoints(windSpeed.data_10_min(), "10-min"));
-//				Serial.println(listToString_dataPoints(windSpeed.gusts_10_min(), "Gusts 10-min"));
-//				Serial.println(listToString_dataPoints(windSpeed.data_60_min(), "60-min"));
-//				Serial.println(listToString_dataPoints(windSpeed.gusts_60_min(), "Gusts 60-min"));
+//				Serial.println(listToString_data(windSpeed.speeds_2_min(), "2-min"));
+//				Serial.println(listToString_data(windSpeed.data_10_min(), "10-min"));
+//				Serial.println(listToString_data(windSpeed.gusts_10_min(), "Gusts 10-min"));
+//				Serial.println(listToString_data(windSpeed.data_60_min(), "60-min"));
+//				Serial.println(listToString_data(windSpeed.gusts_60_min(), "Gusts 60-min"));
 //			}
 //		}
 //	}
@@ -352,16 +377,16 @@ void Testing::testStructList(long time)
 {
 	SensorData d_test;
 	d_test.addLabels("Dummy test data", "test", "units");
-	d_test.addDummyData_10_min(30, .5, 15, time);
+	d_test.addDummy_data_10_min(30, .5, 15, time);
 
 	Serial.println(d_test.label());
 
 	Serial.println("10-min");
-	Serial.println(d_test.data_10_min_string_delim());
+	Serial.println(d_test.data_10_min_string());
 	Serial.println();
 
 	Serial.println("10-min 1 decimal place.");
-	Serial.println(d_test.data_10_min_string_delim());
+	Serial.println(d_test.data_10_min_string());
 }
 
 // Add a list of rotations to a WindSpeed object, and return elapsed seconds.
@@ -420,10 +445,10 @@ float Testing::addDummyRotations(list<float> srcList, WindSpeed& speedObj, float
 //
 //		Serial.print("\n---> CYCLE #"); Serial.print(cycle); Serial.print(". time = "); Serial.print(timeElapsed / 60.); Serial.println(" min");
 //
-//		Serial.println(listToString_dataPoints(windSpeed.speeds_instant(), "raw"));
-//		Serial.println(listToString_dataPoints(windSpeed.speeds_2_min(), "2-min"));
-//		Serial.println(listToString_dataPoints(windSpeed.data_10_min(), "10-min"));
-//		Serial.println(listToString_dataPoints(windSpeed.data_60_min(), "60-min"));
+//		Serial.println(listToString_data(windSpeed.speeds_instant(), "raw"));
+//		Serial.println(listToString_data(windSpeed.speeds_2_min(), "2-min"));
+//		Serial.println(listToString_data(windSpeed.data_10_min(), "10-min"));
+//		Serial.println(listToString_data(windSpeed.data_60_min(), "60-min"));
 //
 //		Serial.print("10-min list size = "); Serial.println(windSpeed.data_10_min().size());
 //

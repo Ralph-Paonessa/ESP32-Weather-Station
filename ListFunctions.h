@@ -71,24 +71,26 @@ namespace ListFunctions {
 	float listMaximum(list<dataPoint>& targetList, int numElements);
 
 	/// <summary>
-	/// Converts a list of dataPoint to a string of "time, value" pairs 
-	/// each delimited by "," and pairs delimited by "~".
-	/// </summary>
-	/// <param name="targetList">List to parse.</param>
-	/// <returns>Delimited string of multiple (time, value) data points.</returns>
-	String listToString_dataPoints(list<dataPoint>& targetList);
+/// Converts a list of data points to a string of "time, value" 
+/// pairs, each delimited by "," separate points delimited by 
+/// "~". Such as "t1,v1~t2,v2~t3,v3".
+/// </summary>
+/// <param name="targetList">List of dataPoint.</param>
+/// <returns>Delimited string of multiple (time, value) data points.</returns>
+	String listToString_data(list<dataPoint>& targetList);
 
 	/// <summary>
 	/// Converts a list of dataPoints to a string of 
-	/// comma-separated "time,value" pairs delimited by "~".
+	/// comma-separated "time,value" pairs delimited by "~". 
+	/// Such as "t1,v1~t2,~t3,v3".
 	/// </summary>
-	/// <param name="targetList">List of dataPoints.</param>
+	/// <param name="targetList">List of dataPoint.</param>
 	/// <param name="isConvertZeroToEmpty">
 	/// Set true to convert zero value to empty string.</param>
 	/// <param name="decimalPlaces">Decimal places to display.</param>
 	/// <returns>
 	/// Comma-separated "time,value" pairs delimited by "~"</returns>
-	String listToString_dataPoints(
+	String listToString_data(
 		list<dataPoint>& targetList,
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
@@ -96,17 +98,18 @@ namespace ListFunctions {
 	/// <summary>
 	/// Converts two lists of dataPoints to strings of 
 	/// comma-separated "time,value" pairs delimited by "~".
-	/// Then combines both lists, delimited by "|".
+	/// Then combines both lists, delimited by "|". Such as 
+	/// "t1,v1~t2,v2~t3,v3|t1,v4~t2,v5~t3,v6"
 	/// </summary>
-	/// <param name="targetList_hi">First list of dataPoints.</param>
-	/// <param name="targetList_lo">Second list of dataPoints.</param>
+	/// <param name="targetList_hi">First list of dataPoint.</param>
+	/// <param name="targetList_lo">Second list of dataPoint.</param>
 	/// <param name="isConvertZeroToEmpty">
 	/// Set true to convert zero values to empty strings.
 	/// </param>
 	/// <param name="decimalPlaces">
 	/// Decimal places to display.</param>
 	/// <returns>Two String lists, respectively delimited by "|".</returns>
-	String listToString_dataPoints(
+	String listToString_data(
 		list<dataPoint>& targetList_hi,
 		list<dataPoint>& targetList_lo,
 		bool isConvertZeroToEmpty,
@@ -137,7 +140,7 @@ namespace ListFunctions {
 	/// <returns>
 	/// List of "time,value" dataPoints retrieved from a delimited string.
 	/// </returns>
-	list<dataPoint> listFromString_dataPoints(String& delim);
+	list<dataPoint> listData_fromString(String& delim);
 
 	/// <summary>
 	/// Prints out the elements of a list of C++ std::string.

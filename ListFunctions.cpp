@@ -118,12 +118,13 @@ float ListFunctions::listMaximum(list<dataPoint>& targetList, int numElements) {
 }
 
 /// <summary>
-/// Converts a list of dataPoint to a string of "time, value" pairs 
-/// each delimited by "," and pairs delimited by "~".
+/// Converts a list of data points to a string of "time, value" 
+/// pairs, each delimited by "," separate points delimited by 
+/// "~". Such as "t1,v1~t2,v2~t3,v3".
 /// </summary>
-/// <param name="targetList">List to parse.</param>
+/// <param name="targetList">List of dataPoint.</param>
 /// <returns>Delimited string of multiple (time, value) data points.</returns>
-String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList) {
+String ListFunctions::listToString_data(list<dataPoint>& targetList) {
 	String s = "";
 	if (targetList.size() == 0) {
 		return s + "[-EMPTY-]";
@@ -147,7 +148,7 @@ String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList) {
 /// <param name="decimalPlaces">Decimal places to display.</param>
 /// <returns>
 /// Comma-separated "time,value" pairs delimited by "~"</returns>
-String ListFunctions::listToString_dataPoints(
+String ListFunctions::listToString_data(
 	list<dataPoint>& targetList,
 	bool isConvertZeroToEmpty,
 	unsigned int decimalPlaces)
@@ -184,7 +185,7 @@ String ListFunctions::listToString_dataPoints(
 /// Decimal places to display.</param>
 /// <returns>Two String lists, respectively delimited by "|".
 /// </returns>
-String ListFunctions::listToString_dataPoints(
+String ListFunctions::listToString_data(
 	list<dataPoint>& targetList_hi,
 	list<dataPoint>& targetList_lo,
 	bool isConvertZeroToEmpty,
@@ -193,7 +194,7 @@ String ListFunctions::listToString_dataPoints(
 	String s = "";
 	if (!targetList_hi.size() == 0)
 	{
-		s += listToString_dataPoints(
+		s += listToString_data(
 			targetList_hi,
 			isConvertZeroToEmpty,
 			decimalPlaces);
@@ -205,7 +206,7 @@ String ListFunctions::listToString_dataPoints(
 	s += "|";	// delimiter between lists
 	if ((!targetList_lo.size() == 0))
 	{
-		s += listToString_dataPoints(
+		s += listToString_data(
 			targetList_lo,
 			isConvertZeroToEmpty,
 			decimalPlaces);
@@ -263,7 +264,7 @@ list<String> ListFunctions::splitString(const String& str, const char delim) {
 /// <returns>
 /// List of "time,value" dataPoints retrieved from a delimited string.
 /// </returns>
-list<dataPoint> ListFunctions::listFromString_dataPoints(String& delim) {
+list<dataPoint> ListFunctions::listData_fromString(String& delim) {
 	list<dataPoint> dPoints;		// List to hold data points.
 	std::istringstream ss(delim.c_str());
 	while (!ss.eof()) {
@@ -271,7 +272,16 @@ list<dataPoint> ListFunctions::listFromString_dataPoints(String& delim) {
 		std::getline(ss, sub, '~');	// Read next delimited field into sub.
 		// Convert string to data point and add to list.
 		size_t i = sub.find_first_of(",");
-		dataPoint dp = dataPoint(std::stoul(sub.substr(0, i)), std::stof(sub.substr(i + 1)));
+		float val = 0;
+		std::string s = sub.substr(i + 1);
+		// Replace empty values with zero.
+		if (!s.empty())		{
+			val = std::stof(s);
+		}
+		else {
+			val = 0;
+		}
+		dataPoint dp = dataPoint(std::stoul(sub.substr(0, i)), val);
 		dPoints.push_back(dp);
 	}
 	return dPoints;
