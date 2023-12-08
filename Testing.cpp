@@ -96,9 +96,6 @@ void Testing::testCodeForSetup3(bool isInfiniteLoop) {
 	// Print the list elements.
 	listPrint(sList);
 
-	Serial.println("Convert using listData_fromString:");
-	listPrint(listData_fromString(s));
-
 	Serial.println("TEST COMPLETE");
 	Serial.println(LINE_SEPARATOR);
 	if (isInfiniteLoop) {
@@ -110,6 +107,7 @@ void Testing::testCodeForSetup3(bool isInfiniteLoop) {
 /// Test code for ListFunctions::splitString.
 /// </summary>
 void Testing::testCodeForSetup4(bool isInfiniteLoop) {
+	//#if defined(VM_DEBUG)
 	Serial.println(LINE_SEPARATOR);
 	Serial.println("TEST START in setup()");
 	unsigned long timeStart = millis();
@@ -123,7 +121,7 @@ void Testing::testCodeForSetup4(bool isInfiniteLoop) {
 
 	String target[] = { s0, s1, s2 };
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 3; i++)	{
 		Serial.println("String to split into a list:");
 		Serial.println(target[i]);
 		// Convert String to list.
