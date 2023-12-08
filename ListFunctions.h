@@ -112,13 +112,22 @@ namespace ListFunctions {
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
 
+	///// <summary>
+	///// Splits a delimited string into a list of C++ std::string.
+	///// </summary>
+	///// <param name="str">String to split.</param>
+	///// <param name="delim">Delimiter character.</param>
+	///// <returns>List of substrings after splitting.</returns>
+	//list<std::string> splitString(const String& str, const char delimiter);
+
+
 	/// <summary>
-	/// Splits a delimited string into a list of C++ std::string.
+	/// Splits a delimited string into a list of Arduino String.
 	/// </summary>
 	/// <param name="str">String to split.</param>
-	/// <param name="delim">Delimiter character.</param>
-	/// <returns>List of substrings after splitting.</returns>
-	list<std::string> splitString(const String& str, const char delimiter);
+	/// <param name="delim">Delimiter char, such as ','.</param>
+	/// <returns>List of Strings after splitting.</returns>
+	list<String> splitString(const String& str, const char delimiter);
 
 	/// <summary>
 	/// Returns a list of dataPoints retrieved from a delimited 

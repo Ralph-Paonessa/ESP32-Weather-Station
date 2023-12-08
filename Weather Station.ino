@@ -261,7 +261,7 @@ void recover_data() {
 	{
 		sd.logStatus("Recovered 10-min data.", millis());
 
-		d_Temp_F.recover_data_10_min_fromFile();
+		d_Temp_F.recoverData_10_min_fromFile();
 	}
 
 	// 60-min lists
@@ -270,14 +270,14 @@ void recover_data() {
 	{
 		sd.logStatus("Recovered 60-min data.", millis());
 
-		d_Temp_F.recover_data_60_min_fromFile();
+		d_Temp_F.recoverData_60_min_fromFile();
 	}
 
 	// day lists
 	if (d_Temp_F.isDataInFileSys()
 		&& (now() - lastTime) > DATA_RECOVERY_DAY_CUTOFF)
 	{
-		d_Temp_F.recover_data_day_max_min_fromFile();
+		d_Temp_F.recoverData_day_max_min_fromFile();
 	}
 }
 
@@ -358,7 +358,7 @@ void setup() {
 	_oldMonth = month();
 	_oldYear = year();
 
-//#if defined(VM_DEBUG)
+#if defined(VM_DEBUG)
 	////////  TESTING   ////////
 	if (_isDEBUG_addDummyDataLists) {
 		addDummyData();
@@ -368,9 +368,9 @@ void setup() {
 		Serial.println();
 	}
 	if (_isDEBUG_run_test_in_setup) {
-		test.testCodeForSetup3(true);
+		test.testCodeForSetup4(true);
 	}
-//#endif
+#endif
 
 	sd.logData(columnNames());	// Write column names to data log.
 	sd.logStatus_indent("DATA COLUMNS:\t" + columnNames());	// Write column names to status log.
@@ -492,7 +492,7 @@ void loop() {
 	if (day() > _oldDay || month() > _oldMonth || year() > _oldYear) {
 		// NEW DAY. 
 		// Save minima and maxima for previous day.
-		processReadings_Day();
+		processReadings_day();
 		_oldDay = day();
 		_oldMonth = month();
 		_oldYear = year();

@@ -94,8 +94,8 @@ protected:		// Protected items are accessible by inherited classes.
 
 	list<dataPoint> _data_10_min;		// List of Data_Points at 10-min intervals.
 	list<dataPoint> _data_60_min;		// List of Data_Points at 60-min intervals.
-	list<dataPoint> _data_Day_minima;	// List of daily minima.
-	list<dataPoint> _data_Day_maxima;	// List of daily maxima.
+	list<dataPoint> _data_day_minima;	// List of daily minima.
+	list<dataPoint> _data_day_maxima;	// List of daily maxima.
 
 public:
 
@@ -246,13 +246,13 @@ public:
 	/// List of (time, value) dataPoints of daily minima.
 	/// </summary>
 	/// <returns>List of (time, value) dataPoints.</returns>
-	list<dataPoint> data_Day_minima();
+	list<dataPoint> data_day_minima();
 
 	/// <summary>
 	/// List of (time, value) dataPoints of daily maxima.
 	/// </summary>
 	/// <returns>List of (time, value) dataPoints.</returns>
-	list<dataPoint> data_Day_maxima();
+	list<dataPoint> data_day_maxima();
 
 	/// <summary>
 	/// Adds label information to the data.
@@ -322,12 +322,12 @@ public:
 	/// Returns list of 60-min dataPoints as delimited string.
 	/// </summary>
 	/// <returns>Delimited string of two (time, value) lists, separated by "|".</returns>
-	String data_Day_max_min_string_delim();
+	String data_day_max_min_string_delim();
 
 	/// <summary>
 	/// Returns list of daily maxima dataPoints as delimited string.
 	/// </summary>
-	String data_Day_max_string_delim();
+	String data_day_max_string_delim();
 
 	/// <summary>
 	/// Returns list of daily minima dataPoints as delimited string.
@@ -348,21 +348,21 @@ public:
 	/// them to initialize 10-min list. Used to retrieve 
 	/// any data lost at reboot.
 	/// </summary>
-	void recover_data_10_min_fromFile();
+	void recoverData_10_min_fromFile();
 
 	/// <summary>
 	/// Retrieves data points from stored file uses 
 	/// them to initialize 60-min list. Used to retrieve 
 	/// any data lost at reboot.
 	/// </summary>
-	void recover_data_60_min_fromFile();
+	void recoverData_60_min_fromFile();
 
 	/// <summary>
 	/// Retrieves data points from stored file uses 
 	/// them to initialize day list. Used to retrieve 
 	/// any data lost at reboot.
 	/// </summary>
-	void recover_data_day_max_min_fromFile();
+	void recoverData_day_max_min_fromFile();
 
 	/// <summary>
 	/// Returns delimited String of 10-min data from file.
