@@ -218,7 +218,7 @@ String ListFunctions::listToString_data(
 /// Splits a delimited string into a list of Arduino String.
 /// </summary>
 /// <param name="str">String to split.</param>
-/// <param name="delim">Delimiter char, such as ','.</param>
+/// <param name="str">Delimiter char, such as ','.</param>
 /// <returns>List of Strings after splitting.</returns>
 list<String> ListFunctions::splitString(const String& str, const char delim) {
 	list<String> substrings;
