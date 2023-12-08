@@ -351,7 +351,7 @@ void readSensors_Simulate() {
 /// <param name="time">Time to save.</param>
 void saveLastReadTime_toFile(unsigned long time) {
 	// Save in LittleFS
-	//if (_isDataInFileSys) {
+	//if (_isDatafile) {
 	fileWrite(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str(), String(time).c_str());
 	///}
 }
@@ -363,8 +363,8 @@ void saveLastReadTime_toFile(unsigned long time) {
 unsigned long lastReadingTime_fromFile()
 {
 	// Read from LittleFS
-	//if (_isDataInFileSys) {
-	return fileReadString(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str()).toInt();
+	//if (_isDatafile) {
+	return fileRead(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str()).toInt();
 	//}
 	//else {
 	//	return 0;

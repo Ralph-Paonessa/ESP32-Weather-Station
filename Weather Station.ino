@@ -256,28 +256,28 @@ void resetTimerInterruptCounts() {
 void recover_data() {
 	unsigned long lastTime = lastReadingTime_fromFile();
 	// 10-min lists
-	if (d_Temp_F.isDataInFileSys()
+	if (d_Temp_F.isDatafile()
 		&& (now() - lastTime) > DATA_RECOVERY_10_MIN_CUTOFF)
 	{
 		sd.logStatus("Recovered 10-min data.", millis());
 
-		d_Temp_F.recoverData_10_min_fromFile();
+		d_Temp_F.data_10_min_fromFile();
 	}
 
 	// 60-min lists
-	if (d_Temp_F.isDataInFileSys()
+	if (d_Temp_F.isDatafile()
 		&& (now() - lastTime) > DATA_RECOVERY_60_MIN_CUTOFF)
 	{
 		sd.logStatus("Recovered 60-min data.", millis());
 
-		d_Temp_F.recoverData_60_min_fromFile();
+		d_Temp_F.data_60_min_fromFile();
 	}
 
 	// day lists
-	if (d_Temp_F.isDataInFileSys()
+	if (d_Temp_F.isDatafile()
 		&& (now() - lastTime) > DATA_RECOVERY_DAY_CUTOFF)
 	{
-		d_Temp_F.recoverData_day_max_min_fromFile();
+		d_Temp_F.data_dayMaxMin_fromFile();
 	}
 }
 
@@ -368,7 +368,7 @@ void setup() {
 		Serial.println();
 	}
 	if (_isDEBUG_run_test_in_setup) {
-		test.testCodeForSetup4(true);
+		test.testCodeForSetup5(true);
 	}
 #endif
 

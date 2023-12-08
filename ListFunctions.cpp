@@ -124,7 +124,7 @@ float ListFunctions::listMaximum(list<dataPoint>& targetList, int numElements) {
 /// </summary>
 /// <param name="targetList">List of dataPoint.</param>
 /// <returns>Delimited string of multiple (time, value) data points.</returns>
-String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList) {
+String ListFunctions::listToString_data(list<dataPoint>& targetList) {
 	String s = "";
 	if (targetList.size() == 0) {
 		return s + "[-EMPTY-]";
