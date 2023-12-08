@@ -192,51 +192,27 @@ String ListFunctions::listToString_data(
 	unsigned int decimalPlaces)
 {
 	String s = "";
-	if (!targetList_hi.size() == 0)
-	{
+	if (!targetList_hi.size() == 0) {
 		s += listToString_data(
 			targetList_hi,
 			isConvertZeroToEmpty,
 			decimalPlaces);
 	}
-	else
-	{
+	else {
 		s += "[-EMPTY HI-]";
 	}
 	s += "|";	// delimiter between lists
-	if ((!targetList_lo.size() == 0))
-	{
+	if ((!targetList_lo.size() == 0)) {
 		s += listToString_data(
 			targetList_lo,
 			isConvertZeroToEmpty,
 			decimalPlaces);
 	}
-	else
-	{
+	else {
 		s += "[-EMPTY LO-]";
 	}
 	return s;
 }
-
-///// <summary>
-///// Splits a delimited string into a list of C++ std::string.
-///// </summary>
-///// <param name="str">String to split.</param>
-///// <param name="delim">Delimiter character.</param>
-///// <returns>List of substrings after splitting.</returns>
-//list<std::string> ListFunctions::splitString(const String& str, const char delim) {
-//	list<std::string> substrings;
-//	std::istringstream ss(str.c_str());	// Convert input String to stream.
-//	while (!ss.eof()) {
-//		std::string sub;				// empty string to hold substrings
-//		std::getline(ss, sub, delim);	// Read character stream before delimiter.
-//		// Convert string to data point and add to list.
-//		/*size_t i = sub.find_first_of(delim);
-//		dataPoint dp = dataPoint(std::stoul(sub.substr(0, i)), std::stof(sub.substr(i + 1)));*/
-//		substrings.push_back(sub);
-//	}
-//	return substrings;
-//}
 
 /// <summary>
 /// Splits a delimited string into a list of Arduino String.
@@ -275,7 +251,7 @@ list<dataPoint> ListFunctions::listData_fromString(String& delim) {
 		float val = 0;
 		std::string s = sub.substr(i + 1);
 		// Replace empty values with zero.
-		if (!s.empty())		{
+		if (!s.empty()) {
 			val = std::stof(s);
 		}
 		else {
