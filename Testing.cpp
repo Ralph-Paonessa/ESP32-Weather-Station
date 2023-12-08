@@ -64,6 +64,7 @@ void Testing::testCodeForSetup1(unsigned long runTime_sec, bool isInfiniteLoop) 
 void Testing::testCodeForSetup2(bool isInfiniteLoop) {
 	//#if defined(VM_DEBUG)
 	Serial.println(LINE_SEPARATOR);
+	Serial.println("TEST START in setup()");
 	unsigned long timeStart = millis();
 
 	String s2 = "1,64~2,~3,63~4,~5,61";
@@ -86,16 +87,54 @@ void Testing::testCodeForSetup2(bool isInfiniteLoop) {
 void Testing::testCodeForSetup3(bool isInfiniteLoop) {
 	//#if defined(VM_DEBUG)
 	Serial.println(LINE_SEPARATOR);
+	Serial.println("TEST START in setup()");
 	unsigned long timeStart = millis();
 
 	String s = "1,64~2,~3,63~4,~5,61";
-	
+
 	Serial.println("String to convert to list:");
 	Serial.println(s);
 	Serial.println("splitString(s, '~')");
-	list<std::string> sList = splitString(s, '~');
-
+	// Convert String to list.
+	list<String> sList = splitString(s, '~');
+	// Print the list elements.
 	listPrint(sList);
+
+	Serial.println("TEST COMPLETE");
+	Serial.println(LINE_SEPARATOR);
+	if (isInfiniteLoop) {
+		infiniteLoop();
+	}
+}
+
+/// <summary>
+/// Test code for ListFunctions::splitString.
+/// </summary>
+void Testing::testCodeForSetup4(bool isInfiniteLoop) {
+	//#if defined(VM_DEBUG)
+	Serial.println(LINE_SEPARATOR);
+	Serial.println("TEST START in setup()");
+	unsigned long timeStart = millis();
+
+	char delimiter = '|';
+	Serial.print("Delimiter = "); Serial.println(delimiter);
+
+	String s0 = "";
+	String s1 = "1,64~2,~3,63~4,~5,61";
+	String s2 = "1,64~2,~3,63~4,~5,61|10,64~20,~30,63~40,~50,61";
+
+	String target[] = { s0, s1, s2 };
+
+	for (int i = 0; i < 3; i++)	{
+		Serial.println("String to split into a list:");
+		Serial.println(target[i]);
+		// Convert String to list.
+		Serial.println("splitString(target[i], delimiter)");
+		list<String> sList = splitString(target[i], delimiter);
+		// Print the list elements.
+		listPrint(sList);
+		Serial.println(LINE_SEPARATOR);
+	}
 
 	Serial.println("TEST COMPLETE");
 	Serial.println(LINE_SEPARATOR);

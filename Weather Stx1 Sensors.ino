@@ -415,7 +415,7 @@ void processReadings_60_min() {
 /// Saves all readings minima and maxima 
 /// for the prior day.
 /// </summary>
-void processReadings_Day() {
+void processReadings_day() {
 	windSpeed.process_data_day();
 	windDir.process_data_day();
 	d_Temp_F.process_data_day();
@@ -489,7 +489,7 @@ void addDummyData() {
 	d_Insol.addDummyData_minima_daily(2700, 25, 24, 1765412100);
 	d_UVIndex.addDummyData_minima_daily(0, 0.5, 24, 1765412100);
 
-	processReadings_Day();
+	processReadings_day();
 
 	//#endif
 }

@@ -217,22 +217,40 @@ String ListFunctions::listToString_dataPoints(
 	return s;
 }
 
+///// <summary>
+///// Splits a delimited string into a list of C++ std::string.
+///// </summary>
+///// <param name="str">String to split.</param>
+///// <param name="delim">Delimiter character.</param>
+///// <returns>List of substrings after splitting.</returns>
+//list<std::string> ListFunctions::splitString(const String& str, const char delim) {
+//	list<std::string> substrings;
+//	std::istringstream ss(str.c_str());	// Convert input String to stream.
+//	while (!ss.eof()) {
+//		std::string sub;				// empty string to hold substrings
+//		std::getline(ss, sub, delim);	// Read character stream before delimiter.
+//		// Convert string to data point and add to list.
+//		/*size_t i = sub.find_first_of(delim);
+//		dataPoint dp = dataPoint(std::stoul(sub.substr(0, i)), std::stof(sub.substr(i + 1)));*/
+//		substrings.push_back(sub);
+//	}
+//	return substrings;
+//}
+
 /// <summary>
-/// Splits a delimited string into a list of C++ std::string.
+/// Splits a delimited string into a list of Arduino String.
 /// </summary>
 /// <param name="str">String to split.</param>
-/// <param name="delim">Delimiter character.</param>
-/// <returns>List of substrings after splitting.</returns>
-list<std::string> ListFunctions::splitString(const String& str, const char delim) {
-	list<std::string> substrings;
+/// <param name="delim">Delimiter char, such as ','.</param>
+/// <returns>List of Strings after splitting.</returns>
+list<String> ListFunctions::splitString(const String& str, const char delim) {
+	list<String> substrings;
 	std::istringstream ss(str.c_str());	// Convert input String to stream.
 	while (!ss.eof()) {
 		std::string sub;				// empty string to hold substrings
 		std::getline(ss, sub, delim);	// Read character stream before delimiter.
 		// Convert string to data point and add to list.
-		/*size_t i = sub.find_first_of(delim);
-		dataPoint dp = dataPoint(std::stoul(sub.substr(0, i)), std::stof(sub.substr(i + 1)));*/
-		substrings.push_back(sub);
+		substrings.push_back(String(sub.c_str()));
 	}
 	return substrings;
 }
