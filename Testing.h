@@ -40,6 +40,8 @@ public:
 
 	void testCodeForSetup4(bool isInfiniteLoop);
 
+	void testCodeForSetup5(bool isInfiniteLoop);
+
 	void infiniteLoop();
 
 	float testDummyReading(float seed, float increment1, float increment2, int periods, unsigned long count);

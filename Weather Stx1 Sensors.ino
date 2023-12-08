@@ -351,7 +351,7 @@ void readSensors_Simulate() {
 /// <param name="time">Time to save.</param>
 void saveLastReadTime_toFile(unsigned long time) {
 	// Save in LittleFS
-	//if (_isDataInFileSys) {
+	//if (_isDatafile) {
 	fileWrite(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str(), String(time).c_str());
 	///}
 }
@@ -363,8 +363,8 @@ void saveLastReadTime_toFile(unsigned long time) {
 unsigned long lastReadingTime_fromFile()
 {
 	// Read from LittleFS
-	//if (_isDataInFileSys) {
-	return fileReadString(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str()).toInt();
+	//if (_isDatafile) {
+	return fileRead(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str()).toInt();
 	//}
 	//else {
 	//	return 0;
@@ -438,56 +438,56 @@ void addDummyData() {
 	Serial.printf("\naddDummyData now() = %li\n", now());
 
 	// 10-min
-	d_Temp_F.addDummyData_10_min(65, -0.75, 24, 1765412100);
-	d_Pres_mb.addDummyData_10_min(991, 1, 24, 1765412100);
-	d_Pres_seaLvl_mb.addDummyData_10_min(991, 1, 24, 1765412100);
-	d_RH.addDummyData_10_min(20, .5, 24, 1765412100);
-	d_IRSky_C.addDummyData_10_min(-25, 0.5, 24, 1765412100);
-	windSpeed.addDummyData_10_min(15, 0.5, 24, 1765412100);
-	windGust.addDummyData_10_min(25, 2, 24, 1765412100);
-	windDir.addDummyData_10_min(270, 5, 24, 1765412100);
-	d_Insol.addDummyData_10_min(2700, 25, 24, 1765412100);
-	d_UVIndex.addDummyData_10_min(0, 0.5, 24, 1765412100);
+	d_Temp_F.addDummy_data_10_min(65, -0.75, 24, 1765412100);
+	d_Pres_mb.addDummy_data_10_min(991, 1, 24, 1765412100);
+	d_Pres_seaLvl_mb.addDummy_data_10_min(991, 1, 24, 1765412100);
+	d_RH.addDummy_data_10_min(20, .5, 24, 1765412100);
+	d_IRSky_C.addDummy_data_10_min(-25, 0.5, 24, 1765412100);
+	windSpeed.addDummy_data_10_min(15, 0.5, 24, 1765412100);
+	windGust.addDummy_data_10_min(25, 2, 24, 1765412100);
+	windDir.addDummy_data_10_min(270, 5, 24, 1765412100);
+	d_Insol.addDummy_data_10_min(2700, 25, 24, 1765412100);
+	d_UVIndex.addDummy_data_10_min(0, 0.5, 24, 1765412100);
 
 	processReadings_10_min();
 
 	// 60-min
-	d_Temp_F.addDummyData_60_min(65, 0.1, 24, 1765412100);
-	d_Pres_mb.addDummyData_60_min(989, 1.5, 24, 1765412100);
-	d_Pres_seaLvl_mb.addDummyData_60_min(991, 2, 24, 1765412100);
-	d_RH.addDummyData_60_min(20, .5, 24, 1765412100);
-	d_IRSky_C.addDummyData_60_min(-25, 0.5, 24, 1765412100);
-	windSpeed.addDummyData_60_min(15, 0.5, 24, 1765412100);
-	windGust.addDummyData_60_min(25, 2, 24, 1765412100);
-	windDir.addDummyData_60_min(270, 5, 24, 1765412100);
-	d_Insol.addDummyData_60_min(2700, 25, 24, 1765412100);
-	d_UVIndex.addDummyData_60_min(0, 0.5, 24, 1765412100);
+	d_Temp_F.addDummy_data_60_min(65, 0.1, 24, 1765412100);
+	d_Pres_mb.addDummy_data_60_min(989, 1.5, 24, 1765412100);
+	d_Pres_seaLvl_mb.addDummy_data_60_min(991, 2, 24, 1765412100);
+	d_RH.addDummy_data_60_min(20, .5, 24, 1765412100);
+	d_IRSky_C.addDummy_data_60_min(-25, 0.5, 24, 1765412100);
+	windSpeed.addDummy_data_60_min(15, 0.5, 24, 1765412100);
+	windGust.addDummy_data_60_min(25, 2, 24, 1765412100);
+	windDir.addDummy_data_60_min(270, 5, 24, 1765412100);
+	d_Insol.addDummy_data_60_min(2700, 25, 24, 1765412100);
+	d_UVIndex.addDummy_data_60_min(0, 0.5, 24, 1765412100);
 
 	processReadings_60_min();
 
 	// daily maxima
-	d_Temp_F.addDummyData_maxima_daily(65, 1, 10, 1765412100);
-	d_Pres_mb.addDummyData_maxima_daily(989, 1.5, 24, 1765412100);
-	d_Pres_seaLvl_mb.addDummyData_maxima_daily(991, 2, 24, 1765412100);
-	d_RH.addDummyData_maxima_daily(20, .5, 24, 1765412100);
-	d_IRSky_C.addDummyData_maxima_daily(-25, 0.5, 24, 1765412100);
-	windSpeed.addDummyData_maxima_daily(15, 0.5, 24, 1765412100);
-	windGust.addDummyData_maxima_daily(25, 2, 24, 1765412100);
-	windDir.addDummyData_maxima_daily(270, 5, 24, 1765412100);
-	d_Insol.addDummyData_maxima_daily(2700, 25, 24, 1765412100);
-	d_UVIndex.addDummyData_maxima_daily(0, 0.5, 24, 1765412100);
+	d_Temp_F.addDummy_data_dayMax(65, 1, 10, 1765412100);
+	d_Pres_mb.addDummy_data_dayMax(989, 1.5, 24, 1765412100);
+	d_Pres_seaLvl_mb.addDummy_data_dayMax(991, 2, 24, 1765412100);
+	d_RH.addDummy_data_dayMax(20, .5, 24, 1765412100);
+	d_IRSky_C.addDummy_data_dayMax(-25, 0.5, 24, 1765412100);
+	windSpeed.addDummy_data_dayMax(15, 0.5, 24, 1765412100);
+	windGust.addDummy_data_dayMax(25, 2, 24, 1765412100);
+	windDir.addDummy_data_dayMax(270, 5, 24, 1765412100);
+	d_Insol.addDummy_data_dayMax(2700, 25, 24, 1765412100);
+	d_UVIndex.addDummy_data_dayMax(0, 0.5, 24, 1765412100);
 
 	// daily minima
-	d_Temp_F.addDummyData_minima_daily(45, -1, 10, 1765412400);
-	d_Pres_mb.addDummyData_minima_daily(989, 1.5, 24, 1765412100);
-	d_Pres_seaLvl_mb.addDummyData_minima_daily(991, 2, 24, 1765412100);
-	d_RH.addDummyData_minima_daily(20, .5, 24, 1765412100);
-	d_IRSky_C.addDummyData_minima_daily(-25, 0.5, 24, 1765412100);
-	windSpeed.addDummyData_minima_daily(15, 0.5, 24, 1765412100);
-	windGust.addDummyData_minima_daily(25, 2, 24, 1765412100);
-	windDir.addDummyData_minima_daily(270, 5, 24, 1765412100);
-	d_Insol.addDummyData_minima_daily(2700, 25, 24, 1765412100);
-	d_UVIndex.addDummyData_minima_daily(0, 0.5, 24, 1765412100);
+	d_Temp_F.addDummy_data_dayMin(45, -1, 10, 1765412400);
+	d_Pres_mb.addDummy_data_dayMin(989, 1.5, 24, 1765412100);
+	d_Pres_seaLvl_mb.addDummy_data_dayMin(991, 2, 24, 1765412100);
+	d_RH.addDummy_data_dayMin(20, .5, 24, 1765412100);
+	d_IRSky_C.addDummy_data_dayMin(-25, 0.5, 24, 1765412100);
+	windSpeed.addDummy_data_dayMin(15, 0.5, 24, 1765412100);
+	windGust.addDummy_data_dayMin(25, 2, 24, 1765412100);
+	windDir.addDummy_data_dayMin(270, 5, 24, 1765412100);
+	d_Insol.addDummy_data_dayMin(2700, 25, 24, 1765412100);
+	d_UVIndex.addDummy_data_dayMin(0, 0.5, 24, 1765412100);
 
 	processReadings_day();
 

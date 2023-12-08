@@ -44,7 +44,7 @@ namespace FileOperations {
 	/// <param name="fs">File system to use.</param>
 	/// <param name="path">Target file path with name.</param>
 	/// <returns>String read from a file.</returns>
-	String fileReadString(fs::FS& fs, const char* path);
+	String fileRead(fs::FS& fs, const char* path);
 
 	// DOESN'T WORK!!! NOT SURE ABOUT POINTERS, BUT IS ARRAY DESTROYED WHEN FUNCTION FINISHES?!
 	//char* fileReadChars(fs::FS& fs, const char* path);
