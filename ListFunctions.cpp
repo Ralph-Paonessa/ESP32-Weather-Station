@@ -218,7 +218,7 @@ String ListFunctions::listToString_data(
 /// Splits a delimited string into a list of Arduino String.
 /// </summary>
 /// <param name="str">String to split.</param>
-/// <param name="delim">Delimiter char, such as ','.</param>
+/// <param name="str">Delimiter char, such as ','.</param>
 /// <returns>List of Strings after splitting.</returns>
 list<String> ListFunctions::splitString(const String& str, const char delim) {
 	list<String> substrings;
@@ -240,9 +240,9 @@ list<String> ListFunctions::splitString(const String& str, const char delim) {
 /// <returns>
 /// List of "time,value" dataPoints retrieved from a delimited string.
 /// </returns>
-list<dataPoint> ListFunctions::listData_fromString(String& delim) {
+list<dataPoint> ListFunctions::listData_fromString(String& str) {
 	list<dataPoint> dPoints;		// List to hold data points.
-	std::istringstream ss(delim.c_str());
+	std::istringstream ss(str.c_str());
 	while (!ss.eof()) {
 		std::string sub;			// empty string to hold substrings
 		std::getline(ss, sub, '~');	// Read next delimited field into sub.

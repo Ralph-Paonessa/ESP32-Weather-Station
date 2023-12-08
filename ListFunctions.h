@@ -136,11 +136,11 @@ namespace ListFunctions {
 	/// Returns a list of dataPoints retrieved from a delimited 
 	/// string of comma-separated "time,value" pairs.
 	/// </summary>
-	/// <param name="delim">Delimited string of dataPoints.</param>
+	/// <param name="str">Delimited string of dataPoints.</param>
 	/// <returns>
 	/// List of "time,value" dataPoints retrieved from a delimited string.
 	/// </returns>
-	list<dataPoint> listData_fromString(String& delim);
+	list<dataPoint> listData_fromString(String& str);
 
 	/// <summary>
 	/// Prints out the elements of a list of C++ std::string.
