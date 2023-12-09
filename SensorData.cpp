@@ -209,7 +209,8 @@ void SensorData::clearMinMax_day() {
 ******************************************************************/
 
 /// <summary>
-/// Saves data to 10-min list.
+/// Calculates 10-min avg and saves data to 10-min 
+/// list. Writes this list to file system.
 /// </summary>
 void SensorData::process_data_10_min() {
 	// Avg over last 10 min.
@@ -228,9 +229,9 @@ void SensorData::process_data_10_min() {
 }
 
 /// <summary>
-/// Saves data to 60-min list.
+/// Calculates 60-min avg and saves data to 10-min 
+/// list. Writes this list to file system.
 /// </summary>
-/// <returns></returns>
 void SensorData::process_data_60_min() {
 	// Average last 6 x 10 min and add to 60-min list.
 	_avg_60_min = listAverage(_data_10_min, 6);	// Save latest average.
@@ -246,9 +247,10 @@ void SensorData::process_data_60_min() {
 }
 
 /// <summary>
-/// Processes data for a full calendar day.
+/// Adds day maximum to dayMax list and day minimum 
+/// to dayMin list. Writes a combination of these 
+/// lists to the file system.
 /// </summary>
-/// <returns></returns>
 void SensorData::process_data_day() {
 	// Save list of daily minima and maxima.
 	addToList(_data_dayMin, _min_today, SIZE_DAY_LIST);

@@ -140,10 +140,23 @@ public:
 	/// <param name="dp">(time, value) dataPoint.</param>
 	void addReading(dataPoint dp);
 
+	/// <summary>
+	/// Calculates 10-min avg and saves data to 10-min 
+	/// list. Writes this list to file system.
+	/// </summary>
 	void process_data_10_min();
 
+	/// <summary>
+	/// Calculates 60-min avg and saves data to 10-min 
+/// list. Writes this list to file system.
+	/// </summary>
 	void process_data_60_min();
 
+	/// <summary>
+	/// Adds day maximum to dayMax list and day minimum 
+	/// to dayMin list. Writes a combination of these 
+	/// lists to the file system.
+	/// </summary>
 	void process_data_day();
 
 	/// <summary>

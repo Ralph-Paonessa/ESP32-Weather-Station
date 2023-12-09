@@ -12,7 +12,6 @@
 /// </summary>
 /// <param name="runTime_sec">Number of seconds to run.</param>
 void Testing::testCodeForSetup1(unsigned long runTime_sec, bool isInfiniteLoop) {
-	//#if defined(VM_DEBUG)
 	Serial.println(LINE_SEPARATOR);
 	Serial.print("TEST in setup to run for "); Serial.print(runTime_sec); Serial.println(" sec/n");
 	unsigned long timeStart = millis();
@@ -54,7 +53,6 @@ void Testing::testCodeForSetup1(unsigned long runTime_sec, bool isInfiniteLoop) 
 	if (isInfiniteLoop) {
 		infiniteLoop();
 	}
-	//#endif
 }
 
 
@@ -62,7 +60,6 @@ void Testing::testCodeForSetup1(unsigned long runTime_sec, bool isInfiniteLoop) 
 /// Test code to insert in setup for debugging.
 /// </summary>
 void Testing::testCodeForSetup2(bool isInfiniteLoop) {
-	//#if defined(VM_DEBUG)
 	Serial.println(LINE_SEPARATOR);
 	Serial.println("TEST START in setup()");
 	unsigned long timeStart = millis();
@@ -85,7 +82,6 @@ void Testing::testCodeForSetup2(bool isInfiniteLoop) {
 /// Test code for ListFunctions::splitString.
 /// </summary>
 void Testing::testCodeForSetup3(bool isInfiniteLoop) {
-	//#if defined(VM_DEBUG)
 	Serial.println(LINE_SEPARATOR);
 	Serial.println("TEST START in setup()");
 	unsigned long timeStart = millis();
@@ -114,7 +110,6 @@ void Testing::testCodeForSetup3(bool isInfiniteLoop) {
 /// Test code for ListFunctions::splitString.
 /// </summary>
 void Testing::testCodeForSetup4(bool isInfiniteLoop) {
-	//#if defined(VM_DEBUG)
 	Serial.println(LINE_SEPARATOR);
 	Serial.println("TEST START in setup()");
 	unsigned long timeStart = millis();
@@ -128,7 +123,7 @@ void Testing::testCodeForSetup4(bool isInfiniteLoop) {
 
 	String target[] = { s0, s1, s2 };
 
-	for (int i = 0; i < 3; i++)	{
+	for (int i = 0; i < 3; i++) {
 		Serial.println("String to split into a list:");
 		Serial.println(target[i]);
 		// Convert String to list.
@@ -150,7 +145,7 @@ void Testing::testCodeForSetup4(bool isInfiniteLoop) {
 /// Test code for ListFunctions::splitString.
 /// </summary>
 void Testing::testCodeForSetup5(bool isInfiniteLoop) {
-	//#if defined(VM_DEBUG)
+#if defined(VM_DEBUG)
 	Serial.println(LINE_SEPARATOR);
 	Serial.println("TEST START in setup()");
 	unsigned long timeStart = millis();
@@ -175,7 +170,7 @@ void Testing::testCodeForSetup5(bool isInfiniteLoop) {
 void Testing::infiniteLoop() {
 	Serial.println("Halting with infinite loop.");
 	while (true) {}	// infinite loop to halt
-	//#endif
+#endif
 }
 
 float Testing::testDummyReading(float seed, float increment1, float increment2, int periods, unsigned long count)
