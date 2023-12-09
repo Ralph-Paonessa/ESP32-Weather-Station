@@ -68,11 +68,11 @@ using namespace FileOperations;
 #include "DebugFlags.h"
 
 
-//#if defined(VM_DEBUG)
+#if defined(VM_DEBUG)
 #include "Testing.h"			// DEBUG AND TESTING
 #include "SensorSimulate.h"
 Testing test;					// class for test routings
-//#endif
+#endif
 
 
 //char _char_global_buffer[2048] = {  };			// Globally-defined character array buffer.
@@ -84,9 +84,9 @@ Wind direction handled by WindDirection.
 */
 
 SensorData d_Temp_F;				// Temperature readings.
-SensorData d_Pres_mb;				// Pressure readings.
-SensorData d_Pres_seaLvl_mb;		// Pressure readings.
-SensorData d_Temp_for_RH_C(false);	// Sensor temperature for pressure readings.
+SensorData d_Pres_mb(false);		// Pressure readings.
+SensorData d_Pres_seaLvl_mb;		// Pressure readings adjusted to sea level.
+SensorData d_Temp_for_RH_C(false);	// Temperature on pressure sensor.
 SensorData d_RH;					// Rel. humidity readings.
 SensorData d_UVA(false);			// UVA readings.
 SensorData d_UVB(false);			// UVB readings.
@@ -228,11 +228,11 @@ void catchUnhandledBaseTimerInterrupts() {
 }
 
 /// <summary>
-/// Resets timer interrupt counters. Use when excessive time 
+/// Resets interrupt counters. Use when excessive time 
 /// in the main loop (such as WiFi reconnection after loss) 
 /// causes counts in interrupts to be unhandled.
 /// </summary>
-void resetTimerInterruptCounts() {
+void resetInterruptCounts() {
 	String msg = "Skip read cycle where _countInterrupts_base was ";
 	msg += String(_countInterrupts_base);
 	sd.logStatus(msg, millis());
@@ -358,8 +358,8 @@ void setup() {
 	_oldMonth = month();
 	_oldYear = year();
 
-	//#if defined(VM_DEBUG)
-		////////  TESTING   ////////
+#if defined(VM_DEBUG)
+	////////  TESTING   ////////
 	if (_isDEBUG_addDummyDataLists) {
 		addDummyData();
 		saveLastReadTime_toFile(now());
@@ -370,7 +370,7 @@ void setup() {
 	if (_isDEBUG_run_test_in_setup) {
 		test.testCodeForSetup3(true);
 	}
-	//#endif
+#endif
 
 	sd.logData(columnNames());	// Write column names to data log.
 	sd.logStatus_indent("DATA COLUMNS:\t" + columnNames());	// Write column names to status log.

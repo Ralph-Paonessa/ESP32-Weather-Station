@@ -62,11 +62,12 @@ void FileOperations::dirRemove(fs::FS& fs, const char* path) {
 }
 
 /// <summary>
-/// Reads a file into a String. Reads the entire file (all lines).
+/// Returns the contents of a file.
 /// </summary>
 /// <param name="fs">File system to use.</param>
-/// <param name="path">Target file path with name.</param>
-/// <returns>String read from a file.</returns>
+/// <param name="path">Target file path, such as "/readings/data.txt".
+/// </param>
+/// <returns>String containing file contents.</returns>
 String FileOperations::fileRead(fs::FS& fs, const char* path) {
 
 	File file = fs.open(path, FILE_READ);
@@ -74,10 +75,9 @@ String FileOperations::fileRead(fs::FS& fs, const char* path) {
 		Serial.println("ERROR: fileRead failed to open file for reading");
 		return "";
 	}
-	char stringC[1024] = {  };	// C-string array to hold values from stream.
+	char stringC[DATA_FILE_BUFFER_SIZE] = {  };	// C-string array to hold values from stream.
 	int i = 0;
 	while (file.available()) {
-		//_char_global_buffer[i] += file.read();	// Add each character to C-string.
 		stringC[i] += file.read();	// Add each character to C-string.
 		i++;
 	}

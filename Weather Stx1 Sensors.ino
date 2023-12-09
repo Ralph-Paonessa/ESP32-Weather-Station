@@ -346,20 +346,20 @@ void readSensors_Simulate() {
 }
 
 /// <summary>
-/// Saves last read time to LittleFS.
+/// Saves last read t to LittleFS.
 /// </summary>
-/// <param name="time">Time to save.</param>
-void saveLastReadTime_toFile(unsigned long time) {
+/// <param name="t">Time to save.</param>
+void saveLastReadTime_toFile(unsigned long t) {
 	// Save in LittleFS
 	//if (_isDatafile) {
-	fileWrite(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str(), String(time).c_str());
+	fileWrite(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str(), String(t).c_str());
 	///}
 }
 
 /// <summary>
-/// Gets last reading time from LittleFS.
+/// Gets last reading t from LittleFS.
 /// </summary>
-/// <returns>Saved time of last reading.</returns>
+/// <returns>Saved t of last reading.</returns>
 unsigned long lastReadingTime_fromFile()
 {
 	// Read from LittleFS
@@ -388,11 +388,9 @@ void processReadings_10_min() {
 	d_UVIndex.process_data_10_min();
 	d_Insol.process_data_10_min();
 	d_IRSky_C.process_data_10_min();
-
-	// Save last 10-min reading time to LittleFS. Used 
+	// Save last 10-min reading t to LittleFS. Used 
 	// to check whether to recover data at reboot.
 	saveLastReadTime_toFile(now());
-
 }
 
 /// <summary>
@@ -434,7 +432,7 @@ void processReadings_day() {
 /// Adds dummy data to SensorData instance lists.
 /// </summary>
 void addDummyData() {
-	//#if defined(VM_DEBUG)
+#if defined(VM_DEBUG)
 	Serial.printf("\naddDummyData now() = %li\n", now());
 
 	// 10-min
@@ -491,7 +489,7 @@ void addDummyData() {
 
 	processReadings_day();
 
-	//#endif
+#endif
 }
 
 /// <summary>

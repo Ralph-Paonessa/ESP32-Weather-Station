@@ -60,10 +60,10 @@ bool checkWifiConnection() {
 			msg += String((millis() - timeStart) / 1000., 3) + "s";
 			sd.logStatus(msg, gps.dateTime());
 		}
-		// Reset timer interrupt counts with delayed 
-		// resets that occurred while reconnecting wifi.
+		// Reset timer interrupt counts because of delays
+		// that occurred while reconnecting wifi.
 		if (isResetTimerCounts) {
-			resetTimerInterruptCounts();
+			resetInterruptCounts();
 			String msg = "Read cycle skipped after WiFi was lost.";
 			sd.logStatus(msg, gps.dateTime());
 			isResetTimerCounts = false;	// Reset flag.
@@ -181,4 +181,3 @@ void wifiSetupAndConnect() {
 		sd.logStatus("BYPASS WIFI", gps.dateTime());
 	}
 }
-
