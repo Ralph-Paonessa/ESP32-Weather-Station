@@ -66,14 +66,17 @@
     <ClCompile Include="WindSpeed2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WebServer Processor.ino" />
-    <ClCompile Include="WebServer.ino" />
     <ClCompile Include="FileOperations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DataRecovery.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Weather Stx1 Sensor routines.ino" />
+    <ClCompile Include="Weather Stx6 Outputs.ino" />
+    <ClCompile Include="Weather Stx2 WiFi routines.ino" />
+    <ClCompile Include="Weather Stx4 WebServer Processor.ino" />
+    <ClCompile Include="Weather Stx3 WebServer.ino" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataPoint.h">
@@ -136,6 +139,7 @@
     <Text Include="data\test1line.txt">
       <Filter>Misc Files</Filter>
     </Text>
+    <Text Include="README_DavisAnemometer.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\img\chart-icon-black-150px.png">
