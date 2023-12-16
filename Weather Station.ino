@@ -1,6 +1,6 @@
 /*****************************************
 Weather-Star 12.0
-Custom weather station control software.
+Custom weather station control software.repair
 
 Ralph Paonessa
 August 10, 2022
@@ -352,6 +352,8 @@ void setup() {
 	sensors_AddLabels();	// Add labels and units to the SensorData instances.
 	sensors_begin();
 	sensors_createFiles();
+	// Retrieve recent saved data from LittleFS.
+	recover_data();
 
 	// Date info to determine when new day begins.
 	_oldDay = day();
