@@ -159,6 +159,13 @@ public:
 	/// </summary>
 	void process_data_day();
 
+
+	/// <summary>
+	/// Recovers list of data points from a file.
+	/// </summary>
+	/// <param name="dataType">The type based on the period.</param>
+	void recover_data_fromFile(dataPeriod dataType);
+
 	/// <summary>
 	/// Data point (time, value) of latest sensor reading.
 	/// </summary>
