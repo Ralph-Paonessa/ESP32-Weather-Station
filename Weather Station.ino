@@ -1,6 +1,6 @@
 /*****************************************
 Weather-Star 12.0
-Custom weather station control software.repair
+Custom weather station control software.
 
 Ralph Paonessa
 August 10, 2022
@@ -52,6 +52,9 @@ Rev. October 7, 2023
 
 // ========  Custom Libraries  ================  
 
+//#include <list>
+//using std::list;
+
 #include "App_settings.h"
 using namespace App_Settings;
 #include "PinAssignments.h"
@@ -68,11 +71,11 @@ using namespace FileOperations;
 #include "DebugFlags.h"
 
 
-#if defined(VM_DEBUG)
+//#if defined(VM_DEBUG)
 #include "Testing.h"			// DEBUG AND TESTING
 #include "SensorSimulate.h"
 Testing test;					// class for test routings
-#endif
+//#endif
 
 
 //char _char_global_buffer[2048] = {  };			// Globally-defined character array buffer.
@@ -95,7 +98,20 @@ SensorData d_Insol(true, true);		// Insolation readings (no minima).
 SensorData d_IRSky_C;				// IR sky temperature readings.
 SensorData d_fanRPM(false);			// Fan RPM readings.
 
-#if defined(VM_DEBUG)
+//list<SensorData> _sensors = {
+//	d_Temp_F,
+//	d_Pres_mb,
+//	d_Pres_seaLvl_mb,
+//	d_Temp_for_RH_C,
+//	d_RH,
+//	d_UVA,
+//	d_UVB,
+//	d_UVIndex,
+//	d_Insol,
+//	d_IRSky_C,
+//	d_fanRPM };
+
+//#if defined(VM_DEBUG)
 SensorSimulate dummy_Temp_F;			// Temperature readings.
 SensorSimulate dummy_Pres_mb;			// Pressure readings.
 SensorSimulate dummy_Pres_seaLvl_mb;	// Pressure readings.
@@ -110,7 +126,7 @@ SensorSimulate dummy_fanRPM;			// Fan RPM readings.
 
 SensorSimulate dummy_anemCount;			// Anemometer rot count.
 SensorSimulate dummy_windDir;			// Anemometer wind direction.
-#endif
+//#endif
 
 // %%%%%%%%%%   STATUS FLAGS FOR DEVICES   %%%%%%%%%%%%%%%%
 bool _isGood_Temp = false;
@@ -259,18 +275,23 @@ void recover_data() {
 	if (d_Temp_F.isDatafile()
 		&& (now() - lastTime) > DATA_RECOVERY_10_MIN_CUTOFF)
 	{
+		d_Temp_F.data_10_min_fromFile();
+
+
 		sd.logStatus("Recovered 10-min data.", millis());
 
-		d_Temp_F.data_10_min_fromFile();
+
 	}
 
 	// 60-min lists
 	if (d_Temp_F.isDatafile()
 		&& (now() - lastTime) > DATA_RECOVERY_60_MIN_CUTOFF)
 	{
-		sd.logStatus("Recovered 60-min data.", millis());
+
 
 		d_Temp_F.data_60_min_fromFile();
+		sd.logStatus("Recovered 60-min data.", millis());
+
 	}
 
 	// day lists
@@ -278,8 +299,26 @@ void recover_data() {
 		&& (now() - lastTime) > DATA_RECOVERY_DAY_CUTOFF)
 	{
 		d_Temp_F.data_dayMaxMin_fromFile();
+		sd.logStatus("Recovered dayMaxMin data.", millis());
 	}
 }
+
+
+
+///
+//void recoverData_forSensors(list<SensorData>& sensors, dataPeriod period) {
+//
+//	for (list<SensorData>::iterator it = sensors.begin(); it != sensors.end(); ++it) {
+//		SensorData sen = *it;
+//		if (sen.isDatafile())
+//		{
+//			sen.recover_data_fromFile(PERIOD_10_MIN);
+//			//sen.data_10_min_fromFile();
+//			String msg = "Recovered " + sen.label() + String(dataPeriodName[period]) + " data.";
+//			sd.logStatus(msg, millis());
+//		}
+//	}
+//}
 
 /****************************************************************************/
 /******************************      SETUP      *****************************/
@@ -360,7 +399,7 @@ void setup() {
 	_oldMonth = month();
 	_oldYear = year();
 
-#if defined(VM_DEBUG)
+//#if defined(VM_DEBUG)
 	////////  TESTING   ////////
 	if (_isDEBUG_addDummyDataLists) {
 		addDummyData();
@@ -372,7 +411,7 @@ void setup() {
 	if (_isDEBUG_run_test_in_setup) {
 		test.testCodeForSetup3(true);
 	}
-#endif
+//#endif
 
 	sd.logData(columnNames());	// Write column names to data log.
 	sd.logStatus_indent("DATA COLUMNS:\t" + columnNames());	// Write column names to status log.
@@ -418,7 +457,7 @@ void setup() {
 	(IS_DAYLIGHT_TIME) ? msg = " Daylight time." : msg = " Standard time.";
 	sd.logStatus(msg);
 	sd.logStatus("SETUP END " + gps.dateTime(), millis());
-}
+	}
 /****************************************************************************/
 /************************        END SETUP       ****************************/
 /****************************************************************************/
@@ -518,12 +557,12 @@ void loop() {
 		}
 	}
 
-#if defined(VM_DEBUG)
+//#if defined(VM_DEBUG)
 	// Add delay for DEBUG.
 	if (_isDEBUG_AddDelayInLoop) {
 		vTaskDelay(_LOOP_DELAY_DEBUG_ms / portTICK_PERIOD_MS);
 	}
-#endif
+//#endif
 
 	// Watch for excessive processing time in loop.
 	if (millis() - _timeStart_Loop > LOOP_TIME_WARNING_THRESHOLD_MS) {

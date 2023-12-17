@@ -93,11 +93,13 @@ namespace App_Settings {
 	/// <summary>
 	/// Enumerate lists of sensor data of different periods.
 	/// </summary>
-	enum dataList {
-		LIST_10_MIN = 0,
-		LIST_60_MIN = 1,
-		LIST_DAY = 2
+	enum dataPeriod {
+		PERIOD_10_MIN,
+		PERIOD_60_MIN,
+		PERIOD_DAY
 	};
+
+	////////////////////////const char* dataPeriodName[] = { "10_MIN", "60_MIN", "DAY" };
 
 	/// <summary>
 	/// Max size of data lists.

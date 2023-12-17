@@ -268,6 +268,48 @@ void SensorData::process_data_day() {
 	DATA RECOVERY FROM FILE SYSTEM
 ******************************************************************/
 
+
+/// <summary>
+/// Recovers list of sensor data points from a file.
+/// </summary>
+/// <param name="period">The type based on the period.</param>
+void SensorData::recover_data_fromFile(dataPeriod period) {
+
+	if (_isDatafile) {
+		String str;
+		switch (period)
+		{
+		case App_Settings::PERIOD_10_MIN:
+			// Get 10-min data from file system and place in memory.
+
+			// Read file from flash LittleFS.
+			str = fileRead(LittleFS, sensorFilepath("_10_min").c_str());
+			_data_10_min = listData_fromString(str);
+			break;
+		case App_Settings::PERIOD_60_MIN:
+			// Get 60-min data from file system and place in memory.
+			// Read file from flash LittleFS.
+			str = fileRead(LittleFS, sensorFilepath("_60_min").c_str());
+			_data_60_min = listData_fromString(str);
+
+			break;
+		case App_Settings::PERIOD_DAY:
+			// Get 10-min data from file system and place in memory.
+
+			// Read file from flash LittleFS.
+
+
+			data_dayMaxMin_fromFile();
+
+
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+
 /// <summary>
 /// Retrieves data points from file system and uses 
 /// them to initialize 10-min list in memory. Used to retrieve 
