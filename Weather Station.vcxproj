@@ -159,6 +159,7 @@
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="WindDirection.h" />
     <ClInclude Include="WindSpeed2.h" />
+    <ClInclude Include="__vm\.ESP32 Weather Station.vsarduino.h" />
     <ClInclude Include="__vm\.ESP32-Weather-Station.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>

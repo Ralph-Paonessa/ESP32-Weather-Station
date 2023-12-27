@@ -75,6 +75,7 @@
     <ClCompile Include="Weather Stx4 WebServer Processor.ino" />
     <ClCompile Include="Weather Stx3 WebServer.ino" />
     <ClCompile Include="Weather Stx0Logging.ino" />
+    <ClCompile Include="Weather Stx1 Sensor routines.ino" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataPoint.h">
@@ -120,6 +121,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PinAssignments.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="__vm\.ESP32 Weather Station.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
