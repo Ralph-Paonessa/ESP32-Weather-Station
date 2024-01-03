@@ -1,7 +1,7 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>WMA Weather-Star</title>
+    <title>Weather Summary</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <link href="style.min.css" rel="stylesheet" media="all" type="text/css" />
@@ -14,105 +14,98 @@
     <div id="loading" class="loading loading--full-height"></div>
 
     <div class="content">
-        <h2>WMA Weather-Star</h2>
-        <h1>Current Weather</h1>
+        <h2>Today's highs and lows</h2>
+        <h1>%WEEKDAY%</h1>
+        
         <div class="navigation">
             <div class="time">
                 %CURRENT_TIME%
             </div>
             <div class="nav">
-                <a href="/">Refresh</a>
+                <a href="/summary">Refresh</a>
             </div>
             <div class="nav">
-                <a href="/summary">Summary</a>
+                <a href="/">Home</a>
             </div>
         </div>
 
         <div class="flex-container">
             <div class="card">
                 <h2>Temperature</h2>
-                <div class="data">
-                    <div>%TEMPERATURE_F% &deg;F</div>
+                <div class="data hi-lo">
+                    <div>Hi %TEMPERATURE_F_HI% &deg;F</div>
+                    <div>Lo %TEMPERATURE_F_LO% &deg;F</div>
                     <a href="/chart_T"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
             <div class="card">
                 <h2>IR sky</h2>
-                <div class="data">
-                    <div>%IR_T_SKY% &deg;C</div>
+                <div class="data hi-lo">
+                    <div>Hi %IR_T_SKY_HI% &deg;C</div>
+                    <div>Lo %IR_T_SKY_LO% &deg;C</div>
                     <a href="/chart_IR"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
 
             <div class="card">
                 <h2>Wind</h2>
-                <div class="data">
-                    <div>%WIND_SPEED% mph</div>
+                <div class="data hi-lo">
+                    <div>Hi %WIND_SPEED_HI% mph</div>
+                    <div>Lo %WIND_SPEED_LO% mph</div>
                     <a href="/chart_W"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
             <div class="card">
                 <h2>Wind Gusts</h2>
-                <div class="data">
-                    <div>%WIND_GUST% mph</div>
+                <div class="data hi-lo">
+                    <div>Hi %WIND_GUST_HI% mph</div>
+                    <div>Lo %WIND_GUST_LO% mph</div>
                     <a href="/chart_Wgst"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
 
             <div class="card">
-                <h2>Wind Direction</h2>
-                <div class="data">
-                    <div>%WIND_DIRECTION% (%WIND_ANGLE%&deg;)</div>
+                <h2>Wind Angle?</h2>
+                <div class="data hi-lo">
+                    <div>Avg ?? &deg;</div>
                     <a href="/chart_Wdir"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
             <div class="card">
                 <h2>Humidity</h2>
-                <div class="data">
-                    <div>%REL_HUMIDITY% &percnt;</div>
+                <div class="data hi-lo">
+                    <div>Hi %REL_HUMIDITY_HI% &percnt;</div>
+                    <div>Lo %REL_HUMIDITY_LO% &percnt;</div>
                     <a href="/chart_RH"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
 
             <div class="card">
                 <h2>Pressure</h2>
-                <div class="data">
-                    <div>%PRESSURE_MB_SL% mb</div>
+                <div class="data hi-lo">
+                    <div>Hi %PRESSURE_MB_SL_HI% mb</div>
+                    <div>Lo %PRESSURE_MB_SL_LO% mb</div>
                     <a href="/chart_P"><img class="icon" src="chart-icon.png"></a>
                 </div>
-                <p><a href="/g_P"></a></p>
             </div>
             <div class="card">
                 <h2>Insolation</h2>
-                <div class="data">
-                    <div>%INSOLATION_PERCENT% &percnt;</div>
+                <div class="data hi-lo">
+                    <div>Hi %INSOLATION_PERCENT_HI% &percnt;</div>
                     <a href="/chart_Insol"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
 
             <div class="card">
                 <h2>UV Index</h2>
-                <div class="data">
-                    <div>%UV_INDEX%</div>
-                    <a href="/chart_UVIndex"><img class="icon" src="chart-icon.png"></a>
-                </div>
-            </div>
-            <div class="card">
-                <h2>GPS Altitude</h2>
-                <div class="data">
-                    <div>%GPS_ALTITUDE% m</div>
-                    <div><a href="/gps">GPS</a></div>
+                <div class="data hi-lo">
+                    <div>Hi %UV_INDEX_HI%</div>
+                    <a href="/chart_UV"><img class="icon" src="chart-icon.png"></a>
                 </div>
             </div>
 
-            <div class="card">
-                <h2>Admin</h2>
-                <div class="data">
-                    <div></div>
-                    <a href="/Admin">Admin</a>
-                </div>
-            </div>
         </div>
+
     </div>
 
     <script>

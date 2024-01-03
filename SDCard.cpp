@@ -5,25 +5,17 @@
 #include "SDCard.h"
 
 /// <summary>
-/// Initialize SD card. 
+/// Creates SD card instance. 
 /// </summary>
-SDCard::SDCard() {
-	
-}
-
-///// <summary>
-///// Initialize SD card. 
-///// </summary>
-///// <param name="SPI_CS_pin">GPIO pin number.</param>
-//SDCard::SDCard(int SPI_CS_pin) {
-//	_SPI_CS_pin = SPI_CS_pin;
-//}
+SDCard::SDCard() {}
 
 /// <summary>
 /// Initializes SD card module.
 /// </summary>
 /// <param name="SPI_CS_pin">GPIO pin number.</param>
-/// <param name="isBypass">Set true to bypass SD card operations.</param>
+/// <param name="isBypass">
+/// Set true to bypass SD card operations and add 
+/// dummy data.</param>
 /// <returns>True if successful SD card initialization.</returns>
 bool SDCard::initialize(int SPI_CS_pin, bool isBypass) {
 
@@ -240,20 +232,20 @@ bool SDCard::createFile(const String& path) {
 	{
 		// If the file doesn't exist, create it.
 		if (SD.exists(path)) {
-			String msg = "[SDCard.createFile] " + path + " file created.";
+			String msg = "[SDCard.createFile] " + path + " file found.";
 			logStatus(msg, millis());
 			return true;
 		}
 		// File does not exist, so create empty file.
 		File file = SD.open(path, FILE_WRITE);
 		if (!file) {
-			String msg = "[SDCard.createFile] " + path + " could not be created.";
+			String msg = "[SDCard.createFile] " + path + " file could not be created.";
 			logStatus(msg, millis());
 			return false;
 			return false;
 		}
 		else {
-			String msg = "[SDCard.createFile] " + path + " created.";
+			String msg = "[SDCard.createFile] " + path + " file created.";
 			logStatus(msg, millis());
 			file.close();
 			return true;

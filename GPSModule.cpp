@@ -8,13 +8,13 @@ Uses TinyGPS++ library to communicate with GPS module, and TimeLib
 
 #include "GPSModule.h"
 
-TinyGPSPlus _tinyGPS;				// TinyGPS++ object.
+TinyGPSPlus _tinyGPS;				// TinyGPS++ instance.
 HardwareSerial _serialGPS(2);		// Allowed values 0, 1, 2?
 
-SDCard _sdCard;		// SDCard object for data logging.
+SDCard _sdCard;		// SDCard instance for data logging.
 
 /// <summary>
-/// Initialize GPSModule object that interacts with a GPS module.
+/// Exposes methods to interact with a GPS module.
 /// </summary>
 GPSModule::GPSModule() {}
 
@@ -25,9 +25,6 @@ GPSModule::GPSModule() {}
 /// <param name="serialConfig">Serial configuration protocol.</param>
 /// <param name="rxPin">RX pin no. on ESP32.</param>
 /// <param name="txPin">TX pin no. on ESP32.</param>
-/// <param name="isBypass">
-/// Set true to simulate gps sync and add dummy data (default is false).
-/// </param>
 void GPSModule::begin(
 	unsigned long baudRate,
 	uint32_t serialConfig,
@@ -43,6 +40,15 @@ void GPSModule::begin(
 }
 
 /// <summary>
+/// Returns true if GPS has received data.
+/// </summary>
+/// <returns>True if GPS has received data.</returns>
+bool GPSModule::isGpsReceiving()
+{
+	return _isGpsReceiving;
+}
+
+/// <summary>
 /// Syncs gps time to the application once the gps is  
 /// providing sufficiently accurate time and location 
 /// data.
@@ -52,85 +58,104 @@ void GPSModule::begin(
 /// True to simulate gps sync and add dummy data 
 /// (default is false)
 /// </param>
-void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
+/// <returns>True if GPS sync success.</returns>
+bool GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 	unsigned long timeStart = millis();
-	_sdCard = sdCard;		// SDCard object for data logging.
+	_sdCard = sdCard;		// SDCard instance for data logging.
 	_isSimulate = isSimulate;
 
-	// Allow gps to be bypassed when flag  is set.
+	// Allow gps to be bypassed when flag is set.
 	if (_isSimulate) {
 		// Pretend gps is synced.
 		_isGpsSynced = true;
 		addDummyGpsData();
 		_sdCard.logStatus("BYPASSING GPS WITH DUMMY DATA.", millis());
-		return;		// Bypass sync.
+		return true;	// Bypass sync.
 	}
 
 	// Sync system to GPS.
-	// Output progress in syncing.
-	_sdCard.logStatus("Begin search for GPS signal.", millis());
+	_sdCard.logStatus("Beginning search for GPS signal.", millis());
+	logSoftwareVersion();
 	bool isFirstTime = false;	// Flag for logging status on first pass.
-	unsigned int countValidCycles = 0;
-	String msg;
+	int countValidCycles = 0;
 
-	// Loop while data is in the serial buffer and until GPS syncs.
-	while (_serialGPS.available() > 0 || !_isGpsSynced) {
-		// Log this message the first time in the loop.
-		if (!isFirstTime) {
-			isFirstTime = true;
-			_sdCard.logStatus("Receiving GPS data.", millis());
-		}
+	long int countAvailable = 0;
 
-		// Need GPS_CYCLES_FOR_SYNC cyles of valid gps data.
-		// While GPS is not synced and GPS is encoding data.
-		while (!_isGpsSynced || _tinyGPS.encode(_serialGPS.read()))
+	// Loop until GPS syncs.
+	while (!_isGpsSynced)
+	{
+		// Loop while data is in the serial buffer.
+		while (_serialGPS.available() > 0)
 		{
-			// A new GPS sentence was encoded.
-			_countGpsCycles++;
-			logCurrentCycle();
+			countAvailable++;
 
-			// Does the data pass our validity tests?
-			if (isGpsDataValid())
+			// Log this message the first time in the loop.
+			if (!isFirstTime) {
+				isFirstTime = true;
+				_sdCard.logStatus("First receipt of GPS data.", millis());
+				_isGpsReceiving = true;
+			}
+			// We require GPS_CYCLES_FOR_SYNC consecutive
+			// cycles of valid gps data.
+			while (_tinyGPS.encode(_serialGPS.read()))	// while GPS is encoding data
 			{
-				// VALID DATA.
-				// Must have valid data for GPS_CYCLES_FOR_SYNC
-				// *consecutive* cycles.
-				countValidCycles++;
-				logData_Valid(countValidCycles);
-				// Error check.
-				if (countValidCycles > GPS_CYCLES_FOR_SYNC) {
-					logCountError(countValidCycles);
+				// A new GPS sentence was encoded.
+				_countGpsCycles++;
+				logCurrentCycle();
+				logData_checksumFailures();
+				// Limit number of attempt cycles.
+				if (_countGpsCycles >= GPS_CYCLES_COUNT_MAX
+					&& countValidCycles < 1) {
+					// Use gps time if valid.
+					if (isGpsDateTimeValid())
+					{
+						syncSystemTimeToGPS();
+						return false;
+					}
 				}
-				// Data is valid, but ...
-				// Do we have enough consecutive cycles of valid data?
-				if (countValidCycles == GPS_CYCLES_FOR_SYNC) {
-					/***************   SUCCESS!!   **************/
-					// Sync system time and location with the GPS. 
-					syncSystemWithCurrentGpsData(timeStart, _countGpsCycles);
-					_isGpsSynced = true;	// flag GPS synced and we're finished.
+				// Does the data pass our validity tests?
+				if (isGpsLocationValid() && isGpsDateTimeValid())
+				{
+					// VALID DATA.
+					// Must have valid data for GPS_CYCLES_FOR_SYNC
+					// *consecutive* cycles.
+					countValidCycles++;
+					logData_Valid(countValidCycles);
+					// Error check.
+					if (countValidCycles > GPS_CYCLES_FOR_SYNC) {
+						logCountError(countValidCycles);
+					}
+					// Data is valid, but ...
+					// Do we have enough consecutive cycles of valid data?
+					if (countValidCycles == GPS_CYCLES_FOR_SYNC) {
+						// SUCCESS!!
+						// Sync system time and location with the GPS. 
+						syncSystemWithCurrentGpsData(timeStart, _countGpsCycles);
+						_isGpsSynced = true;	// flag GPS synced and we're finished.
+						logSyncIsComplete();
+						return true;
+					}
+					else
+					{
+						// Not enough valid cycles yet.
+						logData_Valid_NotEnoughCycles(countValidCycles);
+					}
 				}
 				else
 				{
-					// Not enough valid cycles yet.
-					logData_Valid_NotEnoughCycles(countValidCycles);
+					// INVALID DATA.
+					logData_NotValid();
+					countValidCycles = 0;	// Reset valid cycles.
 				}
-			}	// (isGpsDataValid())
-			else
-			{
-				// INVALID DATA.
-				logData_NotValid();
-				countValidCycles = 0;	// Reset valid cycles.
-			}	// (isGpsDataValid())
-
-			// If not synced, wait between cycles.
-			if (!_isGpsSynced) {
-				// Wait but keep receiving GPS data.
-				gpsSmartDelay(GPS_DELAY_BETWEEN_CYCLES);
+				// If not synced, wait between cycles.
+				if (!_isGpsSynced)
+				{
+					// Wait but keep receiving GPS data.
+					gpsSmartDelay(GPS_CYCLE_DELAY_SEC);
+				}
 			}
-		}	// while (!_isGpsSynced || _tinyGPS.encode(_serialGPS.read()))
-	}		// while (_serialGPS.available() > 0)
-	// GPS sync successful, so wrap up and return.
-	logSyncIsComplete();
+		}
+	}
 }
 
 /// <summary>
@@ -138,7 +163,18 @@ void GPSModule::syncToGPS(SDCard& sdCard, bool isSimulate) {
 /// </summary>
 void GPSModule::addDummyGpsData() {
 	data._altitude = 1234.;	// Dummy altitude (need for P at sea level)
-	setTime(3, 30, 0, 4, 7, 2099);	// Dummy time 3:30:00 7/4/2099.
+	setTime(GPS_DUMMY_HOUR,
+		GPS_DUMMY_MIN,
+		GPS_DUMMY_SEC,
+		GPS_DUMMY_DAY,
+		GPS_DUMMY_MONTH,
+		GPS_DUMMY_YEAR);
+}
+
+void GPSModule::logSoftwareVersion() {
+	String msg = "TinyGpsPlus library ver. ";
+	msg += _tinyGPS.libraryVersion();
+	_sdCard.logStatus_indent(msg);
 }
 
 /// <summary>
@@ -177,7 +213,19 @@ void GPSModule::logData_NotValid() {
 }
 
 /// <summary>
-/// Logs that the GPS data fails our validity tests.
+/// Logs number of GPS sentences that failed checksum.
+/// </summary>
+void GPSModule::logData_checksumFailures() {
+	if (_tinyGPS.failedChecksum() > 0)
+	{
+		String msg = String(_tinyGPS.failedChecksum());
+		msg += " GPS sentences FAILED CHECKSUM.";
+		_sdCard.logStatus(msg, millis());
+	}
+}
+
+/// <summary>
+/// Logs failure of GPS data validity tests.
 /// </summary>
 /// <param name="countValidCycles">Number of valid cycles.</param>
 void GPSModule::logData_Valid_NotEnoughCycles(int countValidCycles) {
@@ -188,7 +236,7 @@ void GPSModule::logData_Valid_NotEnoughCycles(int countValidCycles) {
 }
 
 /// <summary>
-/// Logs this cyle of gps data retrieval.
+/// Logs one cyle of gps data retrieval.
 /// </summary>
 void GPSModule::logCurrentCycle() {
 	_sdCard.logStatus(LINE_SEPARATOR);
@@ -199,7 +247,7 @@ void GPSModule::logCurrentCycle() {
 }
 
 /// <summary>
-/// GPS sync successful, so wraps up and returns.
+/// Logs GPS sync success.
 /// </summary>
 void GPSModule::logSyncIsComplete() {
 	_sdCard.logStatus(LINE_SEPARATOR);
@@ -208,7 +256,7 @@ void GPSModule::logSyncIsComplete() {
 	_sdCard.logStatus("GPS sync complete.", millis());
 	String msg = "Local date and time " + dateTime();
 	_sdCard.logStatus(msg);
-	msg = " Using offset from UTC = " + String(UTC_OFFSET_HOURS) + " hr.";
+	msg = "Using offset from UTC = " + String(UTC_OFFSET_HOURS) + " hr.";
 	if (IS_DAYLIGHT_TIME) {
 		msg += " Adjusted + 1 hr for Daylight Time.";
 	}
@@ -220,22 +268,23 @@ void GPSModule::logSyncIsComplete() {
 }
 
 /// <summary>
-/// Returns true if the GPS data passes all validity tests.
+/// Returns true if the GPS location data passes all validity tests.
 /// </summary>
-/// <returns>True if valid GPS data.</returns>
-bool GPSModule::isGpsDataValid() {
-	bool isValid = false;
-	if (
+/// <returns>True if valid GPS location data.</returns>
+bool GPSModule::isGpsLocationValid() {
+	return		(
 		_tinyGPS.satellites.value() >= GPS_SATELLITES_REQUIRED
-		&& _tinyGPS.date.isValid()
 		&& _tinyGPS.location.isValid()
 		&& _tinyGPS.altitude.isValid()
-		&& _tinyGPS.hdop.value() / 100. <= GPS_MAX_ALLOWED_HDOP
-		)
-	{
-		isValid = true;
-	}
-	return isValid;
+		&& _tinyGPS.hdop.value() / 100. <= GPS_MAX_ALLOWED_HDOP);
+}
+
+/// <summary>
+/// Returns true if the GPS date and time pass all validity tests.
+/// </summary>
+/// <returns>True if valid GPS date and time.</returns>
+bool GPSModule::isGpsDateTimeValid() {
+	return (_tinyGPS.date.isValid() && _tinyGPS.time.isValid());
 }
 
 /// <summary>
@@ -243,7 +292,7 @@ bool GPSModule::isGpsDataValid() {
 /// </summary>
 /// <param name="millisStart">Mills when the sync operation started.</param>
 /// <param name="countGpsCycles">Total number of GPS cycles.</param>
-/// <param name="sdCard">SDCard object for logging.</param>
+/// <param name="sdCard">SDCard instance for logging.</param>
 void GPSModule::syncSystemWithCurrentGpsData(unsigned long millisStart, int countGpsCycles) {
 	String msg = "GPS valid data criteria met after ";
 	msg += String(countGpsCycles) + " cycles.";
@@ -256,7 +305,7 @@ void GPSModule::syncSystemWithCurrentGpsData(unsigned long millisStart, int coun
 
 /// <summary>
 /// This custom version of delay() ensures that the
-/// gps object is being "fed".
+/// gps instance is being "fed".
 /// </summary>
 /// <param name="delay">Delay, sec.</param>
 void GPSModule::gpsSmartDelay(unsigned long delay) {
@@ -333,7 +382,7 @@ void GPSModule::logGpsData() {
 }
 
 /// <summary>
-/// Sync time and date to GPS.
+/// Set system time and date to GPS values.
 /// </summary>
 void GPSModule::syncSystemTimeToGPS() {
 	// Use TimLib setTime:
@@ -426,9 +475,9 @@ bool GPSModule::isDaylightTime() {
 /// </summary>
 /// <returns></returns>
 String GPSModule::dateTime() {
-	if (!_isGpsSynced) {
-		return String(millis() / 1000., 2) + "s";	// Date not yet known.
-	}
+	//if (!_isGpsSynced) {
+	//	return String(millis() / 1000., 2) + "s";	// Date not yet known.
+	//}
 	time_t t = now(); // Hold current time.
 	String s = String(year(t)) + "-";
 	// Month.
@@ -448,14 +497,13 @@ String GPSModule::dateTime() {
 }
 
 /// <summary>
-/// Returns string "hh:mm" from current time 
-/// (using TimeLib).
+/// Returns current system time as "hh:mm".
 /// </summary>
-/// <returns></returns>
+/// <returns>Current time "hh:mm"</returns>
 String GPSModule::time() {
-	if (!_isGpsSynced) {
-		return String(now()) + "s";
-	}
+	//if (!_isGpsSynced) {
+	//	return String(now()) + "s";
+	//}
 	String s = "";
 	time_t t = now(); // Save current time.
 	// Time
@@ -475,12 +523,40 @@ String GPSModule::time() {
 }
 
 /// <summary>
+/// Returns the name of the current day of the week ("Sunday", etc.).
+/// </summary>
+/// <returns>Current day of the week ("Sunday", etc.).</returns>
+String GPSModule::dayName() {
+	// (NOTE: The TimeLib function dayStr(day()) kept causing crashes!)
+	switch (weekday())	// TimeLib function.
+	{
+	case 1:
+		return "Sunday";
+	case 2:
+		return "Monday";
+	case 3:
+		return "Tuesday";
+	case 4:
+		return "Wednesday";
+	case 5:
+		return "Thursday";
+	case 6:
+		return "Friday";
+	case 7:
+		return "Saturday";
+	default:
+		return "day error!";
+	}
+}
+
+/// <summary>
 /// Latitude when GPS was synced to application.
 /// </summary>
 /// <returns></returns>
 float GPSData::latitude() {
 	return _latitude;
 }
+
 /// <summary>
 /// Longitude when GPS was synced to application.
 /// </summary>
@@ -512,7 +588,6 @@ unsigned int GPSData::satellites() {
 	return _satellites;
 }
 
-unsigned long GPSData::timeToSync_sec()
-{
+unsigned long GPSData::timeToSync_sec() {
 	return _timeForSyncProcess_sec;
 }

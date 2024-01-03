@@ -24,7 +24,7 @@ logged to the SD card.
 #include "WProgram.h"
 #endif
 
-#include <TinyGPS++.h>
+#include <TinyGPSPlus.h>	// Mikal Hart - includes TinyGPS++.h
 #include <TimeLib.h>		// Paul Stoffregen - Time
 
 #include "App_Settings.h"
@@ -47,6 +47,7 @@ private:
 	unsigned long  _timeForSyncProcess_sec;		// Seconds elapsed while gps syncs.
 
 public:
+
 	/// <summary>
 	/// GPS latitude at sync, degrees.
 	/// </summary>
@@ -85,7 +86,7 @@ public:
 };
 
 /// <summary>
-/// Object that interacts with a GPS module.
+/// Exposes methods to interact with a GPS module.
 /// </summary>
 class GPSModule {
 
@@ -94,8 +95,10 @@ private:
 	bool _isGpsSynced = false;	// flag when GPS data is synced to app
 	int _countGpsCycles = 0;	// keep track of GPS cycles
 
+	bool _isGpsReceiving = false;
+
 	/// <summary>
-	/// Sync time and date to GPS.
+	/// Set system time and date to GPS values.
 	/// </summary>
 	void syncSystemTimeToGPS();
 
@@ -105,10 +108,16 @@ private:
 	void syncLocationToGPS();
 
 	/// <summary>
-	/// Returns true if the GPS data passes all validity tests.
+	/// Returns true if the GPS date and time pass all validity tests.
 	/// </summary>
-	/// <returns>True if GPS data is valid </returns>
-	bool isGpsDataValid();
+	/// <returns>True if valid GPS date and time.</returns>
+	bool isGpsDateTimeValid();
+
+	/// <summary>
+	/// Returns true if the GPS location data passes all validity tests.
+	/// </summary>
+	/// <returns>True if valid GPS location data.</returns>
+	bool isGpsLocationValid();
 
 	void syncSystemWithCurrentGpsData(unsigned long millisStart, int countGpsCycles);
 
@@ -122,6 +131,11 @@ private:
 
 	void logData_NotValid();
 
+	/// <summary>
+	/// Logs number of sentences that failed or passed checksum.
+	/// </summary>
+	void logData_checksumFailures();
+
 	void logData_Valid_NotEnoughCycles(int countValidCycles);
 
 	void logCurrentCycle();
@@ -131,6 +145,8 @@ private:
 	static void gpsSmartDelay(unsigned long ms);
 
 	void addDummyGpsData();
+
+	void logSoftwareVersion();
 
 	void logCountError(int countValidCycles);
 
@@ -159,6 +175,12 @@ public:
 		int8_t txPin);
 
 	/// <summary>
+	/// Returns true if GPS has received data.
+	/// </summary>
+	/// <returns>True if GPS has received data.</returns>
+	bool isGpsReceiving();
+
+	/// <summary>
 	/// Returns true if adequate GPS time and 
 	/// location data has been received and saved.
 	/// </summary>
@@ -181,7 +203,8 @@ public:
 	/// True to simulate gps sync and add dummy data 
 	/// (default is false)
 	/// </param>
-	void syncToGPS(SDCard& sdCard, bool isSimulate);
+	/// <returns>True if GPS sync success.</returns>
+	bool syncToGPS(SDCard& sdCard, bool isSimulate);
 
 	/// <summary>
 	/// Returns current date and time string.
@@ -207,6 +230,12 @@ public:
 	/// </summary>
 	/// <returns>UTC time as "00:00:00".</returns>
 	String time_UTC_GPS();
+
+	/// <summary>
+	/// Returns current day of the week as string (using TimeLib).
+	/// </summary>
+	/// <returns>Current day of the week.</returns>
+	String dayName();
 
 	/// <summary>
 	/// Time zone offset in hours from UTC.

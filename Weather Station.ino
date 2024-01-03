@@ -22,6 +22,9 @@ Rev. October 7, 2023
 #include <WebResponseImpl.h>
 #include <AsyncTCP.h>
 
+// Debugging flags
+#include "DebugFlags.h"
+
 // Sensors
 #include <SparkFun_VEML6075_Arduino_Library.h>
 
@@ -57,31 +60,16 @@ Rev. October 7, 2023
 #include "SDCard.h"
 #include "dataPoint.h"
 #include "SensorData.h"
-#include "WindSpeed.h"
+#include "WindSpeed2.h"
 #include "WindDirection.h"
 
-#if defined(VM_DEBUG)
+//#if defined(VM_DEBUG)
 #include "Testing.h"			// DEBUG AND TESTING
-#endif
+#include "SensorSimulate.h"
+//#endif
 
 using namespace App_Settings;
 using namespace Utilities;
-
-/**************************************************************/
-/*****************      DEBUGGING FLAGS      ******************/
-/**************************************************************/
-
-bool _isDEBUG_BypassGPS = false;			// Bypass gps syncing.
-bool _isDEBUG_BypassWifi = false;		// Bypass WiFi connect.
-bool _isDEBUG_BypassSDCard = false;		// Bypass SD card.
-bool _isDEBUG_ListLittleFS = false;		// List contents of LittleFS.
-bool _isDEBUG_BypassWebServer = false;	// Bypass Web Server.
-bool _isDEBUG_Test_setup = false;		// Run only test code inserted in Setup.
-bool _isDEBUG_Test_loop = false;		// Run test code inserted in Loop.
-bool _isDEBUG_addDummyData = false;		// Add dummy data.
-bool _isDEBUG_AddDelayInLoop = false;	// Add delay in loop.
-const int _LOOP_DELAY_DEBUG_ms = 100;	// Debug delay in loop, msec.
-/************************************************************/
 
 /*
 SensorData objects to average readings.
@@ -101,24 +89,50 @@ SensorData d_Insol;				// Insolaton readings.
 SensorData d_IRSky_C;			// IR sky temperature readings.
 SensorData d_fanRPM;			// Fan RPM readings.
 
+WindSpeed windSpeed(
+	DAVIS_SPEED_CAL_FACTOR,
+	true,
+	WIND_SPEED_NUMBER_IN_MOVING_AVG,
+	WIND_SPEED_OUTLIER_DELTA);	// WindSpeed instance for wind.
+SensorData windGust;
+WindDirection windDir(VANE_OFFSET);	// WindDirection instance for wind.
+
+
+//#if defined(VM_DEBUG)
+SensorSimulate dummy_Temp_F;			// Temperature readings.
+SensorSimulate dummy_Pres_mb;			// Pressure readings.
+SensorSimulate dummy_Pres_seaLvl_mb;	// Pressure readings.
+SensorSimulate dummy_Temp_for_RH_C;		// Sensor temperature for pressure readings.
+SensorSimulate dummy_RH;				// Rel. humidity readings.
+SensorSimulate dummy_UVA;				// UVA readings.
+SensorSimulate dummy_UVB;				// UVB readings.
+SensorSimulate dummy_UVIndex;			// UV Index readings.
+SensorSimulate dummy_Insol;				// Insolaton readings.
+SensorSimulate dummy_IRSky_C;			// IR sky temperature readings.
+SensorSimulate dummy_fanRPM;			// Fan RPM readings.
+
+SensorSimulate dummy_anemCount;			// Anemometer rot count.
+SensorSimulate dummy_windDir;			// Anemometer wind direction.
+//#endif
+
 // Keep track of timer interrupts that trigger readings.
 volatile int _countInterrupts_base = 0;		// Base timer interrupt count to trigger base sensor read.
 volatile int _countInterrupts_10_min = 0;	// Base timer interrupt count to trigger 10-min averages.
 volatile int _countInterrupts_60_min = 0;	// Base timer interrupt count to trigger 60-min averages.
 
 // %%%%%%%%%%   STATUS FLAGS FOR DEVICES   %%%%%%%%%%%%%%%%
-bool isGood_Temp = false;
-bool isGood_PRH = false;
-bool isGood_UV = false;
-bool isGood_IR = false;
-bool isGood_WindDir = false;
-bool isGood_WindSpeed = false;
-bool isGood_GPS = false;
-bool isGood_PMS = false;
-bool isGood_SDCard = false;
-bool isGood_Solar = false;
-bool isGood_LITTLEFS = false;
-bool isGood_fan = false;
+bool _isGood_Temp = false;
+bool _isGood_PRH = false;
+bool _isGood_UV = false;
+bool _isGood_IR = false;
+bool _isGood_WindDir = false;
+bool _isGood_WindSpeed = false;
+bool _isGood_GPS = false;
+bool _isGood_PMS = false;
+bool _isGood_SDCard = false;
+bool _isGood_Solar = false;
+bool _isGood_LITTLEFS = false;
+bool _isGood_fan = false;
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 // ==========   SD card module   ==================== //
@@ -127,13 +141,13 @@ SDCard sd;		// SDCard instance.
 
 
 // ==========   Async Web Server   ================== //
-AsyncWebServer server(80);	// Async web server object on port 80.
-chartRequested chart_request = CHART_NONE;	// Chart requested from server.
+AsyncWebServer server(80);	// Async web server instance on port 80.
+chartRequested _chart_request = CHART_NONE;	// Chart requested from server.
 
 
 // ==========   u-blox NEO-6M GPS   ========================== //
 
-// GPS module object. 
+// GPS module instance. 
 GPSModule gps;
 
 int _oldMonth = 0;		// Month of previous day.
@@ -159,7 +173,7 @@ VEML6075 sensor_UV;    // VEML6075 UV sensor.
 
 // ==========   BME280 T/P/RH sensor   =================== //
 // Requires <Adafruit_Sensor.h>, <Adafruit_BME280.h>
-// Create BME280 object. I2C address 0x77.
+// Create BME280 instance. I2C address 0x77.
 Adafruit_BME280 sensor_PRH; // BME280 temperature sensor.
 
 // ==========   DS18B20 digital temperature sensor   ================== //
@@ -232,12 +246,11 @@ Davis RJ11 "Telephone" Plug: 6p4c
 
 // ==========   Davis wind vane - wind direction   ================ //
 
-WindDirection windDir(VANE_OFFSET);	// WindDirection object for wind.
 const int WIND_VANE_PIN = 34;		// Wind vane is connected to GPIO 34 (Analog ADC1 CH6)
 
 // ==========   Davis anemometer - wind speed  ==================== //
 
-WindSpeed windSpeed(DAVIS_SPEED_CAL_FACTOR);	// WindSpeed object for wind.
+
 
 /*
  Wind speed is determined by counting anemometer
@@ -313,7 +326,7 @@ int countOneWireDevices() {
 
 // ==========   WIFI CONNECTIVITY   ================ //
 
-WiFiMulti wifiMulti;	// WiFiMulti object to connect to wifi.
+WiFiMulti wifiMulti;	// WiFiMulti instance to connect to wifi.
 
 /// <summary>
 /// Connect to strongest WiFi access point. 
@@ -334,7 +347,7 @@ bool wifiConnect(unsigned int timeout_sec) {
 		) {
 		// Trying to connect ...
 	}
-	String msg = "WiFi connected in ";
+	String msg = "Connecting to WiFi required ";
 	msg += String((millis() - timeStart) / 1000.) + "s";
 	sd.logStatus(msg);
 	return  WiFi.isConnected();
@@ -517,42 +530,57 @@ void PrintHeader() {
 void logDeviceStatus() {
 	String msg = "DEVICE STATUS REPORT:";
 	sd.logStatus(msg, gps.dateTime());
-	msg = "WiFi connected - ";
+
+	msg = "WiFi connected: ";
 	msg += bool_OK_Error(WiFi.isConnected());
 	sd.logStatus_indent(msg);
-	msg = "SD card - ";
-	msg += bool_OK_Error(isGood_SDCard);
+
+	msg = "SD card: ";
+	msg += bool_OK_Error(_isGood_SDCard);
 	sd.logStatus_indent(msg);
-	msg = "LittleFS flash file system - ";
-	msg += bool_OK_Error(isGood_LITTLEFS);
+
+	msg = "LittleFS flash file system: ";
+	msg += bool_OK_Error(_isGood_LITTLEFS);
 	sd.logStatus_indent(msg);
-	msg = "GPS module - ???";
+
+	msg = "GPS module - ";
+	msg += bool_OK_Error(_isGood_GPS);
 	sd.logStatus_indent(msg);
-	msg = "Dallas temperature sensor - ";
-	msg += bool_OK_Error(isGood_Temp);
+
+	msg = "Dallas temperature sensor: ";
+	msg += bool_OK_Error(_isGood_Temp);
 	sd.logStatus_indent(msg);
-	msg = "Radiation shield fan - ";
-	msg += bool_OK_Error(isGood_fan);
+
+	msg = "Radiation shield fan: ";
+	msg += "???";
+	//msg += bool_OK_Error(_isGood_fan);
 	sd.logStatus_indent(msg);
-	msg = "Pressure & RH sensor - ";
-	msg += bool_OK_Error(isGood_PRH);
+
+	msg = "Pressure & RH sensor: ";
+	msg += bool_OK_Error(_isGood_PRH);
 	sd.logStatus_indent(msg);
-	msg = "Insolation sensor - ";
+
+	msg = "Insolation sensor: ";
 	msg += "???";
 	sd.logStatus_indent(msg);
-	msg = "UV sensor - ";
-	msg += bool_OK_Error(isGood_UV);
+
+	msg = "UV sensor: ";
+	msg += bool_OK_Error(_isGood_UV);
 	sd.logStatus_indent(msg);
-	msg = "Wind direction sensor - ";
+
+	msg = "Wind direction sensor: ";
 	msg += "???";
 	sd.logStatus_indent(msg);
-	msg = "Wind speed sensor - ";
+
+	msg = "Wind speed sensor: ";
 	msg += "???";
 	sd.logStatus_indent(msg);
-	msg = "Time zone offset from GMT - ";
+
+	msg = "Time zone offset from UTC: ";
 	msg += gps.timeZoneOffset();
 	sd.logStatus_indent(msg);
-	msg = "Is Daylight Time:  - ";
+
+	msg = "Is Daylight Time: : ";
 	msg += bool_true_false(gps.isDaylightTime());
 	sd.logStatus_indent(msg);
 }
@@ -579,19 +607,25 @@ void logDebugStatus() {
 		sd.logStatus_indent("LIST LittleFS CONTENTS");
 	}
 	if (_isDEBUG_BypassSDCard) {
-		Serial.println("\tDEBUG: BYPASS SD CARD");	// Can't log to SD!
+		Serial.println("BYPASS SD CARD");	// Can't log to SD!
 	}
 	if (_isDEBUG_BypassWebServer) {
 		sd.logStatus_indent("BYPASS WEB SERVER");
 	}
-	if (_isDEBUG_Test_setup) {
+	if (_isDEBUG_run_test_in_setup) {
 		sd.logStatus_indent("RUN TEST CODE IN SETUP");
 	}
-	if (_isDEBUG_Test_loop) {
+	if (_isDEBUG_run_test_in_loop) {
 		sd.logStatus_indent("RUN TEST CODE IN LOOP");
 	}
-	if (_isDEBUG_addDummyData) {
+	if (_isDEBUG_addDummyDataLists) {
 		sd.logStatus_indent("ADD DUMMY DATA");
+	}
+	if (_isDEBUG_simulateSensorReadings) {
+		sd.logStatus_indent("USE DUMMY DATA FOR SENSOR READINGS");
+	}
+	if (_isDEBUG_simulateWindReadings) {
+		sd.logStatus_indent("USE DUMMY DATA FOR WIND READINGS");
 	}
 	if (_isDEBUG_AddDelayInLoop) {
 		String msg = String(_LOOP_DELAY_DEBUG_ms);
@@ -669,7 +703,9 @@ void logApp_Settings() {
 	sd.logStatus_indent(msg);
 	msg = "GPS_CYCLES_FOR_SYNC: " + String(GPS_CYCLES_FOR_SYNC);
 	sd.logStatus_indent(msg);
-	msg = "GPS_DELAY_BETWEEN_CYCLES: " + String(GPS_DELAY_BETWEEN_CYCLES);
+	msg = "GPS_CYCLES_COUNT_MAX: " + String(GPS_CYCLES_COUNT_MAX);
+	sd.logStatus_indent(msg);
+	msg = "GPS_DELAY_BETWEEN_CYCLES: " + String(GPS_CYCLE_DELAY_SEC);
 	sd.logStatus_indent(msg);
 	msg = "GPS_MAX_ALLOWED_HDOP: " + String(GPS_MAX_ALLOWED_HDOP);
 	sd.logStatus_indent(msg);
@@ -758,7 +794,7 @@ String sensorsDataString_current() {
 	// Solar (1)
 	s += "\t" + String(d_Insol.valueLastAdded());			// PV solar cell %
 	// UV (3)
-	if (isGood_UV) {
+	if (_isGood_UV) {
 		s += "\t" + String(d_UVA.valueLastAdded());
 		s += "\t" + String(d_UVB.valueLastAdded());
 		s += "\t" + String(d_UVIndex.valueLastAdded());		// Scale 0-10+
@@ -770,7 +806,7 @@ String sensorsDataString_current() {
 	s += "\t" + String(d_IRSky_C.valueLastAdded());
 	// Wind speed (3)
 	s += "\t" + String(windSpeed.avg_10_min());
-	s += "\t" + String(windSpeed.gust_10_min());
+	s += "\t" + String(windGust.max_10_min().value);
 	s += "\tna";	// + String(windSpeed.max_last_10_min);  XXX  ???
 	// Wind direction (2)
 	if (windSpeed.avg_10_min() > 0.5)
@@ -807,7 +843,7 @@ String sensorsDataString_10_min() {
 	// Solar (1)
 	s += "\t" + String(d_Insol.avg_10_min());			// PV solar cell mV
 	// UV (3)
-	if (isGood_UV) {
+	if (_isGood_UV) {
 		s += "\t" + String(d_UVA.avg_10_min());
 		s += "\t" + String(d_UVB.avg_10_min());
 		s += "\t" + String(d_UVIndex.avg_10_min());		// Scale 0-10+
@@ -819,7 +855,7 @@ String sensorsDataString_10_min() {
 	s += "\t" + String(d_IRSky_C.avg_10_min());
 	// Wind speed (3)
 	s += "\t" + String(windSpeed.avg_10_min());
-	s += "\t" + String(windSpeed.gust_10_min());
+	s += "\t" + String(windGust.max_10_min().value);
 	s += "\tmax?";	// + String(windSpeed.max_last_10_min);  XXX  ???
 	// Wind direction (2)
 	if (windSpeed.avg_10_min() >= WIND_DIRECTION_SPEED_THRESHOLD)
@@ -881,7 +917,7 @@ void PrintSensorOutputs() {
 	// Use the uva, uvb, and index functions to
 	// read calibrated UVA and UVB values and a
 	// calculated UV index value between 0-11.
-	if (isGood_UV) {
+	if (_isGood_UV) {
 		Serial.print(d_UVA.valueLastAdded()); Serial.print(F("\t"));
 		Serial.print(d_UVB.valueLastAdded()); Serial.print(F("\t"));
 		Serial.print(d_UVIndex.valueLastAdded()); Serial.print(F("\t\t"));
@@ -899,7 +935,7 @@ void PrintSensorOutputs() {
 	Serial.print(windSpeed.avg_10_min(), 1);
 	Serial.print(F(" mph  \t"));
 
-	Serial.print(windSpeed.gust_10_min(), 1);
+	Serial.print(windGust.max_10_min().value, 1);
 	Serial.print(F(" mph  \t"));
 
 	// Wind direction.
@@ -912,614 +948,6 @@ void PrintSensorOutputs() {
 #endif
 }
 
-// ==========   SERVER DYNAMIC HTML   ================ //
-
-/// <summary>
-/// Replaces %PLACEHOLDER% elements in 
-/// files served from async web server.
-/// </summary>
-/// <param name="var">Placeholder identifier.</param>
-/// <returns>String substituted for placeholder.</returns>
-String processor(const String& var) {
-
-	// Add CSS light style during daylight.
-	if (var == "CSS_LIGHT_STYLE") {
-		// Switch display theme when ambient light is,
-		// detected by normalized insolation %.
-		if (d_Insol.valueLastAdded() > 0.01) {
-			return "<link href = ""style.light.min.css"" rel = ""stylesheet"" media = ""all"" type = ""text/css"" />";
-		}
-		else {
-			return "";
-		}
-	}
-	///  Weather data.  ///////////////////
-	if (var == "LAST_READINGS_DATETIME") {
-		return gps.dateTime();
-	}
-	if (var == "CURRENT_TIME") {
-		return gps.time();
-	}
-	if (var == "TEMPERATURE_F")
-		return String(d_Temp_F.valueLastAdded(), 0);
-	if (var == "WIND_SPEED") {
-		return String(windSpeed.valueLastAdded(), 0);	// 10-min avg
-	}
-	if (var == "WIND_GUST") {
-		return String(windSpeed.gust_10_min(), 0);
-	}
-	if (var == "WIND_DIRECTION") {
-		return String(windDir.directionCardinal());		// avg since last cleared (<= 10 min)
-	}
-	if (var == "WIND_ANGLE") {
-		return String(windDir.angleAvg_now(), 0);		// avg since last cleared (<= 10 min)
-	}
-	if (var == "GPS_ALTITUDE") {
-		return String(gps.data.altitude(), 0);
-	}
-	if (var == "PRESSURE_MB_SL") {
-		return String(d_Pres_seaLvl_mb.valueLastAdded(), 0);
-	}
-	if (var == "PRESSURE_MB_ABS") {
-		return String(d_Pres_mb.valueLastAdded(), 0);
-	}
-	if (var == "WATER_BOILING_POINT") {
-		return String(waterBoilingPoint_F(d_Pres_mb.valueLastAdded()), 0);
-	}
-	if (var == "INSOLATION_PERCENT") {
-		return String(d_Insol.valueLastAdded(), 0);
-	}
-	if (var == "REL_HUMIDITY") {
-		return String(d_RH.valueLastAdded(), 0);
-	}
-	if (var == "UV_A") {
-		if (isGood_UV) {
-			return String(d_UVA.valueLastAdded(), 0);
-		}
-		else {
-			return String("na");
-		}
-	}
-	if (var == "UV_B") {
-		if (isGood_UV) {
-			return String(d_UVB.valueLastAdded(), 0);
-		}
-		else {
-			return String("na");
-		}
-	}
-	if (var == "UV_INDEX") {
-		if (isGood_UV) {
-			return String(d_UVIndex.valueLastAdded(), 1);
-		}
-		else {
-			return String("na");
-		}
-	}
-	if (var == "IR_T_SKY") {
-		return String(d_IRSky_C.valueLastAdded(), 0);
-	}
-
-	///  GPS info.   ////////////////////////
-
-	if (var == "GPS_IS_SYNCED") {
-		if (gps.isSynced())
-			return String("Synced");
-		else
-			return String("Not Synced");
-	}
-	if (var == "GPS_LOCATIONS_UPDATE_COUNTER") {
-		return String(gps.cyclesCount());
-	}
-	if (var == "GPS_LATITUDE") {
-		return String(gps.data.latitude(), 6);
-	}
-	if (var == "GPS_LONGITUDE") {
-		return String(gps.data.longitude(), 6);
-	}
-	if (var == "GPS_ALTITUDE") {
-		return String(gps.data.altitude());
-	}
-	if (var == "GPS_DATE") {
-		return String(gps.date_UTC_GPS());
-	}
-	if (var == "GPS_TIME") {
-		return String(gps.time_UTC_GPS());
-	}
-	if (var == "GPS_TIME_ZONE") {
-		return String(UTC_OFFSET_HOURS);
-	}
-	if (var == "GPS_DAYLIGHT_TIME_USED") {
-		return bool_Yes_No(IS_DAYLIGHT_TIME);
-	}
-	if (var == "GPS_HDOP") {
-		return String(gps.data.HDOP() / 100.);
-	}
-	if (var == "GPS_SATELLITES") {
-		return String(gps.data.satellites());
-	}
-	if (var == "ELAPSED_TIME_STRING") {
-		return   String(gps.data.timeToSync_sec(), 2);
-	}
-	if (var == "FAN_RPM") {
-		return String(d_fanRPM.valueLastAdded());
-	}
-
-	/// CHART FIELDS  //////////////
-
-	if (var == "TIME_OFFSET_HOURS") {
-		if (IS_DAYLIGHT_TIME) {
-			return String(UTC_OFFSET_HOURS + 1);
-		}
-		else {
-			return  String(UTC_OFFSET_HOURS);
-		}
-	}
-	if (var == "CHART_Y_AXIS_LABEL") {
-		// Based on chart requested.
-		switch (chart_request)
-		{
-		case CHART_NONE:
-			return "Chart not specified!";
-		case CHART_INSOLATION:
-			return String(d_Insol.label() + ", " + d_Insol.units_html());
-		case CHART_IR_SKY:
-			return String(d_IRSky_C.label() + ", " + d_IRSky_C.units_html());
-		case CHART_TEMPERATURE_F:
-			return String(d_Temp_F.label() + ", " + d_Temp_F.units_html());
-		case CHART_PRESSURE_SEA_LEVEL:
-			return String(d_Pres_seaLvl_mb.label() + ", " + d_Pres_seaLvl_mb.units());
-		case CHART_RELATIVE_HUMIDITY:
-			return String(d_RH.label() + ", " + d_RH.units_html());
-		case CHART_UV_INDEX:
-			return String(d_UVIndex.label() + ", " + d_UVIndex.units());
-		case CHART_WIND_DIRECTION:
-			return String(windDir.label() + ", " + windDir.units_html());
-		case CHART_WIND_SPEED:
-			return String(windSpeed.label() + ", " + windSpeed.units());
-		case CHART_WIND_GUST:
-			return String("Wind Gusts, " + windSpeed.units());
-		default:
-			return "Chart not found";
-		}
-	}
-	if (var == "CHART_TITLE") {
-		// Based on chart requested.
-		switch (chart_request)
-		{
-		case CHART_NONE:
-			return "Chart not specified!";
-		case CHART_INSOLATION:
-			return String(d_Insol.label());
-		case CHART_IR_SKY:
-			return String(d_IRSky_C.label());
-		case CHART_TEMPERATURE_F:
-			return String(d_Temp_F.label());
-		case CHART_PRESSURE_SEA_LEVEL:
-			return String(d_Pres_seaLvl_mb.label());
-		case CHART_RELATIVE_HUMIDITY:
-			return String(d_RH.label());
-		case CHART_UV_INDEX:
-			return String(d_UVIndex.label());
-		case CHART_WIND_DIRECTION:
-			return String(windDir.label());
-		case CHART_WIND_SPEED:
-			return String(windSpeed.label());
-		case CHART_WIND_GUST:
-			return "Wind Gusts";
-		}
-	}
-	// Y axis min.
-	if (var == "Y_MIN") {
-		// Based on chart requested.
-		switch (chart_request)
-		{
-		case CHART_NONE:
-			return "min: -500";
-		case CHART_INSOLATION:
-			return "min: 0";
-		case CHART_IR_SKY:
-			return "min: -50";
-		case CHART_TEMPERATURE_F:
-			return "min: 0";
-		case CHART_PRESSURE_SEA_LEVEL:
-			return "min: 950";
-		case CHART_RELATIVE_HUMIDITY:
-			return "min: 0";
-		case CHART_UV_INDEX:
-			return "min: 0";
-		case CHART_WIND_DIRECTION:
-			return "min: 0";
-		case CHART_WIND_SPEED:
-			return "min: 0";
-		case CHART_WIND_GUST:
-			return "min: 0";
-		default:
-			return "min: -2000";
-		}
-	}
-	// Y axis max.
-	if (var == "Y_MAX") {
-		// Based on chart requested.
-		switch (chart_request)
-		{
-		case CHART_NONE:
-			return ", max: 500";
-		case CHART_INSOLATION:
-			return ", max: 100";
-		case CHART_IR_SKY:
-			return ", max: 50";
-		case CHART_TEMPERATURE_F:
-			return ", max: 100";
-		case CHART_PRESSURE_SEA_LEVEL:
-			return ", max: 1050";
-		case CHART_RELATIVE_HUMIDITY:
-			return ", max: 100";
-		case CHART_UV_INDEX:
-			return ", max: 20";
-		case CHART_WIND_DIRECTION:
-			return ", max: 360";
-		case CHART_WIND_SPEED:
-			return ", max: 50";
-		case CHART_WIND_GUST:
-			return ", max: 50";
-		default:
-			return ", max: 2000";
-		}
-	}
-	// Y axis tick amount.
-	if (var == "Y_TICK_AMOUNT") {
-		// Based on chart requested.
-		switch (chart_request)
-		{
-		case CHART_IR_SKY:
-			return ", tickAmount: 5";
-		case CHART_TEMPERATURE_F:
-			return ", tickAmount: 5";
-		case CHART_PRESSURE_SEA_LEVEL:
-			return ", tickAmount: 3";
-		case CHART_WIND_DIRECTION:
-			return ", tickAmount: 2";
-		case CHART_WIND_SPEED:
-			return ", tickAmount: 6";
-		case CHART_WIND_GUST:
-			return ", tickAmount: 6";
-		default:
-			return "";
-		}
-	}
-
-	///   Fan   //////////////
-	if (var == "FAN_RPM") {
-		return String(d_fanRPM.valueLastAdded());
-	}
-	return var + String("not found");
-}
-
-/// <summary>
-/// Defines uri routes for async web server.
-/// </summary>
-void serverRouteHandler() {
-	/*
-	Configure url routes where server will be listening. Route in url
-	is: "http://[ IP Address ][Route]",	such as [Route]= "/data".
-
-	Serving files from both LittleFS (flash memory) and SD (SD card).
-
-	STATIC FILES:
-
-		"Static" files are generally files that are "not changed
-		by the server" such as css, js, and non-dynamic html pages.
-
-		Usage:
-			Format is server.serveStatic([ Route ], [ File system ], [ File path ]);
-
-		Example:
-		To serve the file "/dir/page.htm" when request url is "/page.htm":
-
-			server.serveStatic("/page.htm", LittleFS, "/dir/page.htm");
-
-	DYNAMIC FILES:
-
-		Files can contain templates of the form	%REPLACE_ME% that are
-		replaced by a processor function attached to the request.
-
-		server.on adds a new instance of AsyncStaticWebHandler
-		to the server to handle the specified file.
-
-		(Note: ESPAsyncWebServer ReadMe says you can use template processor
-		with "static" files. This seems contradictory; here, I refer to
-		them as dynamic files.)
-
-		Usage:
-			server.on([ Route ], HTTP_GET, [](AsyncWebServerRequest* request)
-				{
-				request->send([ File system ], [ File path ] , [ Mime type ], [ isDownload ], [ template processor ]);
-				});
-
-		Example:
-			server.on("/Admin", HTTP_GET, [](AsyncWebServerRequest* request)
-				{
-				request->send(LittleFS, "/html/Admin.html", "text/html", false, processor);
-				});
-
-		IMPORTANT: false is for bool download; otherwise browser will
-		download file instead of display it!
-
-
-	SETTING CACHE FOR STATIC FILES:
-
-		Usage:
-			server.serveStatic([Route], [File system], [File path]).setCacheControl("max-age=[seconds]");
-
-		Example:
-			server.serveStatic("/highcharts.css", LittleFS, "/css/highcharts.css").setCacheControl("max-age=864000");
-
-			10 days = 864,000 seconds
-			 2 days = 172,800 seconds
-			 1 day  =  86,400 seconds
-	*/
-
-#if defined(VM_DEBUG)
-	if (!_isDEBUG_BypassWebServer) {
-#endif
-		// Set cache for static files.
-		// css
-		server.serveStatic("/highcharts.css", LittleFS, "/css/highcharts.css").setCacheControl("max-age=864000");
-		server.serveStatic("/highcharts-custom.css", LittleFS, "/css/highcharts-custom.css").setCacheControl("max-age=864000");
-		server.serveStatic("/style.light.min.css", LittleFS, "/css/style.light.min.css").setCacheControl("max-age=864000");
-		server.serveStatic("/style.min.css", LittleFS, "/css/style.min.css").setCacheControl("max-age=864000");
-		// js
-		server.serveStatic("/highcharts.js", LittleFS, "/js/highcharts.js").setCacheControl("max-age=864000");
-		server.serveStatic("/chart.js", LittleFS, "/js/chart.js").setCacheControl("max-age=864000");
-		// img
-		server.serveStatic("/chart-icon.png", LittleFS, "/img/chart-icon-red-150px.png").setCacheControl("max-age=864000");
-		server.serveStatic("/home-icon.png", LittleFS, "/img/home-icon-red-150px.png").setCacheControl("max-age=864000");
-		server.serveStatic("/img/loading.gif", LittleFS, "/img/loading.gif").setCacheControl("max-age=864000");
-		server.serveStatic("/favicon-32.png", LittleFS, "/img/favicon-32.png").setCacheControl("max-age=864000");
-		server.serveStatic("/favicon-32.180", LittleFS, "/img/favicon-32.180").setCacheControl("max-age=864000");
-		// html 
-		// html pages are dynamic and can't be cached.
-
-		/*****  WEB PAGES.  *****/
-
-		// Default.
-		server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
-			request->send(LittleFS, "/html/sensors.html", "text/html", false, processor);
-			});
-
-		// GPS info.
-		server.on("/gps", HTTP_GET, [](AsyncWebServerRequest* request) {
-			request->send(LittleFS, "/html/gps.html", "text/html", false, processor);
-			});
-
-		// Admin page.
-		server.on("/Admin", HTTP_GET, [](AsyncWebServerRequest* request) {
-			request->send(LittleFS, "/html/Admin.html", "text/html", false, processor);
-			});
-
-		// Log file from SD card.
-		server.on("/log", HTTP_GET, [](AsyncWebServerRequest* request) {
-			request->send(SD, "/log.txt", "text/plain");
-			});
-
-		// Data file from SD card.
-		server.on("/data", HTTP_GET, [](AsyncWebServerRequest* request) {
-			request->send(SD, "/data.txt", "text/plain");
-			});
-
-		/*****  GRAPH PAGES.  *****/
-
-		// Pages use javascript to get data asynchronously.
-
-		// Temperature graph page.
-		server.on("/chart_T", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_TEMPERATURE_F;
-			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
-			});
-
-		// Wind speed graph page.
-		server.on("/chart_W", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_WIND_SPEED;
-			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
-			});
-
-		// Wind gust graph page.
-		server.on("/chart_Wgst", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_WIND_GUST;
-			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
-			});
-
-		// Wind direction graph page.
-		server.on("/chart_Wdir", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_WIND_DIRECTION;
-			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
-			});
-
-		// Pressure (sea level) graph page.
-		server.on("/chart_P", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_PRESSURE_SEA_LEVEL;
-			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
-			});
-
-		// Relative Humidity graph page.
-		server.on("/chart_RH", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_RELATIVE_HUMIDITY;
-			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
-			});
-
-		// Sky Infrared graph page.
-		server.on("/chart_IR", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_IR_SKY;
-			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
-			});
-
-		// UV Index graph page.
-		server.on("/chart_UVIndex", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_UV_INDEX;
-			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
-			});
-
-		// Insolation graph page.
-		server.on("/chart_Insol", HTTP_GET, [](AsyncWebServerRequest* request) {
-			chart_request = CHART_INSOLATION;
-			request->send(LittleFS, "/html/chart.html", "text/html", false, processor);
-			});
-
-		/*****  Images.  *****/
-
-		server.on("/favicon-32.png", HTTP_GET, [](AsyncWebServerRequest* request) {
-			request->send(LittleFS, "/img/favicon-32.png", "image/png");
-			});
-		server.on("/favicon-180.png", HTTP_GET, [](AsyncWebServerRequest* request) {
-			request->send(LittleFS, "/img/favicon-180.png", "image/png");
-			});
-		server.on("/chart-icon.png", HTTP_GET, [](AsyncWebServerRequest* request) {
-			request->send(LittleFS, "/img/chart-icon-red-150px.png", "image/png");
-			});
-		server.on("/home-icon.png", HTTP_GET, [](AsyncWebServerRequest* request) {
-			request->send(LittleFS, "/img/home-icon-red-150px.png", "image/png");
-			});
-		server.on("/img/loading.gif", HTTP_GET, [](AsyncWebServerRequest* request) {
-			request->send(LittleFS, "/img/loading.gif", "image/gif");
-			});
-
-		/*****  CSS and Javascript.  *****/
-
-		// CSS style sheet.
-		server.on("/style.min.css",
-			HTTP_GET,
-			[](AsyncWebServerRequest* request) {
-				request->send(LittleFS, "/css/style.min.css", "text/css");
-			});
-		// CSS light-theme style sheet.
-		server.on("/style.light.min.css",
-			HTTP_GET,
-			[](AsyncWebServerRequest* request) {
-				request->send(LittleFS, "/css/style.light.min.css", "text/css");
-			});
-		// Highcharts css style sheet.
-		server.on("/highcharts.css",
-			HTTP_GET,
-			[](AsyncWebServerRequest* request) {
-				request->send(LittleFS, "/css/highcharts.css", "text/css");
-			});
-		// Highcharts customized css style sheet.
-		server.on("/highcharts-custom.css",
-			HTTP_GET,
-			[](AsyncWebServerRequest* request) {
-				request->send(LittleFS, "/css/highcharts-custom.css", "text/css");
-			});
-		// highcharts javascript file.
-		server.on("/highcharts.js",
-			HTTP_GET,
-			[](AsyncWebServerRequest* request) {
-				request->send(LittleFS, "/js/highcharts.js", "text/javascript");
-			});
-		// highcharts custom javascript file.
-		server.on("/chart.js",
-			HTTP_GET,
-			[](AsyncWebServerRequest* request) {
-				request->send(LittleFS, "/js/chart.js", "text/javascript");
-			});
-
-		/*****  DATA SOURCES FOR GRAPHS  *****/
-		/*
-		 Send string with data asynchronously to html 
-		 page where Javascript parses and plots the data.
-		*/
-
-		// 10-min charts
-		server.on("/data_10", HTTP_GET,
-			[](AsyncWebServerRequest* request) {
-				// Which chart?
-				switch (chart_request)
-				{
-				case CHART_NONE:
-					request->send_P(200, "text/plain", "");
-					break;
-				case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.data_10_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.data_10_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_TEMPERATURE_F:
-					request->send_P(200, "text/plain", d_Temp_F.data_10_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_10_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.data_10_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.data_10_min_string_delim(false, 1).c_str());
-					break;
-				case CHART_WIND_DIRECTION:
-					request->send_P(200, "text/plain", windDir.data_10_min_string_delim(true, 0).c_str());
-					break;
-				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.data_10_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windSpeed.gusts_10_min_string_delim(true, 0).c_str());
-					break;
-				default:
-					request->send_P(200, "text/plain", "");
-					break;
-				}
-			});
-
-		// 60-min charts
-		server.on("/data_60", HTTP_GET,
-			[](AsyncWebServerRequest* request) {
-				// Which chart?
-				switch (chart_request)
-				{
-				case CHART_NONE:
-					request->send_P(200, "text/plain", "");
-					break;
-				case CHART_INSOLATION:
-					request->send_P(200, "text/plain", d_Insol.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_IR_SKY:
-					request->send_P(200, "text/plain", d_IRSky_C.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_TEMPERATURE_F:
-					request->send_P(200, "text/plain", d_Temp_F.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_PRESSURE_SEA_LEVEL:
-					request->send_P(200, "text/plain", d_Pres_seaLvl_mb.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_RELATIVE_HUMIDITY:
-					request->send_P(200, "text/plain", d_RH.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_UV_INDEX:
-					request->send_P(200, "text/plain", d_UVIndex.data_60_min_string_delim(false, 1).c_str());
-					break;
-				case CHART_WIND_DIRECTION:
-					request->send_P(200, "text/plain", windDir.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_WIND_SPEED:
-					request->send_P(200, "text/plain", windSpeed.data_60_min_string_delim(false, 0).c_str());
-					break;
-				case CHART_WIND_GUST:
-					request->send_P(200, "text/plain", windSpeed.gusts_60_min_string_delim(true, 0).c_str());
-					break;
-				default:
-					request->send_P(200, "text/plain", "");
-					break;
-				}
-			});
-#if defined(VM_DEBUG)
-	}
-	else {
-		Serial.println("BYPASSING WEB SERVER INITIALIZATION");
-	}
-#endif
-}
-
 /// <summary>
 /// Initializes all sensors.
 /// </summary>
@@ -1529,9 +957,10 @@ void initializeSensors() {
 	if (!sensor_PRH.begin(0x77)) {
 		String msg = "WARNING: BME280 P/RH sensor not found.";
 		sd.logStatus(msg, millis());
+		_isGood_PRH = false;
 	}
 	else {
-		isGood_PRH = true;
+		_isGood_PRH = true;
 		String msg = "BME280 P/RH sensor found.";
 		sd.logStatus(msg, millis());
 	}
@@ -1539,12 +968,12 @@ void initializeSensors() {
 	sensor_T.begin();
 	// Find DS18B20 temperature.
 	if (countOneWireDevices() < 1) {
-		isGood_Temp = false;
+		_isGood_Temp = false;
 		String msg = "WARNING: DS18B20 T sensor not found.";
 		sd.logStatus(msg, millis());
 	}
 	else {
-		isGood_Temp = true;
+		_isGood_Temp = true;
 		String msg = "DS18B20 T sensor found.";
 		sd.logStatus(msg, millis());
 	}
@@ -1552,7 +981,7 @@ void initializeSensors() {
 	// The VEML6075 begin returns true on success
 	// or false on failure to communicate.
 	if (sensor_UV.begin() == true) {
-		isGood_UV = true;
+		_isGood_UV = true;
 		String msg = "VEML6075 UV sensor found.";
 		sd.logStatus(msg, millis());
 	}
@@ -1565,14 +994,14 @@ void initializeSensors() {
 	if (sensor_IR.readAmbientTempC() > 1000) {
 		/*
 		Missing sensor gives T > 1000.
-		Implies IR sensor was not found.		
-		*/ 
-		isGood_IR = false;
+		Implies IR sensor was not found.
+		*/
+		_isGood_IR = false;
 		String msg = "WARNING: MLX90614 IR sensor not found.";
 		sd.logStatus(msg, millis());
 	}
 	else {
-		isGood_IR = true;
+		_isGood_IR = true;
 		String msg = "MLX90614 IR sensor found.";
 		sd.logStatus(msg, millis());
 	}
@@ -1580,8 +1009,8 @@ void initializeSensors() {
 	windDir.begin();	// Initialize WindDirection.
 	String msg = "[ No connection test implemented for Davis anemometer. ]";
 	sd.logStatus(msg, millis());
-	isGood_WindDir = true;      // How can this be tested?? XXX
-	isGood_WindSpeed = true;
+	_isGood_WindDir = true;      // How can this be tested?? XXX
+	_isGood_WindSpeed = true;
 
 	//  ---------------  Initialize LittleFS   ---------------
 	if (!LittleFS.begin()) {
@@ -1589,7 +1018,7 @@ void initializeSensors() {
 		sd.logStatus(msg, millis());
 	}
 	else {
-		isGood_LITTLEFS = true;
+		_isGood_LITTLEFS = true;
 		String msg = "LittleFS mounted.";
 		sd.logStatus(msg, millis());
 	}
@@ -1610,6 +1039,7 @@ void initializeSensors() {
 void sensorsAddLabels() {
 	windSpeed.addLabels("Wind Speed", "Wind", "mph");
 	windDir.addLabels("Wind direction", "Wind Dir", "", "&deg;");
+	windGust.addLabels("Wind Gust", "Gust", "mph");
 	d_Temp_F.addLabels("Temperature", "Temp", "F", "&deg;F");
 	d_Pres_mb.addLabels("Pressure (abs)", "Pres (abs)", "mb");
 	d_Pres_seaLvl_mb.addLabels("Pressure (SL)", "Pres (sl)", "mb");
@@ -1623,34 +1053,6 @@ void sensorsAddLabels() {
 	d_fanRPM.addLabels("Aspirator Fan speedInstant", "Fan speedInstant", "rpm");
 }
 
-/*
-***   HOW SENSORS ARE READ AND LISTS ARE COMPILED.   ***
-
-Frequent readings for most sensors are passed directly to
-SensorData objects where they are averaged and assembled
-into lists of data vs time for 10-min, 60-min, and 12-hr
-periods.
-
-Wind readings require special handling because of the need
-to detect sudden variations and extremes (gusts) over a brief
-period (ideally ca. 2.5 - 5 seconds).
-
-Wind speed is handled by Anemometer::WindSpeed.
-
-WindDirection is first handled by Anemometer::WindDirection, which
-averages the wind direction vectors. The average direction
-over 10 minutes is then passed to a SensorData object at
-10-minute intervals to be held in lists of data vs time.
-
-XXX
-NOTE: THIS METHOD AVERAGES THE WIND DIRECTION FOR 10
-MINUTES AND SAVES ONLY THAT 10-MIN AVERAGE. IS THAT TOO
-SHORT A PERIOD, SMEARING THE DIRECTION? ALSO, SHOULD
-DIRECTION BE WEIGHTED BY SPEED?? E.G., SHOULD A 20 MPH N
-WIND FOR 5 MINUTES COUNT AS MUCH AS A SUBSEQUENT 1 MPH E
-WIND FOR 5 MINUTES??
-XXX
-*/
 
 /// <summary>
 /// Check for too many (i.e., unhandled) timer interrupts 
@@ -1672,52 +1074,31 @@ void catchUnhandledBaseTimerInterrupts() {
 	}
 }
 
-/// <summary>
-/// Adds the specified value to a dummy sensor reading.
-/// </summary>
-/// <param name="val">Value to add.</param>
-void readSensors_dummy(float val) {
-	// Temperature.
-	d_Temp_F.addReading(now(), val);	// temperature
-}
+
 
 /// <summary>
 /// Reads and saves wind speed, gusts, and direction.
 /// </summary>
 void readWind() {
+	if (_isDEBUG_simulateWindReadings) {
+		readWind_Simulate();
+		return;
+	}
 	// Read wind speed.
-	/*
-		XXX NOTE: Can _anem_Rotations still increase after
-		timer interrupt signals BASE_PERIOD_SEC, while other
-		processing delays the time until
-
-			windSpeed.addReading(now(), _anem_Rotations)
-
-		Should _anem_Rotations be held in another variable
-		immediately when BASE_PERIOD_SEC is reached???
-	*/
-	int rots = _anem_Rotations;
-
-	windSpeed.addReading(now(), _anem_Rotations);
 	float speed = windSpeed.speedInstant(_anem_Rotations, BASE_PERIOD_SEC);
+	dataPoint dpSpeed(now(), speed);
+	windSpeed.addReading(dataPoint(dpSpeed));
 
-	// Read wind direction (average over 0-360 deg).
-	/*
-	Wind direction should be weighted by speed!
-	If the direction is
-		90 at 20 mph for 5 min
-		180 at 2 mph for 5 min
-	the direction shouldn't be a straight avg = 135.
-	It should be weighted more heavily towards 90, where
-	most of the wind flow was!
-	ALSO, direction stuck at X when wind stops blowing
-	should not contribute to direction -- or direction
-	should be nothing!
-		if (speed < threshold), direction = nothing
-	*/
+	// Record any gusts.
+	float avg = windSpeed.avg_now();
+	dataPoint dpGust = windSpeed.gust(dpSpeed, avg);
+	windGust.addReading(dpGust);
 
+
+
+	// Read wind direction.
 	float windAngle = windAngleReading();
-	windDir.addReading(now(), windAngle, speed);
+	windDir.addReading(now(), windAngle, speed);	// weighted by speed
 
 	// Reset hardware interrupt count.
 	portENTER_CRITICAL_ISR(&hardwareMux_anem);
@@ -1726,11 +1107,51 @@ void readWind() {
 }
 
 /// <summary>
+/// Returns number of rotations that produce a given speed.
+/// </summary>
+/// <param name="speed">Speed, mph</param>
+/// <returns>Number of rotations.</returns>
+float rotsFromSpeed(float speed) {
+	return speed * BASE_PERIOD_SEC / DAVIS_SPEED_CAL_FACTOR;
+}
+
+/// <summary>
+/// Adds simulate wind sensor readings.
+/// </summary>
+void readWind_Simulate() {
+	//#if defined(VM_DEBUG)
+		//unsigned int rots = dummy_anemCount.linear(15, 0);				// simulate
+	//unsigned int rots = dummy_anemCount.sawtooth(5, 0.1, 15);		// simulate
+	//unsigned int rots = dummy_anemCount.sawtooth(rotsFromSpeed(10), rotsFromSpeed(0.2), rotsFromSpeed(15), rotsFromSpeed(12), 20, 1000);
+	float target_speed = 15;
+	float target_spikeSpeed = 15;
+	float target_incSpeed = 0.1;
+	unsigned int rots = dummy_anemCount.linear(rotsFromSpeed(target_speed), rotsFromSpeed(target_incSpeed), rotsFromSpeed(target_spikeSpeed), 50, 6);
+	float speed = windSpeed.speedInstant(rots, BASE_PERIOD_SEC);	// Speed value
+	dataPoint dpSpeed(now(), speed);
+	windSpeed.addReading(dpSpeed);
+
+
+	// Record any gusts. Use MOVING AVG of wind speed.
+	//float avg = 99;
+	float avg_moving = windSpeed.avgMoving();
+	dataPoint dpGust = windSpeed.gust(dpSpeed, avg_moving);
+	windGust.addReading(dpGust);
+
+
+	// Read wind direction.
+	float windAngle = dummy_windDir.sawtooth(90, 1, 360);
+	windDir.addReading(now(), windAngle, dpSpeed.value);	// weighted by speed
+	//#endif
+}
+
+
+/// <summary>
 /// Reads and saves fan speed.
 /// </summary>
 void readFan() {
 	// Get fan speed.
-	d_fanRPM.addReading(now(), fanRPM(_fanHalfRots, BASE_PERIOD_SEC));
+	d_fanRPM.addReading(dataPoint(now(), fanRPM(_fanHalfRots, BASE_PERIOD_SEC)));
 	// Reset hardware interrupt count.
 	portENTER_CRITICAL(&hardwareMux_fan);
 	_fanHalfRots = 0;		// Reset fan rotations.		
@@ -1742,27 +1163,84 @@ void readFan() {
 /// </summary>
 void readSensors() {
 	unsigned long timeStart = millis();
+	if (_isDEBUG_simulateSensorReadings) {
+		// Simulate sensor readings.
+		readSensors_Simulate();
+		return;
+	}
+	dataPoint dp;	// holds successive readings
 	// Temperature.
-	d_Temp_F.addReading(now(), reading_Temp_F_DS18B20());	// temperature
+	dp = dataPoint(now(), reading_Temp_F_DS18B20());
+	d_Temp_F.addReading(dp);
 	// UV readings.
-	d_UVA.addReading(now(), sensor_UV.uva());
-	d_UVB.addReading(now(), sensor_UV.uvb());
-	d_UVIndex.addReading(now(), sensor_UV.index());
+	dp = dataPoint(now(), sensor_UV.uva());
+	d_UVA.addReading(dp);
+	dp = dataPoint(now(), sensor_UV.uvb());
+	d_UVB.addReading(dp);
+	dp = dataPoint(now(), sensor_UV.index());
+	d_UVIndex.addReading(dp);
 	// P, RH
-	d_RH.addReading(now(), sensor_PRH.readHumidity());				// RH.
-	d_Pres_mb.addReading(now(), sensor_PRH.readPressure() / 100);	// Raw pressure in mb (hectopascals)
-	d_Temp_for_RH_C.addReading(now(), sensor_PRH.readTemperature());// Temp (C) of P, RH sensor.
+	dp = dataPoint(now(), sensor_PRH.readHumidity());
+	d_RH.addReading(dp);
+	dp = dataPoint(now(), sensor_PRH.readPressure() / 100);
+	d_Pres_mb.addReading(dp);			// Raw pressure in mb (hectopascals)
+	dp = dataPoint(now(), sensor_PRH.readTemperature());
+	d_Temp_for_RH_C.addReading(dp);		// Temp (C) of P, RH sensor.
+	// P adjusted to sea level.
 	float psl = pressureAtSeaLevel(
 		d_Pres_mb.valueLastAdded(),
 		gps.data.altitude(),
 		d_Temp_for_RH_C.valueLastAdded());
-	d_Pres_seaLvl_mb.addReading(now(), psl);
+	dp = dataPoint(now(), psl);
+	d_Pres_seaLvl_mb.addReading(dp);
 	// IR sky
-	d_IRSky_C.addReading(now(), sensor_IR.readObjectTempC());
+	dp = dataPoint(now(), sensor_IR.readObjectTempC());
+	d_IRSky_C.addReading(dp);
 	// Insolation/
 	float insol_norm = insol_norm_pct(readInsol_mV(), INSOL_REFERENCE_MAX);
-	d_Insol.addReading(now(), insol_norm);							// % Insolation
+	dp = dataPoint(now(), insol_norm);
+	d_Insol.addReading(dp);	// % Insolation
+
 	unsigned int timeEnd = millis() - timeStart;
+}
+
+/// <summary>
+/// Adds simulated values to sensor readings 
+/// (doesn't include wind readings).
+/// </summary>
+void readSensors_Simulate() {
+	dataPoint dp;	// holds reading
+	// Temperature.
+	dp = dataPoint(now(), dummy_Temp_F.sawtooth(10, 0.02, 20));
+	d_Temp_F.addReading(dp);
+	// UV readings.
+	/*dp = dataPoint(now(), dummy_UVA.linear(3, 0.1));
+	d_UVA.addReading(dp);
+	dp = dataPoint(now(), dummy_UVB.linear(3, 0.1));
+	d_UVB.addReading(dp);*/
+	dp = dataPoint(now(), dummy_UVIndex.sawtooth(0, 0.05, 10));
+	d_UVIndex.addReading(dp);
+	// P, RH
+	dp = dataPoint(now(), dummy_RH.sawtooth(0, 0.05, 50));
+	d_RH.addReading(dp);
+	dp = dataPoint(now(), dummy_Pres_mb.linear(3, 0.1) / 100);
+	d_Pres_mb.addReading(dp);			// Raw pressure in mb (hectopascals)
+	//dp = dataPoint(now(), dummy_Temp_for_RH_C.linear(10, 0.02));
+	//d_Temp_for_RH_C.addReading(dp);		// Temp (C) of P, RH sensor.
+	// P adjusted to sea level.
+	float psl = pressureAtSeaLevel(
+		dummy_Pres_seaLvl_mb.linear(950, 0.01),
+		gps.data.altitude(),
+		25);
+	dp = dataPoint(now(), psl);
+	d_Pres_seaLvl_mb.addReading(dp);
+	// IR sky
+	dp = dataPoint(now(), dummy_IRSky_C.sawtooth(10, 0.02, 20));	// .sawtooth(0, 0.02, 10));
+	d_IRSky_C.addReading(dp);
+	// Insolation/
+	float insol_norm = insol_norm_pct(dummy_Insol.linear(0, 0.01), INSOL_REFERENCE_MAX);
+	dp = dataPoint(now(), insol_norm);
+	d_Insol.addReading(dp);	// % Insolation
 }
 
 /// <summary>
@@ -1771,6 +1249,7 @@ void readSensors() {
 /// </summary>
 void processReadings_10_min() {
 	windSpeed.process_data_10_min();
+	windGust.process_data_10_min();
 	windDir.process_data_10_min();
 	d_Temp_F.process_data_10_min();
 	d_Pres_mb.process_data_10_min();		// Just save avg_10?
@@ -1789,6 +1268,7 @@ void processReadings_10_min() {
 /// </summary>
 void processReadings_60_min() {
 	windSpeed.process_data_60_min();
+	windGust.process_data_60_min();
 	windDir.process_data_60_min();
 	d_Temp_F.process_data_60_min();
 	d_Pres_seaLvl_mb.process_data_60_min();
@@ -1816,52 +1296,101 @@ void processReadings_Day() {
 	d_IRSky_C.process_data_day();
 }
 
+
+
 /// <summary>
-/// Test code that can be inserted for debugging.
+/// Test code to insert in setup for debugging.
 /// </summary>
-void addTestCodeHere() {
-#if defined(VM_DEBUG)
-	/////////  TESTING   /////////////
+/// <param name="runTime_sec">Number of seconds to run.</param>
+void testCodeForSetup(unsigned long runTime_sec) {
+	//#if defined(VM_DEBUG)
 	Serial.println(LINE_SEPARATOR);
-	Serial.println("TEST in setup start\n");
-	/*******************************
+	Serial.print("TEST in setup to run for "); Serial.print(runTime_sec); Serial.println(" sec/n");
+	unsigned long timeStart = millis();
+	/********************************/
+	/* INSERT DEFINITIONS HERE.     */
+#include "ListFunctions.h"
 
-		INSERT TEST CODE HERE.
+	/********************************/
+	while (millis() < timeStart + runTime_sec * 1000)
+	{
+		/********************************/
+		/* INSERT TEST CODE HERE.       */
 
-	********************************/
+		list<float> testList;
+		float val = 10;
+		for (size_t i = 0; i < 5; i++)
+		{
+			val += i;
+			addToList(testList, val, 5);
+		}
+		float avg = listAverage(testList, 5);
+		Serial.printf("list avg = %f", avg);
+
+
+		/********************************/
+	}
 	Serial.println("TEST COMPLETE");
 	Serial.println(LINE_SEPARATOR);
 	while (true) {}	// infinite loop to halt
-#endif
+	//#endif
 }
 
 /// <summary>
-/// Adds dummy data to SensorData object lists.
+/// Adds dummy data to SensorData instance lists.
 /// </summary>
 void addDummyData() {
 	//#if defined(VM_DEBUG)
 	Serial.printf("\naddDummyData now() = %li\n", now());
+
+	// 10-min
 	d_Temp_F.addDummyData_10_min(65, -0.75, 12, 1765412100);
 	d_Pres_mb.addDummyData_10_min(991, 1, 12, 1765412100);
 	d_Pres_seaLvl_mb.addDummyData_10_min(991, 1, 12, 1765412100);
-	// RE-WRITE THIS: d_RH.addDummyData_10_min(20, .5, 12, 1765412100);
-	// RE-WRITE THIS: d_IRSky_C.addDummyData_10_min(-25, 0.5, 12, 1765412100);
-	//windSpeed.addDummySpeedData_10_min(15, 0.5, 12, 1765412100);
-	windSpeed.addDummyGustData_10_min(25, 2, 12, 1765412100);
-	//	windDir.addDummyData_10_min(270, 5, 12, 1765412100);
+	d_RH.addDummyData_10_min(20, .5, 12, 1765412100);
+	d_IRSky_C.addDummyData_10_min(-25, 0.5, 12, 1765412100);
+	windSpeed.addDummyData_10_min(15, 0.5, 12, 1765412100);
+	windGust.addDummyData_10_min(25, 2, 12, 1765412100);
+	windDir.addDummyData_10_min(270, 5, 12, 1765412100);
 	d_Insol.addDummyData_10_min(2700, 25, 12, 1765412100);
 	d_UVIndex.addDummyData_10_min(0, 0.5, 12, 1765412100);
 
+	// 60-min
 	d_Temp_F.addDummyData_60_min(65, 0.1, 12, 1765412100);
 	d_Pres_mb.addDummyData_60_min(989, 1.5, 12, 1765412100);
 	d_Pres_seaLvl_mb.addDummyData_60_min(991, 2, 12, 1765412100);
 	d_RH.addDummyData_60_min(20, .5, 12, 1765412100);
 	d_IRSky_C.addDummyData_60_min(-25, 0.5, 12, 1765412100);
-	//windSpeed.addDummySpeedDataToAvg_60_min(15, 0.5, 12, 1765412100);
-	//windSpeed.addDummyGustDataToAvg_60_min(25, 2, 12, 1765412100);
-	//	windDir.addDummyData_60_min(270, 5, 12, 1765412100);
+	windSpeed.addDummyData_60_min(15, 0.5, 12, 1765412100);
+	windGust.addDummyData_60_min(25, 2, 12, 1765412100);
+	windDir.addDummyData_60_min(270, 5, 12, 1765412100);
 	d_Insol.addDummyData_60_min(2700, 25, 12, 1765412100);
 	d_UVIndex.addDummyData_60_min(0, 0.5, 12, 1765412100);
+
+	// daily maxima
+	d_Temp_F.addDummyData_maxima_daily(65, 1, 10, 1765412100);
+	d_Pres_mb.addDummyData_maxima_daily(989, 1.5, 12, 1765412100);
+	d_Pres_seaLvl_mb.addDummyData_maxima_daily(991, 2, 12, 1765412100);
+	d_RH.addDummyData_maxima_daily(20, .5, 12, 1765412100);
+	d_IRSky_C.addDummyData_maxima_daily(-25, 0.5, 12, 1765412100);
+	windSpeed.addDummyData_maxima_daily(15, 0.5, 12, 1765412100);
+	windGust.addDummyData_maxima_daily(25, 2, 12, 1765412100);
+	windDir.addDummyData_maxima_daily(270, 5, 12, 1765412100);
+	d_Insol.addDummyData_maxima_daily(2700, 25, 12, 1765412100);
+	d_UVIndex.addDummyData_maxima_daily(0, 0.5, 12, 1765412100);
+
+	// daily minima
+	d_Temp_F.addDummyData_minima_daily(45, -1, 10, 1765412400);
+	d_Pres_mb.addDummyData_minima_daily(989, 1.5, 12, 1765412100);
+	d_Pres_seaLvl_mb.addDummyData_minima_daily(991, 2, 12, 1765412100);
+	d_RH.addDummyData_minima_daily(20, .5, 12, 1765412100);
+	d_IRSky_C.addDummyData_minima_daily(-25, 0.5, 12, 1765412100);
+	windSpeed.addDummyData_minima_daily(15, 0.5, 12, 1765412100);
+	windGust.addDummyData_minima_daily(25, 2, 12, 1765412100);
+	windDir.addDummyData_minima_daily(270, 5, 12, 1765412100);
+	d_Insol.addDummyData_minima_daily(2700, 25, 12, 1765412100);
+	d_UVIndex.addDummyData_minima_daily(0, 0.5, 12, 1765412100);
+
 	//#endif
 }
 
@@ -1909,7 +1438,7 @@ void setup() {
 
 	//  ==========  INITIALIZE SD CARD   ========== //
 	// (Do this first - need SD card for logging.)
-	sd.initialize(SPI_CS_PIN, _isDEBUG_BypassSDCard);
+	_isGood_SDCard = sd.initialize(SPI_CS_PIN, _isDEBUG_BypassSDCard);
 	// Begin status log entries to SD card.
 	sd.logStatus();	// Empty line
 	sd.logStatus(LINE_SEPARATOR_MAJOR);
@@ -1934,35 +1463,44 @@ void setup() {
 
 	// ==========   INITIALIZE GPS AND SYNC TO GET TIME   ========== //
 	// XXX  Need code to alter power of GPS!!!  XXX
-	
+
 	/* 	Format for setting s serial port:
 		SerialObject.begin(baud-rate, protocol, RX pin, TX pin);
 		(Wrong baud rate gives serial garbage.)
 	*/
 	// Connect to GPS
 	gps.begin(GPS_BAUD_RATE, SERIAL_CONFIGURATION, RX2_PIN, TX2_PIN);
-	sd.logStatus("Trying to connect to GPS.", millis());
+	sd.logStatus("Begin connecting to GPS.", millis());
 	// Get time and location from GPS.
 	// This code is BLOCKING until gps syncs.
-	if (!gps.isSynced()) {
-		gps.syncToGPS(sd, _isDEBUG_BypassGPS);
+	bool isGpsSuccess = false;
+	if (!gps.isSynced())
+	{
+		isGpsSuccess = gps.syncToGPS(sd, _isDEBUG_BypassGPS);
+		_isGood_GPS = true;
+	}
+	if (!isGpsSuccess)
+	{
+		String msg = "ERROR: GPS did not sync after ";
+		msg += String(GPS_CYCLES_COUNT_MAX) + " cycles.";
+		sd.logStatus(msg, millis());
 	}
 	// Hold to determine when new day begins.
 	_oldDay = day();
 	_oldMonth = month();
 	_oldYear = year();
 
-#if defined(VM_DEBUG)
-	////////  TESTING   ////////
-	if (_isDEBUG_addDummyData) {
+	//#if defined(VM_DEBUG)
+		////////  TESTING   ////////
+	if (_isDEBUG_addDummyDataLists) {
 		addDummyData();
 	}
-	if (_isDEBUG_Test_setup) {
-		addTestCodeHere();
+	if (_isDEBUG_run_test_in_setup) {
+		testCodeForSetup(200000);
 	}
-#endif
+	//#endif
 
-	// ==========  INITIALIZE SENSORS  ========== //
+		// ==========  INITIALIZE SENSORS  ========== //
 	initializeSensors();
 
 	sd.logData(columnNames());	// Write column names to data log.
@@ -2006,7 +1544,7 @@ void setup() {
 	msg = "CURRENT LOCAL TIME is " + gps.dateTime();
 	(IS_DAYLIGHT_TIME) ? msg = " Daylight time." : msg = " Standard time.";
 	sd.logStatus(msg);
-	sd.logStatus("SETUP END", millis());
+	sd.logStatus("SETUP END " + gps.dateTime(), millis());
 }
 /****************************************************************************/
 /************************        END SETUP       ****************************/
@@ -2069,6 +1607,8 @@ void loop() {
 	//    60-MIN INTERVAL.
 	if (_countInterrupts_60_min >= BASE_PERIODS_IN_60_MIN) {
 		processReadings_60_min();
+		sd.logData(sensorsDataString_10_min());	// Save readings to SD card.
+		sd.logStatus("Logged 60-min avgs.", gps.dateTime());
 		// Check for unhandled.
 		if (_countInterrupts_60_min > BASE_PERIODS_IN_60_MIN) {
 			String msg = "WARNING: 10-min interrupt count exceeded threshold by ";
@@ -2081,33 +1621,24 @@ void loop() {
 		portEXIT_CRITICAL_ISR(&timerMux_base);
 	}
 
-	//   ====================================================
-	//    NEW DAY.
+	// ====================================================
+	// HAS DAY CHANGED?
 	if (day() > _oldDay || month() > _oldMonth || year() > _oldYear) {
-		// This is a new day. 
+		// NEW DAY. 
 		// Save minima and maxima for previous day.
 		processReadings_Day();
 		_oldDay = day();
 		_oldMonth = month();
 		_oldYear = year();
 		sd.logStatus("New day rollover.", gps.dateTime());
-
-
-		
-		
-		//// LOG EXTREMA -- NEED STRING LISTS!
-		//d_Temp_F.maxima_daily()
-		//d_Temp_F.minima_daily()
-
-
-
 	}
 
-	/// ==========  CHECK FOR LOST WIFI CONNECTION  ========== //
+
+	/// ==========  TEST FOR LOST WIFI CONNECTION  ========== //
 	/*
 	If WiFi is lost, we're screwed because the time
 	to reconnect may throw of the sensor read timings.
-	Just bite the bullet and take the time to reconnect, 
+	Just bite the bullet and take the time to reconnect,
 	then recover.
 
 	If WiFi was lost, the time to reconnect will cause

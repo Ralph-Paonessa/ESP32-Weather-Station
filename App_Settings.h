@@ -14,13 +14,23 @@
 /// </summary>
 namespace App_Settings {
 
+	///////const float BASE_PERIOD_SEC = 1;	// Period to sample anemometer rotations (sec).
+
 	const float BASE_PERIOD_SEC = 4;	// Period to sample anemometer rotations (sec).
 
 	/* GPS sync parameters */
-	const int	GPS_SATELLITES_REQUIRED = 3;
-	const int	GPS_CYCLES_FOR_SYNC = 4;		// Minimum GPS cycles before saving data.
-	const int	GPS_DELAY_BETWEEN_CYCLES = 10;	// Delay before getting another GPS fix, sec.
-	const float GPS_MAX_ALLOWED_HDOP = 2.5;		// Minimum HDOP precision required before syncing.
+	const unsigned int	GPS_SATELLITES_REQUIRED = 3;// Minimum number of GPS satellites before syncing.
+	const unsigned int	GPS_CYCLES_FOR_SYNC = 3;	// Minimum GPS cycles before syncing.
+	const unsigned int	GPS_CYCLE_DELAY_SEC = 2;	// Delay before getting another GPS fix, sec.
+	const unsigned int	GPS_CYCLES_COUNT_MAX = 50;	// Max number of GPS cycles before quitting.
+	const float GPS_MAX_ALLOWED_HDOP = 4;			// Minimum HDOP precision for syncing.
+
+	const unsigned int	GPS_DUMMY_HOUR = 23;		// Hour for dummy GPS time.
+	const unsigned int	GPS_DUMMY_MIN = 05;			// Minute for dummy GPS time.
+	const unsigned int	GPS_DUMMY_SEC = 0;			// Second for dummy GPS time.
+	const unsigned int	GPS_DUMMY_DAY = 1;			// Day for dummy GPS time.
+	const unsigned int	GPS_DUMMY_MONTH = 1;		// Month for dummy GPS time.
+	const unsigned int	GPS_DUMMY_YEAR = 2099;		// Year for dummy GPS time.
 
 	const int	UTC_OFFSET_HOURS = -8;
 	const bool	IS_DAYLIGHT_TIME = true;
@@ -28,16 +38,15 @@ namespace App_Settings {
 	const float WIFI_CONNECT_TIMEOUT_SEC = 5;		// Timeout for connecting to WiFi SSID, sec.
 	const float WIFI_CONNECT_TIMEOUT_LOST_SEC = 60;	// Timeout for connecting to WiFi SSID, sec.
 
-	const int FAN_DUTY_PERCENT = 30;			// PWM duty cycle for fan speed.
+	const unsigned int FAN_DUTY_PERCENT = 30;		// PWM duty cycle for fan speed.
 
 	const String LOGFILE_PATH_DATA = "/data.txt";
 
 	const String LOGFILE_PATH_STATUS = "/log.txt";
 
-	
-	const String LINE_SEPARATOR_LOG_BEGINS = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
-	const String LINE_SEPARATOR_MAJOR = "===========================================================";
-	const String LINE_SEPARATOR = "------------------------------------------------------";
+	const String LINE_SEPARATOR_LOG_BEGINS = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+	const String LINE_SEPARATOR_MAJOR = "=====================================================";
+	const String LINE_SEPARATOR = "-------------------------------------------------";
 
 	/*
 	ESTIMATE of max. achievable insolation, for
@@ -51,8 +60,11 @@ namespace App_Settings {
 	const float DAVIS_SPEED_CAL_FACTOR = 2.25;	// WindSpeed calibration factor for Davis anemometer.
 	const float VANE_OFFSET = 0;	// Degrees that wind direction reading exceeds true North.
 	const float WIND_DIRECTION_SPEED_THRESHOLD = 1;	// WindSpeed below which wind direction is not reported.
+	const float WIND_SPEED_OUTLIER_DELTA = 10;
+	const unsigned int WIND_SPEED_NUMBER_IN_MOVING_AVG = 5;
 
-	const int LOOP_TIME_WARNING_THRESHOLD_MS = 2000;
+
+	const unsigned int LOOP_TIME_WARNING_THRESHOLD_MS = 2000;
 
 	const unsigned int SECONDS_PER_MINUTE = 60;
 	const unsigned int MINUTES_PER_HOUR = 60;

@@ -9,7 +9,7 @@
 #include "WProgram.h"
 #endif
 
-#include "WindSpeed.h"
+#include "WindSpeed2.h"
 #include "WindDirection.h"
 
 #include <list>
@@ -31,7 +31,7 @@ public:
 
 	void haltWithInfiniteLoop();
 
-	// Tests WindSpeed.h wind directionCardinal handling.
+	// Tests WindSpeed2.h wind directionCardinal handling.
 	void windDirection(float angleStart, float angleIncrement, int cycles, float VANE_OFFSET);
 
 	float testDummyReading(float seed, float increment1, float increment2, int periods, unsigned long count);
@@ -43,7 +43,7 @@ public:
 	////void testList();
 	void testStructList(long time);
 
-	// Add a list of rotations to a WindSpeed object, and return elapsed seconds.
+	// Add a list of rotations to a WindSpeed instance, and return elapsed seconds.
 	float addDummyRotations(list<float> srcList, WindSpeed& speedObj, float rawPeriod);
 
 	//void test();

@@ -49,15 +49,9 @@ private:
 
 public:
 	/// <summary>
-	/// Initialize SD card. 
+	/// Creates SD card instance. 
 	/// </summary>
 	SDCard();
-
-	/*/// <summary>
-	/// Initialize SD card. 
-	/// </summary>
-	/// <param name="SPI_CS_pin">GPIO pin number.</param>
-	SDCard(int SPI_CS_pin);*/
 
 	/// <summary>
 	/// Initializes SD card module.
@@ -76,7 +70,6 @@ public:
 	/// Sets SDCard module to not bypass logging to the card.
 	/// </summary>
 	void cancelBypass();
-
 
 	/// <summary>
 	/// Create the file if it does not exist.
