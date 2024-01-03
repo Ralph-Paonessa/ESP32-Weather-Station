@@ -99,13 +99,18 @@ h4 {
 .nav {
     padding: .2em;
     background-color: #b30e0e;
-    border: 1px solid #2f2f2f;
+    border: 4px solid #b30e0e;
+    border-radius: 5px;
     color: #fff;
     width: 5em;
-    margin: 0 1em .5em 0;
+    margin: 0 1.5em .5em 0;
     font-size: 1em;
     text-align: center;
 }
+
+    .nav.active {
+        border-color: red;
+    }
 
     .nav.home {
         background-color: initial;

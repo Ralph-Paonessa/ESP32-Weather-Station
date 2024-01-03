@@ -163,7 +163,7 @@ public:
 	GPSData data;
 
 	/// <summary>
-	/// Initializes GPS data connections.
+	/// Creates GPS data connections.
 	/// </summary>
 	/// <param name="baudRate">Baud rate for GPS.</param>
 	/// <param name="serialConfig">Serial configuration protocol.</param>

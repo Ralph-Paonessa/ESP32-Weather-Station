@@ -44,4 +44,4 @@ free for personal use.*
   ### Mechanism for getting Daily Max/Min charts.
   **This is now in development.** *One option is to create a separate 
   chart_2.html set up to display two data series, along with chart_2.js to
-  parse the delimited data string from a modified* **getChartData("/data_min_max")**.
+  parse the delimited data string from a modified* **getChartData("/data_max_min")**.

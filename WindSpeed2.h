@@ -38,7 +38,7 @@ public:
 
 	// Constructor	
 
-	/// <summary> Initializes WindSpeed instance that exposes 
+	/// <summary> Creates WindSpeed instance that exposes 
 	/// methods to read and process wind speed data.
 	/// </summary>
 	/// <param name="calibrationFactor">

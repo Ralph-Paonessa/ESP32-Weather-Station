@@ -30,7 +30,7 @@ void GPSModule::begin(
 	uint32_t serialConfig,
 	int8_t rxPin,
 	int8_t txPin) {
-	// Initialize GPS UART communication.
+	// Create GPS UART communication.
 	/*
 	 The format for setting a serial port is as follows:
 	 SerialObject.begin(baud-rate, protocol, RX pin, TX pin);
@@ -462,7 +462,7 @@ int GPSModule::timeZoneOffset() {
 }
 
 /// <summary>
-/// Returns true if initialized to daylight time.
+/// Returns true if adjusted to daylight time.
 /// </summary>
 /// <returns></returns>
 bool GPSModule::isDaylightTime() {

@@ -22,6 +22,9 @@
 #include "App_Settings.h"
 using namespace App_Settings;
 
+#include "FileOperations.h"
+using namespace FileOperations;
+
 /// <summary>
 /// Exposes methods to read/write files to an SD card.
 /// </summary>
@@ -31,21 +34,21 @@ private:
 	int _SPI_CS_pin;	// SPI pin number for SD card.
 	bool _isBypassSDCard = false;
 
-	/// <summary>
+	/*/// <summary>
 	/// Writes to the SD card file, overwriting existing data.
 	/// </summary>
 	/// <param name="fs">File system object.</param>
 	/// <param name="path">Target file path with name.</param>
 	/// <param name="message">String to write.</param>
-	void writeFile(fs::FS& fs, const char* path, const char* message);
+	void fileWrite(fs::FS& fs, const char* path, const char* message);*/
 	
-	/// <summary>
+	/*/// <summary>
 	/// Appends data to an SD card file.
 	/// </summary>
 	/// <param name="fs">File system object.</param>
 	/// <param name="path">Target file path with name.</param>
 	/// <param name="message">String to write.</param>
-	void appendFile(fs::FS& fs, const char* path, const char* message);
+	void fileAppend(fs::FS& fs, const char* path, const char* message);*/
 
 public:
 	/// <summary>
@@ -54,12 +57,12 @@ public:
 	SDCard();
 
 	/// <summary>
-	/// Initializes SD card module.
+	/// Creates SD card module.
 	/// </summary>
 	/// <param name="SPI_CS_pin">GPIO pin number.</param>
 	/// <param name="isBypass">Set true to bypass SD card operations.</param>
 	/// <returns>True if successful SD card initialization.</returns>
-	bool initialize(int SPI_CS_pin, bool isBypass);
+	bool create(int SPI_CS_pin, bool isBypass);
 
 	/// <summary>
 	/// Sets SDCard module to bypass logging to the card.
@@ -76,7 +79,7 @@ public:
 	/// </summary>
 	/// <param name="path">The file path including name.</param>
 	/// <returns>True if file found or created.</returns>
-	bool createFile(const String& path);
+	bool fileCreateOrExists(const String& path);
 
 	/// <summary>
 	/// Appends data to the SD card, and advances to new line.

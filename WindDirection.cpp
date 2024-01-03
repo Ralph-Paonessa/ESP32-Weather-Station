@@ -5,7 +5,7 @@
 #include "WindDirection.h"
 
 /// <summary>
-/// Initialize with an angle offset to subtract from readings.
+/// Create with an angle offset to subtract from readings.
 /// </summary>
 /// <param name="offsetAngle">
 /// Degrees by which reading exceeds true north.
@@ -15,7 +15,7 @@ WindDirection::WindDirection(float offsetAngle) {
 }
 
 /// <summary>
-/// Initialize the WindDirection object.
+/// Create the WindDirection object.
 /// </summary>
 void WindDirection::begin() {
 	WindDirection::clear_10_min();
@@ -63,7 +63,7 @@ void WindDirection::clear_10_min() {
 /// <param name="degrees">Wind direction (uncorrected), deg.</param>
 /// <param name="speed">Speed at time of reading, mph.</param>
 void WindDirection::addReading(long time, float degrees, float speed) {
-	_dataLastAdded = dataPoint(time, degrees);
+	_dataPointLastAdded = dataPoint(time, degrees);
 	///////////_timeLastAdded = time;
 	// Only record direction for speeds greater than threshold.
 	if (speed >= WIND_DIRECTION_SPEED_THRESHOLD) {

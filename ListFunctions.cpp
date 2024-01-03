@@ -4,7 +4,10 @@
 
 #include "ListFunctions.h"
 
+#include <sstream>
+#include <string>
 using std::list;
+using std::string;
 
 /////   LIST MANIPULATIONS   /////
 
@@ -29,8 +32,7 @@ void ListFunctions::addToList(list<dataPoint>& targetList, dataPoint dp, int num
 /// <param name="targetList">List of values to add to.</param>
 /// <param name="val">Value to add.</param>
 /// <param name="numElements">Maximum allowed elements in list.</param>
-void ListFunctions::addToList(list<float>& targetList, float val, int numElements)
-{
+void ListFunctions::addToList(list<float>& targetList, float val, int numElements) {
 	targetList.push_back(val);		// Add value to list.
 	if (targetList.size() > numElements) {
 		targetList.pop_front();		// If too many, remove the first.
@@ -90,9 +92,6 @@ float ListFunctions::listAverage(list<float>& targetList, int numToAverage) {
 	return total / numToAverage;
 }
 
-
-
-
 /// <summary>
 /// Returns the largest value of a list of dataPoint from the last numElements.
 /// </summary>
@@ -108,8 +107,7 @@ float ListFunctions::listMaximum(list<dataPoint>& targetList, int numElements) {
 	auto it = targetList.rbegin();	// Reverse iterator to last element.
 	// Start with low value we should never see.
 	float maxItem = -999999999;
-	for (int i = 1; i < numElements + 1; i++)
-	{
+	for (int i = 1; i < numElements + 1; i++) {
 		dataPoint dp = *it;
 		if (dp.value > maxItem) {
 			maxItem = dp.value;
@@ -120,13 +118,13 @@ float ListFunctions::listMaximum(list<dataPoint>& targetList, int numElements) {
 }
 
 /// <summary>
-/// Converts a list of dataPoint to a string of "time, value" pairs 
-/// each delimited by "," and pairs delimited by "~".
+/// Converts a list of data points to a string of "time, value" 
+/// pairs, each delimited by "," separate points delimited by 
+/// "~". Such as "t1,v1~t2,v2~t3,v3".
 /// </summary>
-/// <param name="targetList">List to parse.</param>
+/// <param name="targetList">List of dataPoint.</param>
 /// <returns>Delimited string of multiple (time, value) data points.</returns>
-String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList)
-{
+String ListFunctions::listToString_data(list<dataPoint>& targetList) {
 	String s = "";
 	if (targetList.size() == 0) {
 		return s + "[-EMPTY-]";
@@ -150,7 +148,7 @@ String ListFunctions::listToString_dataPoints(list<dataPoint>& targetList)
 /// <param name="decimalPlaces">Decimal places to display.</param>
 /// <returns>
 /// Comma-separated "time,value" pairs delimited by "~"</returns>
-String ListFunctions::listToString_dataPoints(
+String ListFunctions::listToString_data(
 	list<dataPoint>& targetList,
 	bool isConvertZeroToEmpty,
 	unsigned int decimalPlaces)
@@ -185,30 +183,106 @@ String ListFunctions::listToString_dataPoints(
 /// </param>
 /// <param name="decimalPlaces">
 /// Decimal places to display.</param>
-/// <returns>Two lists delimited by "|".</returns>
-String ListFunctions::listToString_dataPoints(
+/// <returns>Two String lists, respectively delimited by "|".
+/// </returns>
+String ListFunctions::listToString_data(
 	list<dataPoint>& targetList_hi,
 	list<dataPoint>& targetList_lo,
 	bool isConvertZeroToEmpty,
 	unsigned int decimalPlaces)
 {
 	String s = "";
-	if (!targetList_hi.size() == 0)
-	{
-		s += listToString_dataPoints(targetList_hi, isConvertZeroToEmpty, decimalPlaces);
+	if (!targetList_hi.size() == 0) {
+		s += listToString_data(
+			targetList_hi,
+			isConvertZeroToEmpty,
+			decimalPlaces);
 	}
-	else
-	{
+	else {
 		s += "[-EMPTY HI-]";
 	}
 	s += "|";	// delimiter between lists
-	if ((!targetList_lo.size() == 0))
-	{
-		s += listToString_dataPoints(targetList_lo, isConvertZeroToEmpty, decimalPlaces);
+	if ((!targetList_lo.size() == 0)) {
+		s += listToString_data(
+			targetList_lo,
+			isConvertZeroToEmpty,
+			decimalPlaces);
 	}
-	else
-	{
+	else {
 		s += "[-EMPTY LO-]";
 	}
 	return s;
+}
+
+/// <summary>
+/// Splits a delimited string into a list of Arduino String.
+/// </summary>
+/// <param name="str">String to split.</param>
+/// <param name="str">Delimiter char, such as ','.</param>
+/// <returns>List of Strings after splitting.</returns>
+list<String> ListFunctions::splitString(const String& str, const char delim) {
+	list<String> substrings;
+	std::istringstream ss(str.c_str());	// Convert input String to stream.
+	while (!ss.eof()) {
+		std::string sub;				// empty string to hold substrings
+		std::getline(ss, sub, delim);	// Read character stream before delimiter.
+		// Convert string to data point and add to list.
+		substrings.push_back(String(sub.c_str()));
+	}
+	return substrings;
+}
+
+/// <summary>
+/// Returns a list of dataPoints retrieved from a delimited 
+/// string of comma-separated "time,value" pairs.
+/// </summary>
+/// <param name="str">Delimited string of dataPoints.</param>
+/// <returns>
+/// List of "time,value" dataPoints retrieved from a delimited string.
+/// </returns>
+list<dataPoint> ListFunctions::listData_fromString(String& str) {
+	list<dataPoint> dPoints;		// List to hold data points.
+	std::istringstream ss(str.c_str());
+	while (!ss.eof()) {
+		std::string sub;			// empty string to hold substrings
+		std::getline(ss, sub, '~');	// Read next delimited field into sub.
+		// Convert string to data point and add to list.
+		size_t i = sub.find_first_of(",");
+		float val = 0;
+		std::string s = sub.substr(i + 1);
+		// Replace empty values with zero.
+		if (!s.empty()) {
+			val = std::stof(s);
+		}
+		else {
+			val = 0;
+		}
+		dataPoint dp = dataPoint(std::stoul(sub.substr(0, i)), val);
+		dPoints.push_back(dp);
+	}
+	return dPoints;
+}
+
+void ListFunctions::listPrint(list<std::string> targetList) {
+	Serial.println("List elements:");
+	for (list<std::string>::iterator it = targetList.begin(); it != targetList.end(); ++it) {
+		std::string s = *it;
+		Serial.println(s.c_str());
+	}
+}
+
+void ListFunctions::listPrint(list<String> targetList) {
+	Serial.println("List elements:");
+	for (list<String>::iterator it = targetList.begin(); it != targetList.end(); ++it) {
+		String s = *it;
+		Serial.println(s);
+	}
+}
+
+void ListFunctions::listPrint(list<dataPoint> targetList) {
+	Serial.println("List elements:");
+	for (list<dataPoint>::iterator it = targetList.begin(); it != targetList.end(); ++it) {
+		dataPoint dp = *it;
+		Serial.println("(" + String(dp.time) + ", " + String(dp.value) + ")");
+	}
 }

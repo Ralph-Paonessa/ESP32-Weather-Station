@@ -27,7 +27,7 @@ namespace ListFunctions {
 	/// <param name="dp">dataPoint to add.</param>
 	/// <param name="numElements">Maximum allowed elements in list.</param>
 	void addToList(list<dataPoint>& targetList, dataPoint val, int numElements);
-	
+
 	/// <summary>
 	/// Adds values to list and limits list size. (If adding 
 	/// creates too many elements, the first element is removed.)
@@ -71,42 +71,95 @@ namespace ListFunctions {
 	float listMaximum(list<dataPoint>& targetList, int numElements);
 
 	/// <summary>
-	/// Converts a list of dataPoint to a string of "time, value" pairs 
-	/// each delimited by "," and pairs delimited by "~".
-	/// </summary>
-	/// <param name="targetList">List to parse.</param>
-	/// <returns>Delimited string of multiple (time, value) data points.</returns>
-	String listToString_dataPoints(list<dataPoint>& targetList);
+/// Converts a list of data points to a string of "time, value" 
+/// pairs, each delimited by "," separate points delimited by 
+/// "~". Such as "t1,v1~t2,v2~t3,v3".
+/// </summary>
+/// <param name="targetList">List of dataPoint.</param>
+/// <returns>Delimited string of multiple (time, value) data points.</returns>
+	String listToString_data(list<dataPoint>& targetList);
 
 	/// <summary>
 	/// Converts a list of dataPoints to a string of 
-	/// comma-separated "time,value" pairs delimited by "~".
+	/// comma-separated "time,value" pairs delimited by "~". 
+	/// Such as "t1,v1~t2,~t3,v3".
 	/// </summary>
-	/// <param name="targetList">List of dataPoints.</param>
+	/// <param name="targetList">List of dataPoint.</param>
 	/// <param name="isConvertZeroToEmpty">
 	/// Set true to convert zero value to empty string.</param>
 	/// <param name="decimalPlaces">Decimal places to display.</param>
 	/// <returns>
 	/// Comma-separated "time,value" pairs delimited by "~"</returns>
-	String listToString_dataPoints(
+	String listToString_data(
 		list<dataPoint>& targetList,
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
 
-	
 	/// <summary>
-	/// 
+	/// Converts two lists of dataPoints to strings of 
+	/// comma-separated "time,value" pairs delimited by "~".
+	/// Then combines both lists, delimited by "|". Such as 
+	/// "t1,v1~t2,v2~t3,v3|t1,v4~t2,v5~t3,v6"
 	/// </summary>
-	/// <param name="targetList_hi"></param>
-	/// <param name="targetList_lo"></param>
-	/// <param name="isConvertZeroToEmpty"></param>
-	/// <param name="decimalPlaces"></param>
-	/// <returns></returns>
-	String listToString_dataPoints(
+	/// <param name="targetList_hi">First list of dataPoint.</param>
+	/// <param name="targetList_lo">Second list of dataPoint.</param>
+	/// <param name="isConvertZeroToEmpty">
+	/// Set true to convert zero values to empty strings.
+	/// </param>
+	/// <param name="decimalPlaces">
+	/// Decimal places to display.</param>
+	/// <returns>Two String lists, respectively delimited by "|".</returns>
+	String listToString_data(
 		list<dataPoint>& targetList_hi,
 		list<dataPoint>& targetList_lo,
 		bool isConvertZeroToEmpty,
 		unsigned int decimalPlaces);
+
+	///// <summary>
+	///// Splits a delimited string into a list of C++ std::string.
+	///// </summary>
+	///// <param name="str">String to split.</param>
+	///// <param name="delim">Delimiter character.</param>
+	///// <returns>List of substrings after splitting.</returns>
+	//list<std::string> splitString(const String& str, const char delimiter);
+
+
+	/// <summary>
+	/// Splits a delimited string into a list of Arduino String.
+	/// </summary>
+	/// <param name="str">String to split.</param>
+	/// <param name="delim">Delimiter char, such as ','.</param>
+	/// <returns>List of Strings after splitting.</returns>
+	list<String> splitString(const String& str, const char delimiter);
+
+	/// <summary>
+	/// Returns a list of dataPoints retrieved from a delimited 
+	/// string of comma-separated "time,value" pairs.
+	/// </summary>
+	/// <param name="str">Delimited string of dataPoints.</param>
+	/// <returns>
+	/// List of "time,value" dataPoints retrieved from a delimited string.
+	/// </returns>
+	list<dataPoint> listData_fromString(String& str);
+
+	/// <summary>
+	/// Prints out the elements of a list of C++ std::string.
+	/// </summary>
+	/// <param name="targetList">The list to print.</param>
+	void listPrint(list<std::string> targetList);
+
+	/// <summary>
+	/// Prints out the elements of a list of Arduino String.
+	/// </summary>
+	/// <param name="targetList">The list to print.</param>
+	void listPrint(list<String> targetList);
+
+	/// <summary>
+	/// Prints out the (time, value) elements of a list of datPoint.
+	/// </summary>
+	/// <param name="targetList">The list to print.</param>
+	void listPrint(list<dataPoint> targetList);
+
 };
 
 #endif

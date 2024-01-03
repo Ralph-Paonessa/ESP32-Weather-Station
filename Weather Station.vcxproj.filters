@@ -24,7 +24,6 @@
     <None Include="Sensor readings.cd" />
     <None Include="data\html\Admin.html" />
     <None Include="data\html\chart.html" />
-    <None Include="data\html\chart_2.html" />
     <None Include="data\html\gps.html" />
     <None Include="data\html\sensors.html" />
     <None Include="data\html\summary.html" />
@@ -34,8 +33,9 @@
     <None Include="data\css\style.min.css" />
     <None Include="README_charts.md" />
     <None Include="data\js\chart.js" />
-    <None Include="data\js\chart_2.js" />
     <None Include="data\js\highcharts.js" />
+    <None Include="partitions.csv" />
+    <None Include="data\css\highcharts.alt.css" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Weather Station.ino" />
@@ -61,6 +61,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SensorSimulate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileOperations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileOperations.cpp">
@@ -113,6 +116,12 @@
     <ClInclude Include="WindSpeed2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FileOperations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PinAssignments.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="LICENSE.txt">
@@ -121,6 +130,14 @@
     <Text Include="board.txt">
       <Filter>Misc Files</Filter>
     </Text>
+    <Text Include="README_DataInLittleFS.md" />
+    <Text Include="data\test3lines.txt">
+      <Filter>Misc Files</Filter>
+    </Text>
+    <Text Include="data\test1line.txt">
+      <Filter>Misc Files</Filter>
+    </Text>
+    <Text Include="README_DavisAnemometer.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="data\img\chart-icon-black-150px.png">

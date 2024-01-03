@@ -29,10 +29,20 @@ private:
 
 public:
 
-	void haltWithInfiniteLoop();
-
 	// Tests WindSpeed2.h wind directionCardinal handling.
 	void windDirection(float angleStart, float angleIncrement, int cycles, float VANE_OFFSET);
+
+	void testCodeForSetup1(unsigned long runTime_sec, bool isInfiniteLoop);
+
+	void testCodeForSetup2(bool isInfiniteLoop);
+
+	void testCodeForSetup3(bool isInfiniteLoop);
+
+	void testCodeForSetup4(bool isInfiniteLoop);
+
+	void testCodeForSetup5(bool isInfiniteLoop);
+
+	void infiniteLoop();
 
 	float testDummyReading(float seed, float increment1, float increment2, int periods, unsigned long count);
 

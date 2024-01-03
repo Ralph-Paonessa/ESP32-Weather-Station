@@ -20,22 +20,25 @@ h1, h2, h3 {
 
 
 
-/* Data points */
-
-.highcharts-color-0 {
-    fill: #b30e0e;
-    stroke: #b30e0e
+.highcharts-point {
+    stroke-width: inherit;
 }
-
-.highcharts-color-1 {
-    fill: #ff0000;
-    stroke: #ff0000;
-}
-
 /* Line */
+/*.highcharts-series-0 {
+    stroke: blue;*/ /* point is LIGHT blue */
+    /*color: blue;*/ /* line is DARK blue */
+    /*stroke-width: 10;*/ /* affects size on hover? */
+/*}
 
 .highcharts-series-1 {
-    stroke: none;
+    stroke: darkgreen;*/ /* line color */
+    /*color: darkorange;*/ /* point color not affected? */
+    /*stroke-width: 1;
+}*/
+
+
+.highcharts-graph-0 {
+    width: 0;
 }
 
 .highcharts-graph-1 {
@@ -52,6 +55,15 @@ h1, h2, h3 {
     fill: #b30e0e;
     font-size: 3em;
 }
+
+/*.highcharts-legend-title {
+    color: goldenrod;
+    fill: goldenrod;
+}
+
+.highcharts-legend-box {
+   
+}*/
 
 .highcharts-axis-labels {
     font-size: 1.5em;
@@ -72,3 +84,56 @@ h1, h2, h3 {
         border: 1px solid #000;
         font-size: 2em;
     }
+
+
+/**********  fiddle  **********/
+
+.highcharts-background {
+    fill: #2f2f2f;
+}
+
+
+
+
+/* Data points */
+
+
+/*  Changes marker color for series-0  */
+/*.highcharts-color-0 {
+    fill: red;
+    stroke-width: 3;*/ /* Outline */
+/*stroke: blue;
+}
+
+.highcharts-color-1 {
+    color: purple;*/ /*  ??  */
+/*fill: green;*/ /*  marker color  */
+/*stroke-width: 0;*/ /*  Affects legend text  */
+/*stroke: #b30e0e;*/ /*  Affects legend text  */
+/*}*/
+
+
+
+
+.highcharts-legend-box {
+/*    color: green;*/
+    fill: #acacac;
+}
+
+.highcharts-data-label text, text.highcharts-data-label {
+    fill: #b30e0e;
+    stroke: #b30e0e;
+    font-size: 2.25em;
+}
+
+/* Tooltips for points */
+.highcharts-tooltip-box {
+    fill: red;
+    fill-opacity: 0.6;
+    stroke-width: 0;
+}
+
+.highcharts-tooltip text {
+    fill: white;
+    text-shadow: 0 0 3px black;
+}
