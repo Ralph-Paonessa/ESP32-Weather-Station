@@ -370,30 +370,30 @@ unsigned long lastReadingTime_fromFile()
 	//	return 0;
 }
 
-/// <summary>
-/// Saves last read t to LittleFS.
-/// </summary>
-/// <param name="t">Time to save.</param>
-void saveLastReadTime_toFile(unsigned long t) {
-	// Save in LittleFS
-	//if (_isDatafile) {
-	fileWrite(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str(), String(t).c_str());
-	///}
-}
-
-/// <summary>
-/// Gets last reading t from LittleFS.
-/// </summary>
-/// <returns>Saved t of last reading.</returns>
-unsigned long lastReadingTime_fromFile()
-{
-	// Read from LittleFS
-	//if (_isDatafile) {
-	return fileRead(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str()).toInt();
-	//}
-	//else {
-	//	return 0;
-}
+///// <summary>
+///// Saves last read t to LittleFS.
+///// </summary>
+///// <param name="t">Time to save.</param>
+//void saveLastReadTime_toFile(unsigned long t) {
+//	// Save in LittleFS
+//	//if (_isDatafile) {
+//	fileWrite(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str(), String(t).c_str());
+//	///}
+//}
+//
+///// <summary>
+///// Gets last reading t from LittleFS.
+///// </summary>
+///// <returns>Saved t of last reading.</returns>
+//unsigned long lastReadingTime_fromFile()
+//{
+//	// Read from LittleFS
+//	//if (_isDatafile) {
+//	return fileRead(LittleFS, SENSOR_DATA_TIME_FILE_PATH.c_str()).toInt();
+//	//}
+//	//else {
+//	//	return 0;
+//}
 
 /// <summary>
 /// Saves 10-min averages of all sensor data 
