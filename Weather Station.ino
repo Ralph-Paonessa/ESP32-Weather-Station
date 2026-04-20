@@ -10,18 +10,51 @@ Rev. October 7, 2023
 // ========  ESP32 Libraries  ================  
 
 // ESP Async Web Server
-#include <AsyncEventSource.h>
-#include <AsyncJson.h>
-#include <AsyncWebSocket.h>
-#include <AsyncWebSynchronization.h>
-#include <ESPAsyncWebServer.h>
-#include <SPIFFSEditor.h>
-#include <StringArray.h>
-#include <WebAuthentication.h>
-#include <WebHandlerImpl.h>
-#include <WebResponseImpl.h>
-#include <WebResponseImpl.h>
+//#include <FSImpl.h>
+//#include <vfs_api.h>
+//#include <BluetoothSerial.h>
+//#include <BTAddress.h>
+//#include <BTAdvertisedDevice.h>
+//#include <BTScan.h>
+//#include <dummy.h>
+//#include <DNSServer.h>
+//#include <Console.h>
+//#include <LiquidCrystal.h>
+//#include <Wire.h>
+#include <Adafruit_SPIDevice.h>
+#include <Adafruit_I2CRegister.h>
+#include <Adafruit_I2CDevice.h>
+#include <Adafruit_GenericDevice.h>
+#include <Adafruit_BusIO_Register.h>
+#include <Adafruit_Sensor.h>
+//#include <Arduino_BuiltIn.h>
+//#include <AsyncEventSource.h>
+//#include <AsyncJson.h>
+//#include <AsyncWebSocket.h>
+
+#include <SHA1Builder.h>
+
+// XXX NOT FOUND!
+//#include <PBKDF2_HMACBuilder.h>
+//#include <SHA2Builder.h>
+//#include <SHA3Builder.h>
+
+#include <AsyncUDP.h>
 #include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+
+
+// XXX THESE AREN'T FOUND!!!
+//#include <AsyncWebSynchronization.h>
+//#include <SPIFFSEditor.h>
+//#include <StringArray.h>
+
+
+//#include <WebAuthentication.h>
+//#include <WebHandlerImpl.h>
+//#include <WebResponseImpl.h>
+//#include <WebResponseImpl.h>
+//#include <AsyncTCP.h>
 
 // Sensors
 #include <SparkFun_VEML6075_Arduino_Library.h>
@@ -36,19 +69,19 @@ Rev. October 7, 2023
 #include <Adafruit_BME280.h>
 
 // File system
-#include <LittleFS.h>
+//#include <LittleFS.h>
 
 // WiFi
 #include <WiFi.h>
-#include <WiFiAP.h>
-#include <WiFiClient.h>
-#include <WiFiGeneric.h>
+//#include <WiFiAP.h>
+//#include <WiFiClient.h>
+//#include <WiFiGeneric.h>
 #include <WiFiMulti.h>
-#include <WiFiScan.h>
-#include <WiFiServer.h>
+//#include <WiFiScan.h>
+//#include <WiFiServer.h>
 #include <WiFiSTA.h>
 #include <WiFiType.h>
-#include <WiFiUdp.h>
+//#include <WiFiUdp.h>
 
 // ========  Custom Libraries  ================  
 
@@ -64,7 +97,7 @@ using namespace Utilities;
 using namespace FileOperations;
 #include "GPSModule.h"
 #include "SDCard.h"
-#include "dataPoint.h"
+//#include "dataPoint.h"
 #include "SensorData.h"
 #include "WindSpeed2.h"
 #include "WindDirection.h"
@@ -145,9 +178,9 @@ bool _isGood_fan = false;
 
 unsigned long _timeStart_Loop = 0;			//monitor loop timing
 
-volatile int _countInterrupts_base = 0;		// Timer interrupts for sensor reads.
-volatile long _countInterrupts_10_min = 0;	// Timer interrupts for sensor for 10-min averages.
-volatile long _countInterrupts_60_min = 0;	// Timer interrupts for sensor for 60-min averages.
+volatile int _countInterrupts_base = 0;		// Number of accumulated timer interrupts for sensor reads.
+volatile long _countInterrupts_10_min = 0;	// Number of accumulated timer interrupts for sensor for 10-min averages.
+volatile long _countInterrupts_60_min = 0;	// Number of accumulated timer interrupts for sensor for 60-min averages.
 
 // ==========   SD card module   ==================== //
 SDCard sd;		// SDCard instance that exposes SD card routines. 
@@ -421,11 +454,17 @@ void setup() {
 	const int FAN_PWM_CHANNEL = 0;
 	const int FAN_PWM_RESOLUTION = 8;
 	volatile unsigned long _fanHalfRots = 0;// count fan half-rotation (2 counts/cycle)
-	ledcSetup(FAN_PWM_CHANNEL, FAN_PWM_FREQUENCY, FAN_PWM_RESOLUTION);
-	// Attach the channel to the pin for PWM output.
-	ledcAttachPin(FAN_PWM_PIN, FAN_PWM_CHANNEL);
-	// Set fan speed using PWM.
-	ledcWrite(FAN_PWM_CHANNEL, FAN_DUTY_PERCENT / 100. * 256);
+
+	// MODIFIED for updated ESP32 Arduino core 3.X:
+	//ledcSetup(FAN_PWM_CHANNEL, FAN_PWM_FREQUENCY, FAN_PWM_RESOLUTION);
+	//// Attach the channel to the pin for PWM output.
+	//ledcAttachPin(FAN_PWM_PIN, FAN_PWM_CHANNEL);
+	//// Set fan speed using PWM.
+	//ledcWrite(FAN_PWM_CHANNEL, FAN_DUTY_PERCENT / 100. * 256);
+
+	// MODIFIED for updated ESP32 Arduino core 3.X:
+	ledcAttach(FAN_PWM_PIN, FAN_PWM_FREQUENCY, FAN_PWM_RESOLUTION);
+	ledcWrite(FAN_PWM_PIN, FAN_DUTY_PERCENT / 100. * 256);
 
 	// Create interrupts after everything else has completed.
 
@@ -447,11 +486,35 @@ void setup() {
 	 ONLY WIND SPEED NEEDS TO BE RECORDED THIS FREQUENTLY.
 	 [NOTE: Consider spacing out the other sensor readings.]
 	*/
-	timer_base = timerBegin(0, 80, true);
-	timerAttachInterrupt(timer_base, &ISR_onTimer_count, true);
+	/*
+	ESP32 2.X:
+	hw_timer_t* timer = NULL;
+	timer = timerBegin(0, 80, true);
+	timerAttachInterrupt(timer, &onTimer, true);
+	timerAlarmWrite(timer, 1000000, true); // <--- ERROR
+	timerAlarmEnable(timer);               // <--- ERROR
+
+	ESP32 3.X:
+	hw_timer_t * timer = NULL;
+	// timerBegin no longer takes prescaler/direction in the same way
+	timer = timerBegin(1000000); // 1MHz frequency (1 tick = 1us)
+	timerAttachInterrupt(timer, &onTimer);
+	// timerAlarmWrite replaced by timerAlarm
+	timerAlarm(timer, 1000000, true, 0); // 1,000,000 ticks = 1 second
+	*/
+	
 	int duration_count = BASE_PERIOD_SEC * MICROSEC_PER_SECOND;	// Timer duration (microsec).
-	timerAlarmWrite(timer_base, duration_count, true);		// Trigger every BASE_PERIOD_SEC.
-	timerAlarmEnable(timer_base);
+	timer_base = timerBegin(duration_count);
+	timerAttachInterrupt(timer_base, &ISR_onTimer_count);	
+	timerAlarm(timer_base, duration_count, true, 0);		// Trigger every BASE_PERIOD_SEC.
+	
+	//My old code:
+	//timer_base = timerBegin(0, 80, true);
+	//timerAttachInterrupt(timer_base, &ISR_onTimer_count, true);
+	//int duration_count = BASE_PERIOD_SEC * MICROSEC_PER_SECOND;	// Timer duration (microsec).
+	//timerAlarmWrite(timer_base, duration_count, true);		// Trigger every BASE_PERIOD_SEC.
+	//timerAlarmEnable(timer_base);
+
 
 	msg = "CURRENT LOCAL TIME is " + gps.dateTime();
 	(IS_DAYLIGHT_TIME) ? msg = " Daylight time." : msg = " Standard time.";

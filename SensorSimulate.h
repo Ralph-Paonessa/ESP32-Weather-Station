@@ -9,7 +9,7 @@
 #include "WProgram.h"
 #endif
 
-#include "App_Settings.h"
+//#include "App_Settings.h"
 
 
 /// <summary>

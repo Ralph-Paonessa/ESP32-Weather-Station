@@ -10,6 +10,7 @@
 #endif
 
 #include "dataPoint.h"
+#include <string>
 
 #include <list>
 using std::list;
