@@ -432,7 +432,7 @@ void setup() {
 	_oldMonth = month();
 	_oldYear = year();
 
-//#if defined(VM_DEBUG)
+#if defined(VM_DEBUG)
 	////////  TESTING   ////////
 	if (_isDEBUG_addDummyDataLists) {
 		addDummyData();
@@ -444,7 +444,7 @@ void setup() {
 	if (_isDEBUG_run_test_in_setup) {
 		test.testCodeForSetup3(true);
 	}
-//#endif
+#endif
 
 	sd.logData(columnNames());	// Write column names to data log.
 	sd.logStatus_indent("DATA COLUMNS:\t" + columnNames());	// Write column names to status log.

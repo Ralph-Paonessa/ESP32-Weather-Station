@@ -101,9 +101,11 @@ void Testing::testCodeForSetup3(bool isInfiniteLoop) {
 
 	Serial.println("TEST COMPLETE");
 	Serial.println(LINE_SEPARATOR);
+#if defined(VM_DEBUG)
 	if (isInfiniteLoop) {
 		infiniteLoop();
 	}
+#endif
 }
 
 /// <summary>
