@@ -467,6 +467,8 @@ int GPSModule::timeZoneOffset() {
 /// </summary>
 /// <returns></returns>
 bool GPSModule::isDaylightTime() {
+	// In US, Daylight Time begins 2nd Sunday 
+	// in March, ends 1st Sunday in November.
 	return IS_DAYLIGHT_TIME;
 }
 
