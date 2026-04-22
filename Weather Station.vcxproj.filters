@@ -19,8 +19,8 @@
       <Filter>Misc Files</Filter>
     </None>
     <None Include="README.md" />
-    <None Include="ReadMe_wind.md" />
-    <None Include="ReadMe_Weather_Measurements.md" />
+    <None Include="README_wind.md" />
+    <None Include="README_Weather_Measurements.md" />
     <None Include="Sensor readings.cd" />
     <None Include="data\html\Admin.html" />
     <None Include="data\html\chart.html" />
@@ -75,6 +75,9 @@
     <ClCompile Include="Weather Stx4 WebServer Processor.ino" />
     <ClCompile Include="Weather Stx3 WebServer.ino" />
     <ClCompile Include="Weather Stx0Logging.ino" />
+    <ClCompile Include="Logging.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataPoint.h">
@@ -123,6 +126,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="__vm\.ESP32 Weather Station.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logging.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

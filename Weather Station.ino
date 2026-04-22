@@ -21,26 +21,37 @@ Rev. October 7, 2023
 //#include <Console.h>
 //#include <LiquidCrystal.h>
 //#include <Wire.h>
-#include <Adafruit_SPIDevice.h>
-#include <Adafruit_I2CRegister.h>
-#include <Adafruit_I2CDevice.h>
-#include <Adafruit_GenericDevice.h>
-#include <Adafruit_BusIO_Register.h>
-#include <Adafruit_Sensor.h>
+//#include <TimeLib.h>
+
+//#include <Adafruit_SPIDevice.h>
+//#include <Adafruit_I2CRegister.h>
+//#include <Adafruit_I2CDevice.h>
+//#include <Adafruit_GenericDevice.h>
+//#include <Adafruit_BusIO_Register.h>
+//#include <Adafruit_Sensor.h>
+
 //#include <Arduino_BuiltIn.h>
 //#include <AsyncEventSource.h>
 //#include <AsyncJson.h>
 //#include <AsyncWebSocket.h>
 
-#include <SHA1Builder.h>
+//#include <SHA1Builder.h>
 
 // XXX NOT FOUND!
 //#include <PBKDF2_HMACBuilder.h>
 //#include <SHA2Builder.h>
 //#include <SHA3Builder.h>
 
-#include <AsyncUDP.h>
-#include <AsyncTCP.h>
+//#include <AsyncUDP.h>
+//#include <AsyncTCP.h>
+//#include <WiFiAP.h>
+//#include <WiFiClient.h>
+//#include <WiFiGeneric.h>
+//#include <WiFiScan.h>
+//#include <WiFiServer.h>
+#include "Logging.h"
+#include <WiFiSTA.h>
+//#include <WiFiUdp.h>
 #include <ESPAsyncWebServer.h>
 
 
@@ -72,15 +83,15 @@ Rev. October 7, 2023
 //#include <LittleFS.h>
 
 // WiFi
-#include <WiFi.h>
+//#include <WiFi.h>
 //#include <WiFiAP.h>
 //#include <WiFiClient.h>
 //#include <WiFiGeneric.h>
 #include <WiFiMulti.h>
 //#include <WiFiScan.h>
 //#include <WiFiServer.h>
-#include <WiFiSTA.h>
-#include <WiFiType.h>
+//#include <WiFiSTA.h>
+//#include <WiFiType.h>
 //#include <WiFiUdp.h>
 
 // ========  Custom Libraries  ================  

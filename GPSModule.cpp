@@ -7,6 +7,7 @@ Uses TinyGPS++ library to communicate with GPS module, and TimeLib
 */
 
 #include "GPSModule.h"
+#include <esp32-hal.h>
 
 TinyGPSPlus _tinyGPS;				// TinyGPS++ instance.
 HardwareSerial _serialGPS(2);		// Allowed values 0, 1, 2?

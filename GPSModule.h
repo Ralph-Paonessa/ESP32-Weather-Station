@@ -27,7 +27,7 @@ logged to the SD card.
 #include <TinyGPSPlus.h>	// Mikal Hart - includes TinyGPS++.h
 #include <TimeLib.h>		// Paul Stoffregen - Time
 
-#include "App_Settings.h"
+#include "App_Settings.h"	// namespace App_Settings
 #include "SDCard.h"			// for data logging.
 using namespace App_Settings;
 
@@ -79,7 +79,7 @@ public:
 	unsigned int satellites();
 
 	/// <summary>
-	/// Returns how long gps required to sync, seconds.
+	/// Number of seconds that gps required to sync.
 	/// </summary>
 	/// <returns>Time required to sync, sec.</returns>
 	unsigned long timeToSync_sec();
@@ -98,12 +98,12 @@ private:
 	bool _isGpsReceiving = false;
 
 	/// <summary>
-	/// Set system time and date to GPS values.
+	/// Sets system time and date to GPS values.
 	/// </summary>
 	void syncSystemTimeToGPS();
 
 	/// <summary>
-	/// Save current GPS location data.
+	/// Saves current GPS location data.
 	/// </summary>
 	void syncLocationToGPS();
 
@@ -200,10 +200,10 @@ public:
 	/// </summary>
 	/// <param name="sdCard">SDCard instance (for logging).</param>
 	/// <param name="isSimulate">
-	/// True to simulate gps sync and add dummy data 
+	/// Set true to simulate gps sync and add dummy data 
 	/// (default is false)
 	/// </param>
-	/// <returns>True if GPS sync success.</returns>
+	/// <returns>True if GPS sync was successful.</returns>
 	bool syncToGPS(SDCard& sdCard, bool isSimulate);
 
 	/// <summary>

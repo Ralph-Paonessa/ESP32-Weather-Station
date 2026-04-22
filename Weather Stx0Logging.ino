@@ -1,18 +1,18 @@
-//// %%%%%%%%%%   STATUS FLAGS FOR DEVICES   %%%%%%%%%%%%%%%%
-//bool _isGood_Temp = false;
-//bool _isGood_PRH = false;
-//bool _isGood_UV = false;
-//bool _isGood_IR = false;
-//bool _isGood_WindDir = false;
-//bool _isGood_WindSpeed = false;
-////bool _isGood_GPS = false;
-//bool _isGood_PMS = false;
-////bool _isGood_SDCard = false;
-//bool _isGood_Solar = false;
-//bool _isGood_LITTLEFS = false;
-//bool _isGood_fan = false;
-//// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+/******************************************
+STATUS FLAGS FOR DEVICES:
+	bool _isGood_Temp = false;
+	bool _isGood_PRH = false;
+	bool _isGood_UV = false;
+	bool _isGood_IR = false;
+	bool _isGood_WindDir = false;
+	bool _isGood_WindSpeed = false;
+	bool _isGood_GPS = false;
+	bool _isGood_PMS = false;
+	bool _isGood_SDCard = false;
+	bool _isGood_Solar = false;
+	bool _isGood_LITTLEFS = false;
+	bool _isGood_fan = false;
+*******************************************/
 
 /// <summary>
 /// Logs summary of devices status.
@@ -143,8 +143,6 @@ void logLittleFsSpaceUsage() {
 	msg += " KB";
 	sd.logStatus_indent(msg);
 }
-
-
 
 /// <summary>
 /// LogS the application settings to the STATUS file.

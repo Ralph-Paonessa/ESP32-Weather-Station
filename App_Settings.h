@@ -13,36 +13,31 @@
 /// Exposes parameters for weather station.
 /// </summary>
 namespace App_Settings {
-
-	///////const float BASE_PERIOD_SEC = 1;	// Period to sample anemometer rotations (sec).
-
-	const unsigned int SECONDS_PER_MINUTE = 60;
-	const unsigned int MINUTES_PER_HOUR = 60;
-	const unsigned int MILLISEC_PER_SECOND = 1000;
-	const unsigned long MICROSEC_PER_SECOND = 1000000;
-	const unsigned int HOURS_PER_DAY = 24;
-	const unsigned int SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;				// 3,600 s
+	const unsigned int	SECONDS_PER_MINUTE = 60;
+	const unsigned int	MINUTES_PER_HOUR = 60;
+	const unsigned int	MILLISEC_PER_SECOND = 1000;
+	const unsigned long	MICROSEC_PER_SECOND = 1000000;
+	const unsigned int	HOURS_PER_DAY = 24;
+	const unsigned int	SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;				// 3,600 s
 	const unsigned long SECONDS_PER_DAY = SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY;// 86,400 s
 	const unsigned long MILLISECONDS_PER_HOUR = MILLISEC_PER_SECOND * SECONDS_PER_HOUR;			// 3,600,000 ms
 	const unsigned long MILLISECONDS_PER_MINUTE = MILLISEC_PER_SECOND * SECONDS_PER_MINUTE;		// 60,000 ms
-	const float DEGREES_PER_RADIAN = 57.2957795130823;	// Degrees in 1 radian.
+	const float			DEGREES_PER_RADIAN = 57.2957795130823;	// Degrees in 1 radian.
 
-	const float BASE_PERIOD_SEC = 4;	// Period to sample anemometer rotations (sec).
+	const float			BASE_PERIOD_SEC = 4;	// Period to sample anemometer rotations (sec).
 
-	const unsigned int DATA_RECOVERY_10_MIN_CUTOFF = 30 * SECONDS_PER_MINUTE;	// Recover 10-min data no older.
-	const unsigned int DATA_RECOVERY_60_MIN_CUTOFF = 3 * SECONDS_PER_HOUR;		// Recover 60-min data no older.
-	const unsigned int DATA_RECOVERY_DAY_CUTOFF = 3 * SECONDS_PER_DAY;			// Recover day data no older.
-
+	const unsigned int	DATA_RECOVERY_10_MIN_CUTOFF = 30 * SECONDS_PER_MINUTE;	// Recover 10-min data no older.
+	const unsigned int	DATA_RECOVERY_60_MIN_CUTOFF = 3 * SECONDS_PER_HOUR;		// Recover 60-min data no older.
+	const unsigned int	DATA_RECOVERY_DAY_CUTOFF = 3 * SECONDS_PER_DAY;			// Recover day data no older.
 
 	/* GPS sync parameters */
 
 	const unsigned long GPS_BAUD_RATE = 9600;		// NEO-6M 9600
-
 	const unsigned int	GPS_SATELLITES_REQUIRED = 3;// Minimum number of GPS satellites before syncing.
 	const unsigned int	GPS_CYCLES_FOR_SYNC = 3;	// Minimum GPS cycles before syncing.
 	const unsigned int	GPS_CYCLE_DELAY_SEC = 2;	// Delay before getting another GPS fix, sec.
 	const unsigned int	GPS_CYCLES_COUNT_MAX = 50;	// Max number of GPS cycles before quitting.
-	const float GPS_MAX_ALLOWED_HDOP = 4;			// Minimum HDOP precision for syncing.
+	const float			GPS_MAX_ALLOWED_HDOP = 4;	// Minimum HDOP precision for syncing.
 
 	const unsigned int	GPS_DUMMY_HOUR = 23;		// Hour for dummy GPS time.
 	const unsigned int	GPS_DUMMY_MIN = 05;			// Minute for dummy GPS time.
@@ -59,18 +54,18 @@ namespace App_Settings {
 
 	const unsigned int FAN_DUTY_PERCENT = 30;		// PWM duty cycle for fan speed.
 
-	const String SENSOR_DATA_DIR_PATH = "/Sensor data";	// Absolute path to sensor data files directory.
-	const String SENSOR_DATA_TIME_FILE_PATH = "/Sensor data/last_time.txt";	// Absolute path to sensor read time file.
+	const String	SENSOR_DATA_DIR_PATH = "/Sensor data";	// Absolute path to sensor data files directory.
+	const String	SENSOR_DATA_TIME_FILE_PATH = "/Sensor data/last_time.txt";	// Absolute path to sensor read time file.
 
-	const int DATA_FILE_BUFFER_SIZE = 1024;			// Size of the buffer when reading a readings data file from file system.
+	const int		DATA_FILE_BUFFER_SIZE = 1024;	// Size of the buffer when reading a readings data file from file system.
 
 	const String LOGFILE_PATH_DATA = "/data.txt";
 
 	const String LOGFILE_PATH_STATUS = "/log.txt";
 
-	const String LINE_SEPARATOR_LOG_BEGINS = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
-	const String LINE_SEPARATOR_MAJOR = "=====================================================";
-	const String LINE_SEPARATOR = "-------------------------------------------------";
+	const String LINE_SEPARATOR_LOG_BEGINS =	"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$";
+	const String LINE_SEPARATOR_MAJOR =			"=====================================================";
+	const String LINE_SEPARATOR =				"-------------------------------------------------";
 
 	/*
 	ESTIMATE of max. achievable insolation, for
